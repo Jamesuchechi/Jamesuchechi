@@ -13,7 +13,7 @@ Welcome to my corner of GitHub, where code meets curiosity. I'm a software devel
 - 🔬 LLMs and Generative AI (beyond the hype)
 - 🧱 Building robust data pipelines (Airflow, dbt, the whole stack)
 - 🧮 Making statistical models explainable and actionable
-- 🌍 Real-world problems in [fintech, health, climate]
+- 🌍 Real-world problems in `fintech`, `health`, `climate`
 
 ## 🧰 Tech Stack
 `Python` `R` `SQL` `Pandas` `scikit-learn` `PyTorch` `Docker` `PostgreSQL`  
@@ -24,5 +24,4 @@ Welcome to my corner of GitHub, where code meets curiosity. I'm a software devel
 > "Data is the new oil? Maybe. But it’s useless unless you refine it."
 
 Thanks for stopping by! Let's connect — feel free to explore my repos or reach out.  
-📫 [https://linkedin.com/in/james okpara]
-
+📫 [LinkedIn](https://linkedin.com/in/james-okpara)
