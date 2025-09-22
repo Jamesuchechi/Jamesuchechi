@@ -1,4 +1,4 @@
-# Hi, I'm James 👋  
+# Hi, I'm James Uchechi 👋  
 *Data Scientist | Software Developer | Insight Hunter*
 
 Welcome to my corner of GitHub, where code meets curiosity. I'm a software developer with a deep love for **data science**, and I thrive at the intersection of **machine learning, clean code, and real-world problem solving**.
@@ -16,7 +16,7 @@ Welcome to my corner of GitHub, where code meets curiosity. I'm a software devel
 - 🌍 Real-world problems in `fintech`, `health`, `climate`
 
 ## 🧰 Tech Stack
-`Python` `R` `SQL` `Pandas` `scikit-learn` `PyTorch` `Docker` `PostgreSQL`  
+`Python` `R` `SQL` `Pandas` `scikit-learn` `PyTorch` `Docker` `PostgreSQL` `Django`  
 `FastAPI` `Jupyter` `Airflow` `dbt` `Git` `Linux`
 
 ---
