@@ -13,10 +13,12 @@ datasource db {
 model Project {
   id          String   @id @default(cuid())
   title       String
+  slug        String?  @unique
   category    String
   year        Int
   description String
   imageUrl    String
+  gallery     String?
   projectUrl  String?
   githubUrl   String?
   technologies String
@@ -40,4 +42,41 @@ model Admin {
   password  String
   name      String
   createdAt DateTime @default(now())
+}
+
+model Skill {
+  id          String   @id @default(cuid())
+  name        String
+  category    String
+  proficiency Int      @default(80)
+  icon        String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  icon        String?
+  features    String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model About {
+  id            String   @id @default(cuid())
+  name          String
+  title         String
+  bio           String
+  profileImage  String?
+  resumeUrl     String?
+  email         String?
+  phone         String?
+  location      String?
+  socialLinks   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }

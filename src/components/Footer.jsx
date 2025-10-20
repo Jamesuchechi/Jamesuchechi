@@ -1,12 +1,76 @@
 'use client';
-import { FiArrowUp, FiGithub, FiLinkedin, FiInstagram } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
+import { FiArrowUp, FiGithub, FiLinkedin, FiInstagram, FiMessageCircle, FiFacebook, FiMusic } from 'react-icons/fi';
 
 export default function Footer() {
+  const [currentTime, setCurrentTime] = useState('');
+  const [mounted, setMounted] = useState(false);
+  const [socialLinks, setSocialLinks] = useState({
+    github: '',
+    linkedin: '',
+    twitter: '',
+    website: '',
+    whatsapp: '',
+    facebook: '',
+    tiktok: ''
+  });
+
+  useEffect(() => {
+    setMounted(true);
+    // Update time initially
+    setCurrentTime(new Date().toLocaleTimeString());
+    
+    // Update time every second
+    const interval = setInterval(() => {
+      setCurrentTime(new Date().toLocaleTimeString());
+    }, 1000);
+
+    // Fetch social links
+    fetchSocialLinks();
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchSocialLinks = async () => {
+    try {
+      const res = await fetch('/api/about');
+      const data = await res.json();
+      
+      if (data.socialLinks) {
+        const parsed = JSON.parse(data.socialLinks);
+        setSocialLinks(parsed);
+      }
+    } catch (error) {
+      console.error('Error fetching social links:', error);
+    }
+  };
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const currentYear = new Date().getFullYear();
+
+  // Social media icons mapping
+  const socialIcons = {
+    github: FiGithub,
+    linkedin: FiLinkedin,
+    twitter: FiInstagram, // Using Instagram icon for Twitter/X
+    website: FiArrowUp, // Using arrow up for website
+    whatsapp: FiMessageCircle,
+    facebook: FiFacebook,
+    tiktok: FiMusic // Using music icon for TikTok
+  };
+
+  const socialLabels = {
+    github: 'Github',
+    linkedin: 'LinkedIn',
+    twitter: 'X (Twitter)',
+    website: 'Website',
+    whatsapp: 'WhatsApp',
+    facebook: 'Facebook',
+    tiktok: 'TikTok'
+  };
 
   return (
     <footer className="bg-black text-white py-12">
@@ -30,28 +94,34 @@ export default function Footer() {
           <div>
             <h3 className="text-sm font-bold uppercase tracking-wider mb-4">Socials</h3>
             <ul className="space-y-2">
-              <li>
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors text-sm flex items-center gap-2">
-                  <FiLinkedin /> LinkedIn
-                </a>
-              </li>
-              <li>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors text-sm flex items-center gap-2">
-                  <FiInstagram /> Instagram
-                </a>
-              </li>
-              <li>
-                <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors text-sm flex items-center gap-2">
-                  <FiGithub /> Github
-                </a>
-              </li>
+              {Object.entries(socialLinks).map(([platform, url]) => {
+                if (!url) return null;
+                
+                const IconComponent = socialIcons[platform];
+                const label = socialLabels[platform];
+                
+                return (
+                  <li key={platform}>
+                    <a 
+                      href={url} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-white/60 hover:text-white transition-colors text-sm flex items-center gap-2"
+                    >
+                      <IconComponent /> {label}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
           {/* Local Time */}
           <div>
             <h3 className="text-sm font-bold uppercase tracking-wider mb-4">Local Time</h3>
-            <p className="text-white/60 text-sm">{new Date().toLocaleTimeString()}</p>
+            <p className="text-white/60 text-sm">
+              {mounted ? currentTime : '--:--:--'}
+            </p>
           </div>
         </div>
 
