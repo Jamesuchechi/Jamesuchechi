@@ -24,6 +24,7 @@ export default function ProjectDetails({ params }) {
     if (slug) {
       fetchProject();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
   const fetchProject = async () => {
@@ -311,7 +312,7 @@ export default function ProjectDetails({ params }) {
               Interested in working together?
             </h2>
             <p className="text-xl text-white/60 mb-8">
-              Let's create something amazing together
+              Let&apos;s create something amazing together
             </p>
             <Link
               href="/#contact"

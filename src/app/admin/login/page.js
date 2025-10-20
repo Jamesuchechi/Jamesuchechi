@@ -121,7 +121,7 @@ export default function AdminLogin() {
 
           <div className="text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <a href="/admin/register" className="font-medium text-black hover:text-gray-800">
                 Register here
               </a>
