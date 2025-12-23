@@ -68,8 +68,12 @@ export default function Services() {
               let features = [];
               try {
                 if (service.features) {
-                  const parsed = JSON.parse(service.features);
-                  features = Array.isArray(parsed) ? parsed : [];
+                  if (Array.isArray(service.features)) {
+                    features = service.features;
+                  } else {
+                    const parsed = JSON.parse(service.features);
+                    features = Array.isArray(parsed) ? parsed : [];
+                  }
                 }
               } catch (error) {
                 console.error('Error parsing features:', error);

@@ -14,8 +14,11 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@netlify/blobs": "^8.0.0",
     "@prisma/client": "^6.17.1",
     "bcryptjs": "^3.0.2",
+    "firebase": "^12.7.0",
+    "firebase-admin": "^12.7.0",
     "framer-motion": "^12.23.24",
     "jsonwebtoken": "^9.0.2",
     "next": "15.5.6",

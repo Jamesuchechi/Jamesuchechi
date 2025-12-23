@@ -22,7 +22,17 @@ export default function ImageUpload({ label, value, onChange, multiple = false }
           body: formData,
         });
 
-        if (!res.ok) throw new Error('Upload failed');
+        if (!res.ok) {
+          let message = 'Upload failed';
+          try {
+            const err = await res.json();
+            if (err?.error) message = err.error;
+            if (err?.details) message = `${message}: ${err.details}`;
+          } catch {
+            // Ignore parse failures and use the default message.
+          }
+          throw new Error(message);
+        }
         return res.json();
       });
 
@@ -37,7 +47,7 @@ export default function ImageUpload({ label, value, onChange, multiple = false }
       }
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Upload failed. Please try again.');
+      alert(error?.message || 'Upload failed. Please try again.');
     } finally {
       setUploading(false);
     }

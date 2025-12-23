@@ -1,32 +1,34 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { adminDb } from '@/lib/firebaseAdmin';
 
 // GET about information
 export async function GET() {
   try {
-    let about = await prisma.about.findFirst();
-    
-    if (!about) {
-      // Create default about entry
-      about = await prisma.about.create({
-        data: {
-          name: 'Your Name',
-          title: 'Your Title',
-          bio: 'Tell us about yourself...',
-          socialLinks: JSON.stringify({
-            github: '',
-            linkedin: '',
-            twitter: '',
-            website: '',
-            whatsapp: '',
-            facebook: '',
-            tiktok: ''
-          })
-        }
-      });
+    const aboutRef = adminDb.collection('about').doc('profile');
+    const aboutSnap = await aboutRef.get();
+
+    if (!aboutSnap.exists) {
+      const defaultAbout = {
+        name: 'Your Name',
+        title: 'Your Title',
+        bio: 'Tell us about yourself...',
+        socialLinks: {
+          github: '',
+          linkedin: '',
+          twitter: '',
+          website: '',
+          whatsapp: '',
+          facebook: '',
+          tiktok: ''
+        },
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      await aboutRef.set(defaultAbout);
+      return NextResponse.json({ id: 'profile', ...defaultAbout });
     }
-    
-    return NextResponse.json(about);
+
+    return NextResponse.json({ id: aboutSnap.id, ...aboutSnap.data() });
   } catch (error) {
     console.error('Failed to fetch about:', error);
     return NextResponse.json({ error: 'Failed to fetch about information' }, { status: 500 });
@@ -37,45 +39,22 @@ export async function GET() {
 export async function POST(request) {
   try {
     const body = await request.json();
-    
-    // Check if about entry exists
-    const existing = await prisma.about.findFirst();
-    
-    let about;
-    if (existing) {
-      // Update existing
-      about = await prisma.about.update({
-        where: { id: existing.id },
-        data: {
-          name: body.name,
-          title: body.title,
-          bio: body.bio,
-          profileImage: body.profileImage || null,
-          resumeUrl: body.resumeUrl || null,
-          email: body.email || null,
-          phone: body.phone || null,
-          location: body.location || null,
-          socialLinks: body.socialLinks ? JSON.stringify(body.socialLinks) : null
-        }
-      });
-    } else {
-      // Create new
-      about = await prisma.about.create({
-        data: {
-          name: body.name,
-          title: body.title,
-          bio: body.bio,
-          profileImage: body.profileImage || null,
-          resumeUrl: body.resumeUrl || null,
-          email: body.email || null,
-          phone: body.phone || null,
-          location: body.location || null,
-          socialLinks: body.socialLinks ? JSON.stringify(body.socialLinks) : null
-        }
-      });
-    }
-    
-    return NextResponse.json(about);
+    const aboutRef = adminDb.collection('about').doc('profile');
+    const aboutData = {
+      name: body.name,
+      title: body.title,
+      bio: body.bio,
+      profileImage: body.profileImage || '',
+      resumeUrl: body.resumeUrl || '',
+      email: body.email || '',
+      phone: body.phone || '',
+      location: body.location || '',
+      socialLinks: body.socialLinks || null,
+      updatedAt: new Date().toISOString(),
+    };
+
+    await aboutRef.set(aboutData, { merge: true });
+    return NextResponse.json({ id: 'profile', ...aboutData });
   } catch (error) {
     console.error('Failed to update about:', error);
     return NextResponse.json({ error: 'Failed to update about information', details: error.message }, { status: 500 });

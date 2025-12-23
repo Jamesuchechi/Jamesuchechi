@@ -1,17 +1,27 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { adminDb } from '@/lib/firebaseAdmin';
+
+const parseArray = (value) => {
+  if (Array.isArray(value)) return value;
+  if (!value) return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    return [];
+  }
+};
 
 // GET single project
 export async function GET(request, { params }) {
   try {
     const { id } = await params;
-    const project = await prisma.project.findUnique({
-      where: { id }
-    });
-    if (!project) {
+    const projectRef = adminDb.collection('projects').doc(id);
+    const projectSnap = await projectRef.get();
+    if (!projectSnap.exists()) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
-    return NextResponse.json(project);
+    return NextResponse.json({ id: projectSnap.id, ...projectSnap.data() });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch project' }, { status: 500 });
   }
@@ -29,34 +39,34 @@ export async function PUT(request, { params }) {
     // Check if slug already exists (excluding current project)
     let uniqueSlug = slug;
     let counter = 1;
-    while (await prisma.project.findFirst({ 
-      where: { 
-        slug: uniqueSlug,
-        NOT: { id }
-      } 
-    })) {
+    const slugQuery = async (value) => {
+      const snapshot = await adminDb.collection('projects').where('slug', '==', value).get();
+      return snapshot.docs.some((docSnap) => docSnap.id !== id);
+    };
+    while (await slugQuery(uniqueSlug)) {
       uniqueSlug = `${slug}-${counter}`;
       counter++;
     }
-    
-    const project = await prisma.project.update({
-      where: { id },
-      data: {
-        title: body.title,
-        slug: uniqueSlug,
-        category: body.category,
-        year: parseInt(body.year),
-        description: body.description,
-        imageUrl: body.imageUrl,
-        gallery: Array.isArray(body.gallery) ? JSON.stringify(body.gallery) : body.gallery || null,
-        projectUrl: body.projectUrl || null,
-        githubUrl: body.githubUrl || null,
-        technologies: JSON.stringify(body.technologies || []),
-        featured: body.featured || false,
-        order: body.order || 0
-      }
-    });
-    return NextResponse.json(project);
+
+    const projectRef = adminDb.collection('projects').doc(id);
+    const updatedData = {
+      title: body.title,
+      slug: uniqueSlug,
+      category: body.category,
+      year: Number(body.year),
+      description: body.description,
+      imageUrl: body.imageUrl || '',
+      gallery: parseArray(body.gallery),
+      projectUrl: body.projectUrl || '',
+      githubUrl: body.githubUrl || '',
+      technologies: parseArray(body.technologies),
+      featured: Boolean(body.featured),
+      order: body.order || 0,
+      updatedAt: new Date().toISOString(),
+    };
+
+    await projectRef.update(updatedData);
+    return NextResponse.json({ id, ...updatedData });
   } catch (error) {
     console.error('Error updating project:', error);
     return NextResponse.json({ error: 'Failed to update project' }, { status: 500 });
@@ -67,9 +77,7 @@ export async function PUT(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     const { id } = await params;
-    await prisma.project.delete({
-      where: { id }
-    });
+    await adminDb.collection('projects').doc(id).delete();
     return NextResponse.json({ message: 'Project deleted successfully' });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to delete project' }, { status: 500 });

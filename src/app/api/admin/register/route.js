@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import bcrypt from 'bcryptjs';
+import { adminAuth, adminDb } from '@/lib/firebaseAdmin';
 
 export async function POST(request) {
   try {
@@ -12,33 +11,28 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Name, email, and password are required' }, { status: 400 });
     }
 
-    // Check if admin already exists
-    const existingAdmin = await prisma.admin.findUnique({
-      where: { email }
+    const userRecord = await adminAuth.createUser({
+      email,
+      password,
+      displayName: name,
     });
 
-    if (existingAdmin) {
-      return NextResponse.json({ error: 'Admin with this email already exists' }, { status: 400 });
-    }
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 12);
-
-    // Create admin
-    const admin = await prisma.admin.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword
-      }
+    const createdAt = new Date().toISOString();
+    await adminDb.collection('admins').doc(userRecord.uid).set({
+      name,
+      email,
+      createdAt,
     });
 
-    // Remove password from response
-    const { password: _, ...adminWithoutPassword } = admin;
-
-    return NextResponse.json(adminWithoutPassword, { status: 201 });
+    return NextResponse.json(
+      { id: userRecord.uid, name, email },
+      { status: 201 }
+    );
   } catch (error) {
     console.error('Admin registration error:', error);
+    if (error?.code === 'auth/email-already-exists') {
+      return NextResponse.json({ error: 'Admin with this email already exists' }, { status: 400 });
+    }
     return NextResponse.json({ error: 'Failed to create admin account' }, { status: 500 });
   }
 }

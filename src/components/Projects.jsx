@@ -34,6 +34,7 @@ export default function Projects() {
     const getTechnologies = () => {
       try {
         if (!project.technologies) return [];
+        if (Array.isArray(project.technologies)) return project.technologies;
         const parsed = JSON.parse(project.technologies);
         return Array.isArray(parsed) ? parsed : [];
       } catch (error) {

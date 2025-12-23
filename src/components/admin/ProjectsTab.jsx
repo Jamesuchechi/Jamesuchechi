@@ -50,7 +50,7 @@ export default function ProjectsTab() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          technologies: JSON.stringify(formData.technologies),
+          technologies: formData.technologies,
           gallery: formData.gallery
         })
       });
@@ -74,8 +74,12 @@ export default function ProjectsTab() {
     let technologies = [];
     try {
       if (project.technologies) {
-        const parsed = JSON.parse(project.technologies);
-        technologies = Array.isArray(parsed) ? parsed : [];
+        if (Array.isArray(project.technologies)) {
+          technologies = project.technologies;
+        } else {
+          const parsed = JSON.parse(project.technologies);
+          technologies = Array.isArray(parsed) ? parsed : [];
+        }
       }
     } catch (error) {
       console.error('Error parsing technologies:', error);
@@ -85,8 +89,12 @@ export default function ProjectsTab() {
     let gallery = [];
     try {
       if (project.gallery) {
-        const parsed = JSON.parse(project.gallery);
-        gallery = Array.isArray(parsed) ? parsed : [];
+        if (Array.isArray(project.gallery)) {
+          gallery = project.gallery;
+        } else {
+          const parsed = JSON.parse(project.gallery);
+          gallery = Array.isArray(parsed) ? parsed : [];
+        }
       }
     } catch (error) {
       console.error('Error parsing gallery:', error);

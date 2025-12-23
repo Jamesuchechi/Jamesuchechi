@@ -1,47 +1,34 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import { adminAuth, adminDb } from '@/lib/firebaseAdmin';
 
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { email, password } = body;
+    const { idToken } = body;
 
-    // Validate required fields
-    if (!email || !password) {
-      return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
+    if (!idToken) {
+      return NextResponse.json({ error: 'Auth token is required' }, { status: 400 });
     }
 
-    // Find admin
-    const admin = await prisma.admin.findUnique({
-      where: { email }
-    });
+    const decoded = await adminAuth.verifyIdToken(idToken);
+    const userRecord = await adminAuth.getUser(decoded.uid);
+    const adminRef = adminDb.collection('admins').doc(decoded.uid);
+    const adminSnap = await adminRef.get();
 
-    if (!admin) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    let adminData = adminSnap.exists ? adminSnap.data() : null;
+
+    if (!adminData) {
+      adminData = {
+        name: userRecord.displayName || 'Admin',
+        email: userRecord.email,
+        createdAt: new Date().toISOString(),
+      };
+      await adminRef.set(adminData);
     }
-
-    // Verify password
-    const isValidPassword = await bcrypt.compare(password, admin.password);
-
-    if (!isValidPassword) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
-    }
-
-    // Generate JWT token
-    const token = jwt.sign(
-      { adminId: admin.id, email: admin.email },
-      process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '7d' }
-    );
-
-    // Remove password from response
-    const { password: _, ...adminWithoutPassword } = admin;
 
     return NextResponse.json({
-      admin: adminWithoutPassword,
-      token
+      admin: { id: decoded.uid, ...adminData },
+      token: idToken,
     });
   } catch (error) {
     console.error('Admin login error:', error);

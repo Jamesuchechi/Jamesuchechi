@@ -37,8 +37,16 @@ export default function Footer() {
       const data = await res.json();
       
       if (data.socialLinks) {
-        const parsed = JSON.parse(data.socialLinks);
-        setSocialLinks(parsed);
+        if (typeof data.socialLinks === 'string') {
+          try {
+            const parsed = JSON.parse(data.socialLinks);
+            setSocialLinks(parsed);
+          } catch (error) {
+            console.error('Error parsing social links:', error);
+          }
+        } else if (typeof data.socialLinks === 'object') {
+          setSocialLinks(data.socialLinks);
+        }
       }
     } catch (error) {
       console.error('Error fetching social links:', error);

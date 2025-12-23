@@ -35,6 +35,30 @@ export default function AboutTab() {
       const res = await fetch('/api/about');
       const data = await res.json();
       
+      const fallbackSocials = {
+        github: '',
+        linkedin: '',
+        twitter: '',
+        website: '',
+        whatsapp: '',
+        facebook: '',
+        tiktok: ''
+      };
+
+      let socialLinks = fallbackSocials;
+      if (data.socialLinks) {
+        if (typeof data.socialLinks === 'string') {
+          try {
+            const parsed = JSON.parse(data.socialLinks);
+            socialLinks = parsed && typeof parsed === 'object' ? parsed : fallbackSocials;
+          } catch (error) {
+            console.error('Error parsing social links:', error);
+          }
+        } else if (typeof data.socialLinks === 'object') {
+          socialLinks = data.socialLinks;
+        }
+      }
+
       setFormData({
         name: data.name || '',
         title: data.title || '',
@@ -44,15 +68,7 @@ export default function AboutTab() {
         email: data.email || '',
         phone: data.phone || '',
         location: data.location || '',
-        socialLinks: data.socialLinks ? JSON.parse(data.socialLinks) : {
-          github: '',
-          linkedin: '',
-          twitter: '',
-          website: '',
-          whatsapp: '',
-          facebook: '',
-          tiktok: ''
-        }
+        socialLinks
       });
     } catch (error) {
       console.error('Error fetching about:', error);

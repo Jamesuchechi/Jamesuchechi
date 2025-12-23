@@ -65,7 +65,17 @@ export default function ServicesTab() {
       title: service.title,
       description: service.description,
       icon: service.icon || '',
-      features: service.features ? JSON.parse(service.features) : []
+      features: (() => {
+        if (!service.features) return [];
+        if (Array.isArray(service.features)) return service.features;
+        try {
+          const parsed = JSON.parse(service.features);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          console.error('Error parsing features:', error);
+          return [];
+        }
+      })()
     });
   };
 
@@ -91,6 +101,17 @@ export default function ServicesTab() {
       features: []
     });
     setEditingService(null);
+  };
+
+  const getFeatures = (value) => {
+    if (!value) return [];
+    if (Array.isArray(value)) return value;
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      return [];
+    }
   };
 
   const addFeature = () => {
@@ -234,13 +255,13 @@ export default function ServicesTab() {
                   <div className="flex-1">
                     <h4 className="font-bold">{service.title}</h4>
                     <p className="text-sm text-gray-600 mt-1">{service.description}</p>
-                    {service.features && JSON.parse(service.features).length > 0 && (
+                    {getFeatures(service.features).length > 0 && (
                       <ul className="mt-2 text-sm text-gray-500">
-                        {JSON.parse(service.features).slice(0, 3).map((feature, index) => (
+                        {getFeatures(service.features).slice(0, 3).map((feature, index) => (
                           <li key={index}>• {feature}</li>
                         ))}
-                        {JSON.parse(service.features).length > 3 && (
-                          <li>• +{JSON.parse(service.features).length - 3} more...</li>
+                        {getFeatures(service.features).length > 3 && (
+                          <li>• +{getFeatures(service.features).length - 3} more...</li>
                         )}
                       </ul>
                     )}

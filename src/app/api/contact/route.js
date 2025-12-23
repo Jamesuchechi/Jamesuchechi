@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { adminDb } from '@/lib/firebaseAdmin';
 import nodemailer from 'nodemailer';
 
 export async function POST(request) {
@@ -7,13 +7,14 @@ export async function POST(request) {
     const body = await request.json();
     
     // Save to database
-    const contact = await prisma.contact.create({
-      data: {
-        name: body.name,
-        email: body.email,
-        message: body.message
-      }
-    });
+    const contactData = {
+      name: body.name,
+      email: body.email,
+      message: body.message,
+      createdAt: new Date().toISOString(),
+    };
+    const docRef = await adminDb.collection('contacts').add(contactData);
+    const contact = { id: docRef.id, ...contactData };
 
     // Send email notifications (if configured)
     try {
@@ -127,8 +128,15 @@ export async function POST(request) {
 // GET all contact submissions (for admin)
 export async function GET() {
   try {
-    const contacts = await prisma.contact.findMany({
-      orderBy: { createdAt: 'desc' }
+    const snapshot = await adminDb.collection('contacts').get();
+    const contacts = snapshot.docs.map((docSnap) => ({
+      id: docSnap.id,
+      ...docSnap.data(),
+    }));
+    contacts.sort((a, b) => {
+      const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const bDate = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return bDate - aDate;
     });
     return NextResponse.json(contacts);
   } catch (error) {

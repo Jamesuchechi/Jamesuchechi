@@ -73,6 +73,7 @@ export default function ProjectDetails({ params }) {
   const getTechnologies = () => {
     try {
       if (!project.technologies) return [];
+      if (Array.isArray(project.technologies)) return project.technologies;
       const parsed = JSON.parse(project.technologies);
       return Array.isArray(parsed) ? parsed : [];
     } catch (error) {
@@ -84,6 +85,7 @@ export default function ProjectDetails({ params }) {
   const getGallery = () => {
     try {
       if (!project.gallery) return [];
+      if (Array.isArray(project.gallery)) return project.gallery;
       const parsed = JSON.parse(project.gallery);
       return Array.isArray(parsed) ? parsed : [];
     } catch (error) {
