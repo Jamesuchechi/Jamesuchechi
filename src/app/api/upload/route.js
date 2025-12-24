@@ -55,8 +55,9 @@ export async function POST(request) {
       await store.set(key, buffer, {
         contentType: file.type || 'application/octet-stream',
       });
-      const url = `/.netlify/blobs/${storeName}/${key}`;
-      return NextResponse.json({ url, netlify: true });
+      const relativeUrl = `/.netlify/blobs/${storeName}/${key}`;
+      const absoluteUrl = new URL(relativeUrl, request.nextUrl.origin).toString();
+      return NextResponse.json({ url: absoluteUrl, netlify: true });
     }
 
     if (useLocalUploads || !bucketName) {

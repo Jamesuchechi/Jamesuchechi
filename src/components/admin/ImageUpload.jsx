@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { FiUpload, FiX } from 'react-icons/fi';
 import { isNetlifyBlobUrl } from '@/lib/imageUtils';
@@ -7,6 +7,12 @@ import { isNetlifyBlobUrl } from '@/lib/imageUtils';
 export default function ImageUpload({ label, value, onChange, multiple = false }) {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(value);
+
+  useEffect(() => {
+    if (!multiple) {
+      setPreview(value || '');
+    }
+  }, [value, multiple]);
 
   const handleFileChange = async (e) => {
     const files = Array.from(e.target.files);
