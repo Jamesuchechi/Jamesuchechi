@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { FiUpload, FiX } from 'react-icons/fi';
-import { isNetlifyBlobUrl } from '@/lib/imageUtils';
+import { isNetlifyBlobUrl, normalizeImageUrl } from '@/lib/imageUtils';
 
 export default function ImageUpload({ label, value, onChange, multiple = false }) {
   const [uploading, setUploading] = useState(false);
@@ -101,7 +101,7 @@ export default function ImageUpload({ label, value, onChange, multiple = false }
       {preview && !multiple && (
         <div className="relative inline-block">
           <Image
-            src={preview}
+            src={normalizeImageUrl(preview)}
             alt="Preview"
             width={200}
             height={200}
@@ -123,7 +123,7 @@ export default function ImageUpload({ label, value, onChange, multiple = false }
           {value.map((url, index) => (
             <div key={index} className="relative">
               <Image
-                src={url}
+                src={normalizeImageUrl(url)}
                 alt={`Preview ${index + 1}`}
                 width={150}
                 height={150}

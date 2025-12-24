@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { isNetlifyBlobUrl } from '@/lib/imageUtils';
+import { isNetlifyBlobUrl, normalizeImageUrl } from '@/lib/imageUtils';
 
 export default function About() {
   const [about, setAbout] = useState(null);
@@ -59,7 +59,7 @@ export default function About() {
           >
             {about.profileImage ? (
               <Image
-                src={about.profileImage}
+                src={normalizeImageUrl(about.profileImage)}
                 alt={about.name}
                 fill
                 className="object-cover"

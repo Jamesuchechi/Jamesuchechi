@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FiArrowLeft, FiExternalLink, FiGithub, FiCode } from 'react-icons/fi';
 import { notFound } from 'next/navigation';
-import { isNetlifyBlobUrl } from '@/lib/imageUtils';
+import { isNetlifyBlobUrl, normalizeImageUrl } from '@/lib/imageUtils';
 
 export default function ProjectDetails({ params }) {
   const [project, setProject] = useState(null);
@@ -106,7 +106,7 @@ export default function ProjectDetails({ params }) {
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-gray-700">
           {project.imageUrl ? (
             <Image
-              src={project.imageUrl}
+              src={normalizeImageUrl(project.imageUrl)}
               alt={project.title}
               fill
               className="object-cover"
@@ -216,7 +216,7 @@ export default function ProjectDetails({ params }) {
                         className="relative aspect-video rounded-xl overflow-hidden group cursor-pointer shadow-lg hover:shadow-2xl transition-shadow"
                       >
                         <Image
-                          src={imageUrl}
+                          src={normalizeImageUrl(imageUrl)}
                           alt={`${project.title} screenshot ${i + 1}`}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-300"

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiArrowUpRight, FiCode, FiEye, FiX } from 'react-icons/fi';
-import { isNetlifyBlobUrl } from '@/lib/imageUtils';
+import { isNetlifyBlobUrl, normalizeImageUrl } from '@/lib/imageUtils';
 
 export default function ProjectCard({ project, index, showDetailsHint = true }) {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -61,7 +61,7 @@ export default function ProjectCard({ project, index, showDetailsHint = true }) 
           <div className="w-full h-full bg-gradient-to-br from-gray-900 to-gray-700 rounded-2xl overflow-hidden relative group">
             {project.imageUrl ? (
               <Image
-                src={project.imageUrl}
+                src={normalizeImageUrl(project.imageUrl)}
                 alt={project.title}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"

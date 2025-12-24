@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import ImageUpload from './ImageUpload';
-import { isNetlifyBlobUrl } from '@/lib/imageUtils';
+import { isNetlifyBlobUrl, normalizeImageUrl } from '@/lib/imageUtils';
 
 export default function ProjectsTab() {
   const [loading, setLoading] = useState(true);
@@ -331,7 +331,7 @@ export default function ProjectsTab() {
               <div key={project.id} className="border rounded-lg p-4">
                 <div className="flex items-start gap-4">
                   <Image
-                    src={project.imageUrl}
+                    src={normalizeImageUrl(project.imageUrl)}
                     alt={project.title}
                     width={80}
                     height={80}
