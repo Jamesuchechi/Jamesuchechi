@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { isNetlifyBlobUrl } from '@/lib/imageUtils';
 
 export default function About() {
   const [about, setAbout] = useState(null);
@@ -62,6 +63,7 @@ export default function About() {
                 alt={about.name}
                 fill
                 className="object-cover"
+                unoptimized={isNetlifyBlobUrl(about.profileImage)}
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center text-black/10 text-9xl font-bold">

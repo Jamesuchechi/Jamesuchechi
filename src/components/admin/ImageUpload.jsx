@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { FiUpload, FiX } from 'react-icons/fi';
+import { isNetlifyBlobUrl } from '@/lib/imageUtils';
 
 export default function ImageUpload({ label, value, onChange, multiple = false }) {
   const [uploading, setUploading] = useState(false);
@@ -99,6 +100,7 @@ export default function ImageUpload({ label, value, onChange, multiple = false }
             width={200}
             height={200}
             className="rounded-lg object-cover"
+            unoptimized={isNetlifyBlobUrl(preview)}
           />
           <button
             onClick={() => removeImage()}
@@ -120,6 +122,7 @@ export default function ImageUpload({ label, value, onChange, multiple = false }
                 width={150}
                 height={150}
                 className="rounded-lg object-cover w-full h-32"
+                unoptimized={isNetlifyBlobUrl(url)}
               />
               <button
                 onClick={() => removeImage(index)}
