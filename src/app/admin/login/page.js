@@ -21,6 +21,9 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
+      if (!firebaseAuth) {
+        throw new Error('Firebase is not configured for this environment.');
+      }
       const credential = await signInWithEmailAndPassword(
         firebaseAuth,
         formData.email,

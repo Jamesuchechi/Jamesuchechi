@@ -17,8 +17,16 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || process.env.NEXT_PUBLIC_FIREBASE_APPID,
 };
 
-const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+const isBrowser = typeof window !== 'undefined';
+let app;
 
-export const firebaseAuth = getAuth(app);
-export const firebaseDb = getFirestore(app);
-export const firebaseStorage = getStorage(app);
+if (isBrowser) {
+  if (!getApps().length && firebaseConfig.apiKey) {
+    initializeApp(firebaseConfig);
+  }
+  app = getApps()[0];
+}
+
+export const firebaseAuth = app ? getAuth(app) : null;
+export const firebaseDb = app ? getFirestore(app) : null;
+export const firebaseStorage = app ? getStorage(app) : null;
