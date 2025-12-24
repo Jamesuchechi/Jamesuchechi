@@ -53,11 +53,32 @@ export default function Skills() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-16 text-center"
+          className="mb-20 text-center"
         >
-          <h2 className="text-5xl md:text-7xl font-bold mb-4">DEVELOPER</h2>
-          <h2 className="text-5xl md:text-7xl font-bold mb-4">DESIGNER</h2>
-          <h2 className="text-5xl md:text-7xl font-bold">CREATOR /</h2>
+          <h2 className="text-5xl md:text-7xl font-bold mb-3 text-white/80">
+            DEVELOPER
+          </h2>
+          <motion.h2
+            animate={{
+              textShadow: [
+                '0 0 10px rgba(255,255,255,0.15)',
+                '0 0 28px rgba(255,255,255,0.35)',
+                '0 0 12px rgba(255,255,255,0.2)',
+              ],
+            }}
+            transition={{
+              duration: 3.5,
+              repeat: Infinity,
+              repeatType: 'mirror',
+              ease: 'easeInOut',
+            }}
+            className="text-6xl md:text-8xl font-extrabold mb-3 text-white"
+          >
+            DESIGNER
+          </motion.h2>
+          <h2 className="text-5xl md:text-7xl font-bold text-white/80">
+            CREATOR /
+          </h2>
         </motion.div>
 
         {/* Skills */}
@@ -79,7 +100,7 @@ export default function Skills() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6 }}
-                  className="text-2xl font-bold mb-8"
+                  className="text-2xl font-bold mb-8 text-white/90 tracking-wide"
                 >
                   {category.title}
                 </motion.h3>
@@ -105,7 +126,7 @@ export default function Skills() {
                         {category.skills.map((skill, skillIndex) => (
                           <div
                             key={`${repeatIndex}-${skillIndex}`}
-                            className="text-4xl md:text-5xl font-bold text-white/10 hover:text-white/30 transition-colors"
+                            className="text-4xl md:text-5xl font-semibold text-white/40 hover:text-white/70 transition-colors"
                           >
                             # {skill}
                           </div>

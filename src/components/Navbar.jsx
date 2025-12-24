@@ -93,8 +93,16 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-6 sm:px-12">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="text-2xl font-bold text-white relative z-[60]">
-              JU
+            <Link
+              href="/"
+              className="flex items-center text-white relative z-[60]"
+            >
+              <span className="sr-only">James Uchechi</span>
+              <img
+                src="/next.svg"
+                alt="JU logo"
+                className="h-9 w-9"
+              />
             </Link>
 
             {/* Desktop Menu */}

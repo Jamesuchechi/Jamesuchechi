@@ -129,13 +129,13 @@ export default function ProjectDetails({ params }) {
               transition={{ duration: 0.5 }}
               className="mb-8"
             >
-              <Link 
-                href="/#works" 
+              <a
+                href="/#works"
                 className="inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors group"
               >
                 <FiArrowLeft className="group-hover:-translate-x-1 transition-transform" />
                 Back to Projects
-              </Link>
+              </a>
             </motion.div>
 
             {/* Project Info */}

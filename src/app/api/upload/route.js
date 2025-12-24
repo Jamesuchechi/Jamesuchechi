@@ -32,8 +32,12 @@ export async function POST(request) {
 
     if (useNetlifyBlobs) {
       const siteID = process.env.NETLIFY_BLOBS_SITE_ID || process.env.NETLIFY_SITE_ID;
-      const token = process.env.NETLIFY_BLOBS_TOKEN || process.env.NETLIFY_TOKEN;
-      if (!process.env.NETLIFY && (!siteID || !token)) {
+      const token =
+        process.env.NETLIFY_BLOBS_TOKEN ||
+        process.env.NETLIFY_AUTH_TOKEN ||
+        process.env.NETLIFY_TOKEN;
+      const isNetlifyRuntime = process.env.NETLIFY === 'true' || Boolean(siteID);
+      if (!isNetlifyRuntime && (!siteID || !token)) {
         return NextResponse.json(
           {
             error:

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="JU logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="JU icon">
   <defs>
     <linearGradient id="juGradient" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#f8fafc"/>
@@ -16,7 +16,7 @@
     d="M50 45 v80 q0 30 30 30 q30 0 30-30 v-80"
     fill="none"
     stroke="url(#juGradient)"
-    stroke-width="14"
+    stroke-width="18"
     stroke-linecap="round"
     stroke-linejoin="round"
   />
@@ -24,9 +24,9 @@
     d="M145 45 v75 q0 40-35 40 q-22 0-30-16"
     fill="none"
     stroke="url(#juGradient)"
-    stroke-width="14"
+    stroke-width="18"
     stroke-linecap="round"
     stroke-linejoin="round"
   />
-  <circle cx="152" cy="45" r="6" fill="url(#juGradient)"/>
+  <circle cx="152" cy="45" r="7" fill="url(#juGradient)"/>
 </svg>
