@@ -1,388 +1,210 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 
+/**
+ * Services — Editorial Typographic Poster Scroll
+ *
+ * Pattern: Each service = a sticky full-viewport poster.
+ * Scroll drives panel switching; no stacking, no cards.
+ *
+ * Transitions:
+ *   - Panel enters via clipPath wipe (bottom→top curtain)
+ *   - Panel exits via clipPath wipe (top→bottom drop)
+ *   - A saturated accent colour SLAMS in as a diagonal flash between panels
+ *
+ * Per-panel animations:
+ *   - Giant serif title: words slam in from alternating L/R
+ *   - Number counter: ink-bar floods behind it (scaleY spring)
+ *   - Bottom line draws left→right
+ *   - Description + tags stagger up
+ *
+ * Sidebar nav: pill dashes that expand + show first word of each service
+ * Track height: 80vh × N  →  zero dead space
+ */
 
-const CARD_COLORS = [
-  { bg: '#0a0a0a',  accent: '#ffffff',  sub: 'rgba(255,255,255,0.4)',  tag: 'rgba(255,255,255,0.07)' },
-  { bg: '#0d1f35',  accent: '#7eb8f7',  sub: 'rgba(126,184,247,0.45)', tag: 'rgba(126,184,247,0.08)' },
-  { bg: '#0e2318',  accent: '#6ee7b7',  sub: 'rgba(110,231,183,0.45)', tag: 'rgba(110,231,183,0.08)' },
-  { bg: '#1e0f2e',  accent: '#c4b5fd',  sub: 'rgba(196,181,253,0.45)', tag: 'rgba(196,181,253,0.08)' },
-  { bg: '#201500',  accent: '#fcd34d',  sub: 'rgba(252,211,77,0.45)',  tag: 'rgba(252,211,77,0.08)'  },
-  { bg: '#1a0010',  accent: '#f9a8d4',  sub: 'rgba(249,168,212,0.45)', tag: 'rgba(249,168,212,0.08)' },
-];
+const ACCENTS = ['#FF3B00','#00E5FF','#AAFF00','#FF0099','#FFD700','#7B61FF'];
+const CATEGORY_LABELS = ['Brand Identity','Digital Product','Creative Tech','Motion & 3D','Strategy','Deployment'];
 
-const STACK_SCALE_STEP   = 0.038;
-const STACK_Y_STEP       = 16;
-const STACK_OPACITY_STEP = 0.15;
-
-/* ─── Single stacked card ─────────────────────────────────────────────────── */
-function StackCard({ service, index, total, progress, railMode }) {
-  const seg      = 1 / total;
-  const segStart = index * seg;
-  const segEnd   = segStart + seg;
-
-  const cardProgress = useTransform(progress, [segStart, segEnd], [0, 1], { clamp: true });
-
-  const exitY       = useTransform(cardProgress, [0.55, 1], [0,  -80]);
-  const exitScale   = useTransform(cardProgress, [0.55, 1], [1, 0.86]);
-  const exitOpacity = useTransform(cardProgress, [0.55, 1], [1,  0  ]);
-
-  const y       = useSpring(exitY,       { stiffness: 130, damping: 24 });
-  const scale   = useSpring(exitScale,   { stiffness: 130, damping: 24 });
-  const opacity = useSpring(exitOpacity, { stiffness: 130, damping: 24 });
-
-  const stackDepth      = total - 1 - index;
-  const initialScale    = 1 - stackDepth * STACK_SCALE_STEP;
-  const initialY        = -stackDepth * STACK_Y_STEP;
-  const initialOpacity  = 1 - stackDepth * STACK_OPACITY_STEP;
-
-  const entryProgress = useTransform(
-    progress,
-    [Math.max(0, segStart - seg), segStart],
-    [0, 1],
-    { clamp: true }
-  );
-  const entryScale   = useTransform(entryProgress, [0,1], [initialScale, 1]);
-  const entryY       = useTransform(entryProgress, [0,1], [initialY,     0]);
-  const entryOpacity = useTransform(entryProgress, [0,1], [initialOpacity, 1]);
-
-  const sEntryScale   = useSpring(entryScale,   { stiffness: 110, damping: 22 });
-  const sEntryY       = useSpring(entryY,       { stiffness: 110, damping: 22 });
-  const sEntryOpacity = useSpring(entryOpacity, { stiffness: 110, damping: 22 });
-
-  const progressBarWidth = useTransform(cardProgress, [0, 1], ['0%', '100%']);
-
-  const color = CARD_COLORS[index % CARD_COLORS.length];
-
-  let features = [];
-  try { features = service.features ? (Array.isArray(service.features) ? service.features : JSON.parse(service.features)) : []; } catch (_) {}
-
-  const num = String(index + 1).padStart(2, '0');
-
-  if (railMode) return null; // rail renders its own cards
-
+/* ─── Alternating word slam ─────────────────────────────────────────────── */
+function SplitTitle({ title, isActive }) {
+  const words = title.split(' ');
   return (
-    <motion.div
-      style={{
-        position: 'absolute', inset: 0,
-        zIndex: index + 1,
-        scale: sEntryScale,
-        y: sEntryY,
-        opacity: sEntryOpacity,
-        originY: '50%',
-      }}
-    >
-      <motion.div style={{ width: '100%', height: '100%', scale, y, opacity, originY: '10%' }}>
-        <CardFace color={color} service={service} num={num} total={total} features={features} progressBarWidth={progressBarWidth} />
-      </motion.div>
-    </motion.div>
+    <div style={{ overflow: 'hidden', lineHeight: 0.9 }}>
+      {words.map((word, wi) => {
+        const fromLeft = wi % 2 === 0;
+        return (
+          <span key={wi} style={{ display: 'inline-block', marginRight: '0.2em', overflow: 'hidden' }}>
+            <motion.span
+              style={{ display: 'inline-block' }}
+              initial={{ x: fromLeft ? '-120%' : '120%', opacity: 0 }}
+              animate={isActive ? { x: 0, opacity: 1 } : { x: fromLeft ? '-120%' : '120%', opacity: 0 }}
+              transition={{ duration: 0.68, delay: wi * 0.075, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {word}
+            </motion.span>
+          </span>
+        );
+      })}
+    </div>
   );
 }
 
-/* ─── Shared card face (used in both phases) ─────────────────────────────── */
-function CardFace({ color, service, num, total, features, progressBarWidth, onClick, isActive }) {
+/* ─── One poster panel ──────────────────────────────────────────────────── */
+function PosterPanel({ service, index, total, isActive, accent }) {
+  let features = [];
+  try { features = service.features ? (Array.isArray(service.features) ? service.features : JSON.parse(service.features)) : []; } catch (_) {}
+  const num      = String(index + 1).padStart(2, '0');
+  const totalStr = String(total).padStart(2, '0');
+
   return (
-    <div
-      onClick={onClick}
-      style={{
-        width: '100%', height: '100%',
-        background: color.bg,
-        borderRadius: '18px',
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        padding: 'clamp(28px, 4vw, 52px)',
-        border: isActive
-          ? `1px solid ${color.accent}55`
-          : '0.5px solid rgba(255,255,255,0.06)',
-        position: 'relative',
-        cursor: onClick ? 'pointer' : 'default',
-        transition: 'border-color 0.3s',
-        boxSizing: 'border-box',
-      }}
-    >
-      {/* Grid texture */}
+    <div style={{
+      position: 'absolute', inset: 0,
+      display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+      padding: 'clamp(24px, 4vw, 56px)',
+    }}>
+
+      {/* ── TOP BAR ── */}
       <div style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none',
-        backgroundImage: 'radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px)',
-        backgroundSize: '28px 28px',
-        borderRadius: '18px',
-      }}/>
-
-      {/* Glow blob */}
-      <div style={{
-        position: 'absolute',
-        top: '-60px', right: '-60px',
-        width: '280px', height: '280px',
-        borderRadius: '50%',
-        background: `radial-gradient(circle, ${color.accent}18 0%, transparent 70%)`,
-        pointerEvents: 'none',
-      }}/>
-
-      {/* Top row */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', position: 'relative' }}>
-        <span style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', color: color.sub, textTransform: 'uppercase', fontFamily: 'monospace' }}>
-          ({num})
-        </span>
-        {total && (
-          <span style={{ fontSize: '11px', letterSpacing: '0.1em', color: color.sub, textTransform: 'uppercase', fontFamily: 'monospace' }}>
-            {num} / {String(total).padStart(2,'0')}
-          </span>
-        )}
-      </div>
-
-      {/* Title + description */}
-      <div style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '24px 0 16px' }}>
-        <h3 style={{
-          fontSize: 'clamp(26px, 3.8vw, 56px)',
-          fontWeight: 600,
-          color: color.accent,
-          lineHeight: 1.08,
-          letterSpacing: '-0.025em',
-          marginBottom: '18px',
-          fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-        }}>
-          {service.title}
-        </h3>
-        <p style={{
-          fontSize: 'clamp(13px, 1.5vw, 16px)',
-          lineHeight: 1.75,
-          color: 'rgba(255,255,255,0.5)',
-          maxWidth: '520px',
-        }}>
-          {service.description}
-        </p>
-      </div>
-
-      {/* Feature tags */}
-      {features.length > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '7px', position: 'relative', marginBottom: '20px' }}>
-          {features.slice(0, 5).map((f, i) => (
-            <span key={i} style={{
-              fontSize: '11px',
-              padding: '4px 13px',
-              borderRadius: '20px',
-              border: `0.5px solid ${color.accent}35`,
-              color: color.sub,
-              letterSpacing: '0.04em',
-              background: color.tag,
-            }}>
-              {f}
-            </span>
-          ))}
-          {features.length > 5 && (
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '16px',
+      }}>
+        {/* Number with ink slab */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ position: 'relative', display: 'inline-block' }}>
+            <motion.div
+              initial={{ scaleY: 0 }} animate={isActive ? { scaleY: 1 } : { scaleY: 0 }}
+              transition={{ duration: 0.48, delay: 0.12, ease: [0.76, 0, 0.24, 1] }}
+              style={{
+                position: 'absolute', inset: '-3px -8px',
+                background: accent, transformOrigin: 'bottom', borderRadius: '2px',
+              }}
+            />
             <span style={{
-              fontSize: '11px', padding: '4px 13px', borderRadius: '20px',
-              border: '0.5px solid rgba(255,255,255,0.08)',
-              color: 'rgba(255,255,255,0.25)',
-            }}>+{features.length - 5}</span>
+              position: 'relative', zIndex: 1,
+              fontFamily: '"Courier New", monospace', fontSize: 'clamp(11px, 1vw, 13px)',
+              fontWeight: 700, color: '#000', letterSpacing: '0.08em',
+            }}>{num}</span>
+          </div>
+          <span style={{ fontFamily: '"Courier New", monospace', fontSize: '12px', color: 'rgba(255,255,255,0.22)', letterSpacing: '0.1em' }}>
+            / {totalStr}
+          </span>
+        </div>
+
+        {/* Category */}
+        <motion.span
+          initial={{ opacity: 0, y: -10 }} animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+          style={{
+            fontFamily: '"Courier New", monospace', fontSize: 'clamp(10px, 1vw, 12px)',
+            color: accent, letterSpacing: '0.2em', textTransform: 'uppercase',
+          }}
+        >
+          {CATEGORY_LABELS[index % CATEGORY_LABELS.length]}
+        </motion.span>
+      </div>
+
+      {/* ── GIANT TITLE ── */}
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', overflow: 'hidden', padding: '16px 0' }}>
+        <div style={{
+          fontFamily: '"Georgia", "Times New Roman", Times, serif',
+          fontSize: 'clamp(54px, 10vw, 148px)',
+          fontWeight: 900,
+          color: '#ffffff',
+          lineHeight: 0.88,
+          letterSpacing: '-0.03em',
+          textTransform: 'uppercase',
+          width: '100%',
+        }}>
+          <SplitTitle title={service.title} isActive={isActive} />
+        </div>
+      </div>
+
+      {/* ── BOTTOM ── */}
+      <div>
+        {/* Draw line */}
+        <motion.div
+          initial={{ scaleX: 0 }} animate={isActive ? { scaleX: 1 } : { scaleX: 0 }}
+          transition={{ duration: 0.75, delay: 0.38, ease: [0.76, 0, 0.24, 1] }}
+          style={{
+            height: '1px', background: `linear-gradient(90deg, ${accent} 0%, rgba(255,255,255,0.1) 100%)`,
+            transformOrigin: 'left', marginBottom: '22px',
+          }}
+        />
+
+        <div style={{ display: 'flex', gap: 'clamp(20px, 4vw, 60px)', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+          {/* Description */}
+          <motion.p
+            initial={{ opacity: 0, y: 22 }} animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 22 }}
+            transition={{ duration: 0.52, delay: 0.48 }}
+            style={{
+              fontFamily: '"Georgia", Times, serif',
+              fontSize: 'clamp(13px, 1.4vw, 17px)', lineHeight: 1.72,
+              color: 'rgba(255,255,255,0.46)', maxWidth: '460px', flex: '1 1 260px',
+              margin: 0,
+            }}
+          >
+            {service.description}
+          </motion.p>
+
+          {/* Tags */}
+          {features.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '7px', flex: '1 1 180px', alignContent: 'flex-start' }}>
+              {features.map((f, fi) => (
+                <motion.span
+                  key={fi}
+                  initial={{ opacity: 0, y: 16, scale: 0.88 }}
+                  animate={isActive ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 16, scale: 0.88 }}
+                  transition={{ duration: 0.38, delay: 0.52 + fi * 0.065, ease: [0.34, 1.56, 0.64, 1] }}
+                  style={{
+                    fontFamily: '"Courier New", monospace', fontSize: '10px',
+                    padding: '4px 13px', border: `1px solid ${accent}50`,
+                    color: accent, letterSpacing: '0.12em', textTransform: 'uppercase',
+                    background: `${accent}0e`, borderRadius: '2px',
+                  }}
+                >
+                  {f}
+                </motion.span>
+              ))}
+            </div>
           )}
         </div>
-      )}
-
-      {/* Progress bar */}
-      <div style={{ height: '1.5px', background: 'rgba(255,255,255,0.07)', borderRadius: '1px', position: 'relative' }}>
-        {progressBarWidth ? (
-          <motion.div style={{
-            position: 'absolute', left: 0, top: 0, height: '100%',
-            borderRadius: '1px', background: color.accent,
-            width: progressBarWidth,
-          }}/>
-        ) : (
-          <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: '100%', borderRadius: '1px', background: color.accent }}/>
-        )}
       </div>
     </div>
   );
 }
 
-/* ─── Horizontal Rail ────────────────────────────────────────────────────── */
-function HorizontalRail({ services, onBack }) {
-  const railRef  = useRef(null);
-  const [active, setActive] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const startX = useRef(0);
-  const scrollLeft = useRef(0);
-
-  const scrollTo = (i) => {
-    const rail = railRef.current;
-    if (!rail) return;
-    const card = rail.children[i];
-    if (!card) return;
-    rail.scrollTo({ left: card.offsetLeft - (rail.clientWidth - card.clientWidth) / 2, behavior: 'smooth' });
-    setActive(i);
-  };
-
-  // Wheel → horizontal
-  useEffect(() => {
-    const rail = railRef.current;
-    if (!rail) return;
-    const onWheel = (e) => {
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; // already horizontal
-      e.preventDefault();
-      rail.scrollLeft += e.deltaY * 1.2;
-    };
-    rail.addEventListener('wheel', onWheel, { passive: false });
-    return () => rail.removeEventListener('wheel', onWheel);
-  }, []);
-
-  const onMouseDown = (e) => {
-    setIsDragging(true);
-    startX.current = e.pageX - railRef.current.offsetLeft;
-    scrollLeft.current = railRef.current.scrollLeft;
-  };
-  const onMouseMove = (e) => {
-    if (!isDragging) return;
-    const x = e.pageX - railRef.current.offsetLeft;
-    railRef.current.scrollLeft = scrollLeft.current - (x - startX.current) * 1.4;
-  };
-  const onMouseUp = () => setIsDragging(false);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 20 }}
-      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative' }}
-    >
-      {/* Back pill */}
-      <button
-        onClick={onBack}
-        style={{
-          position: 'absolute', top: '24px', left: 'clamp(20px,4vw,60px)',
-          background: 'rgba(255,255,255,0.06)', border: '0.5px solid rgba(255,255,255,0.14)',
-          color: 'rgba(255,255,255,0.6)', fontSize: '12px', letterSpacing: '0.1em',
-          textTransform: 'uppercase', padding: '8px 18px', borderRadius: '20px', cursor: 'pointer',
-          backdropFilter: 'blur(10px)',
-        }}
-      >
-        ← Stack view
-      </button>
-
-      {/* Label */}
-      <div style={{ padding: '0 clamp(20px,4vw,60px)', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-        <span style={{ fontSize: '11px', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>
-          Drag or scroll →
-        </span>
-        <span style={{ fontSize: '11px', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.25)', fontFamily: 'monospace' }}>
-          {String(active + 1).padStart(2,'0')} / {String(services.length).padStart(2,'0')}
-        </span>
-      </div>
-
-      {/* Rail */}
-      <div
-        ref={railRef}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseUp={onMouseUp}
-        onMouseLeave={onMouseUp}
-        style={{
-          display: 'flex',
-          gap: '16px',
-          overflowX: 'auto',
-          overflowY: 'hidden',
-          scrollSnapType: 'x mandatory',
-          padding: '0 clamp(20px,4vw,60px)',
-          cursor: isDragging ? 'grabbing' : 'grab',
-          scrollbarWidth: 'none',
-          WebkitOverflowScrolling: 'touch',
-          userSelect: 'none',
-        }}
-      >
-        <style>{`div::-webkit-scrollbar{display:none}`}</style>
-        {services.map((service, i) => {
-          const color = CARD_COLORS[i % CARD_COLORS.length];
-          let features = [];
-          try { features = service.features ? (Array.isArray(service.features) ? service.features : JSON.parse(service.features)) : []; } catch(_) {}
-          const num = String(i + 1).padStart(2, '0');
-          return (
-            <motion.div
-              key={service.id}
-              onClick={() => scrollTo(i)}
-              whileHover={{ scale: active === i ? 1 : 1.01 }}
-              style={{
-                flexShrink: 0,
-                width: 'clamp(320px, 46vw, 620px)',
-                height: 'clamp(380px, 55vh, 540px)',
-                scrollSnapAlign: 'center',
-                opacity: active === i ? 1 : 0.55,
-                transition: 'opacity 0.4s',
-              }}
-            >
-              <CardFace
-                color={color}
-                service={service}
-                num={num}
-                total={null}
-                features={features}
-                progressBarWidth={null}
-                isActive={active === i}
-              />
-            </motion.div>
-          );
-        })}
-      </div>
-
-      {/* Dot nav */}
-      <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '28px' }}>
-        {services.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => scrollTo(i)}
-            style={{
-              width: active === i ? '24px' : '6px',
-              height: '6px',
-              borderRadius: '3px',
-              background: active === i ? '#ffffff' : 'rgba(255,255,255,0.2)',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-              transition: 'all 0.35s cubic-bezier(0.34,1.56,0.64,1)',
-            }}
-          />
-        ))}
-      </div>
-    </motion.div>
-  );
-}
-
-/* ─── Progress dot for stack phase ──────────────────────────────────────── */
-function ProgressDot({ i, total, progress }) {
-  const seg = 1 / total;
-  const bg  = useTransform(
-    progress,
-    [i * seg, i * seg + 0.01, (i+1) * seg - 0.01, (i+1) * seg],
-    ['rgba(255,255,255,0.18)', 'rgba(255,255,255,0.95)', 'rgba(255,255,255,0.95)', 'rgba(255,255,255,0.18)']
-  );
-  return <motion.div style={{ width: '5px', height: '5px', borderRadius: '50%', background: bg }} />;
-}
-
-/* ─── Main export ────────────────────────────────────────────────────────── */
+/* ─── Main ──────────────────────────────────────────────────────────────── */
 export default function Services() {
-  const [services,  setServices]  = useState([]);
-  const [loading,   setLoading]   = useState(true);
-  const [railMode,  setRailMode]  = useState(false);
-
-  const trackRef = useRef(null);
+  const [services, setServices] = useState([]);
+  const [loading,  setLoading]  = useState(true);
+  const [active,   setActive]   = useState(0);
+  const [flash,    setFlash]    = useState(null); // accent colour for diagonal flash
+  const prevActive = useRef(0);
+  const trackRef   = useRef(null);
 
   const { scrollYProgress } = useScroll({
     target: trackRef,
     offset: ['start start', 'end end'],
   });
 
-  const scrollIndicatorOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
-  const browseAllOpacity = useTransform(scrollYProgress, [0.8, 0.95], [0, 1]);
-
-  // Switch to rail when stack phase is fully scrolled
+  // Drive active panel + fire flash
   useEffect(() => {
     const unsub = scrollYProgress.on('change', (v) => {
-      if (v >= 0.98 && !railMode) setRailMode(true);
+      if (!services || services.length === 0) return;
+      
+      const seg = 1 / services.length;
+      const idx = Math.max(0, Math.min(services.length - 1, Math.floor(v / seg)));
+      
+      if (idx !== prevActive.current) {
+        setFlash(ACCENTS[idx % ACCENTS.length]);
+        setTimeout(() => setFlash(null), 380);
+        prevActive.current = idx;
+        setActive(idx);
+      }
     });
     return unsub;
-  }, [scrollYProgress, railMode]);
+  }, [scrollYProgress, services.length]);
 
   useEffect(() => {
     fetch('/api/services')
@@ -392,170 +214,190 @@ export default function Services() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Stack phase: 60vh per card (tighter than before), + 0.5 linger
-  const trackHeight = services.length > 0
-    ? `${(services.length * 60 + 50)}vh`
-    : '100vh';
+  const scrollIndicatorOpacity = useTransform(scrollYProgress, [0, 0.05], [1, 0]);
+  const trackHeight = services.length > 0 ? `${(services.length + 1) * 100}vh` : '100vh';
 
-  const handleBack = () => {
-    setRailMode(false);
-    // Scroll back to top of this section
-    const el = document.getElementById('services');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  const jumpTo = (i) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const seg = 1 / services.length;
+    const ratio = i * seg + seg * 0.05;
+    const top = el.getBoundingClientRect().top + window.scrollY;
+    const trackH = el.offsetHeight - window.innerHeight;
+    window.scrollTo({ top: top + trackH * ratio, behavior: 'smooth' });
   };
 
   return (
-    <section id="services" style={{ background: '#000000', position: 'relative' }}>
+    <section style={{ background: '#080808', position: 'relative' }}>
 
-      {/* Section header */}
+      {/* Section header — thin label row */}
       <div style={{
-        padding: 'clamp(60px, 7vw, 100px) clamp(24px, 5vw, 72px) 0',
-        maxWidth: '1280px', margin: '0 auto',
+        padding: 'clamp(32px, 4vw, 48px) clamp(28px, 5vw, 72px) 0',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
       }}>
-        <motion.div
-          initial={{ opacity: 0, y: 28 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.75 }}
+        <motion.p
+          initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.6 }}
+          style={{
+            fontFamily: '"Courier New", monospace', fontSize: 'clamp(10px, 1vw, 12px)',
+            letterSpacing: '0.22em', textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.28)', margin: '0 0 18px',
+          }}
         >
-          <h2 style={{
-            fontSize: 'clamp(44px, 7.5vw, 96px)',
-            fontWeight: 600,
-            color: '#ffffff',
-            letterSpacing: '-0.035em',
-            lineHeight: 0.95,
-            marginBottom: '14px',
-            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-          }}>
-            What I Do /
-          </h2>
-          <p style={{ fontSize: 'clamp(13px, 1.4vw, 16px)', color: 'rgba(255,255,255,0.35)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-            (Services)
-          </p>
-        </motion.div>
+          Services
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+          viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }}
+          style={{
+            fontFamily: '"Courier New", monospace', fontSize: '11px',
+            color: 'rgba(255,255,255,0.15)', margin: '0 0 18px', letterSpacing: '0.08em',
+          }}
+        >
+          {services.length > 0 ? `${String(services.length).padStart(2,'0')} offerings` : ''}
+        </motion.p>
       </div>
 
-      {/* ── Rail mode overlay ── */}
-      <AnimatePresence>
-        {railMode && (
-          <motion.div
-            key="rail"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              zIndex: 100,
-              background: '#000000',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <HorizontalRail services={services} onBack={handleBack} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ── Stack scroll track ── */}
-      <div
-        ref={trackRef}
-        style={{ height: trackHeight, position: 'relative', marginTop: '36px' }}
-      >
+      {/* Scroll track */}
+      <div ref={trackRef} style={{ height: trackHeight, position: 'relative' }}>
         {loading ? (
-          <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{
-              width: '36px', height: '36px', borderRadius: '50%',
-              border: '2px solid rgba(255,255,255,0.08)',
-              borderTopColor: '#fff',
-              animation: 'spin 0.8s linear infinite',
-            }}/>
-            <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+          <div style={{ height: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+              style={{ width: '26px', height: '26px', border: '1.5px solid rgba(255,255,255,0.07)', borderTopColor: '#fff', borderRadius: '50%' }}
+            />
           </div>
         ) : services.length === 0 ? (
-          <div style={{ minHeight: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: '16px' }}>No services yet.</p>
+          <div style={{ height: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <p style={{ color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', fontSize: '13px' }}>No services yet.</p>
           </div>
         ) : (
-          <div style={{
-            position: 'sticky', top: 0,
-            height: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 'clamp(14px, 2.5vw, 36px)',
-          }}>
-            {/* Card stack */}
+          <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}>
+
+            {/* Grain texture */}
             <div style={{
-              position: 'relative',
-              width: '100%',
-              maxWidth: '920px',
-              /* Taller cards */
-              height: 'clamp(460px, 70vh, 640px)',
-            }}>
-              {services.map((service, i) => (
-                <StackCard
-                  key={service.id}
-                  service={service}
-                  index={i}
-                  total={services.length}
-                  progress={scrollYProgress}
-                  railMode={railMode}
-                />
-              ))}
-            </div>
+              position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E")`,
+              backgroundSize: '160px', opacity: 0.6,
+            }}/>
 
-            {/* "Browse all" hint that appears near the end */}
-            <motion.div
-              style={{
-                position: 'absolute',
-                bottom: '36px',
-                left: '50%',
-                x: '-50%',
-                opacity: browseAllOpacity,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '8px',
-              }}
-            >
-              <span style={{ fontSize: '11px', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase' }}>
-                Keep scrolling → browse all
-              </span>
-            </motion.div>
-
-            {/* Scroll arrow — early */}
-            <motion.div
-              style={{
-                position: 'absolute', bottom: '28px', left: '50%',
-                x: '-50%', opacity: scrollIndicatorOpacity,
-                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px',
-              }}
-            >
-              <span style={{ fontSize: '11px', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.28)', textTransform: 'uppercase' }}>scroll</span>
+            {/* Ambient glow — changes per panel */}
+            <AnimatePresence mode="wait">
               <motion.div
-                animate={{ y: [0, 7, 0] }}
-                transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
-                style={{ width: '1px', height: '26px', background: 'rgba(255,255,255,0.18)' }}
+                key={`glow-${active}`}
+                initial={{ opacity: 0, scale: 0.6 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.5 }}
+                transition={{ duration: 0.7 }}
+                style={{
+                  position: 'absolute', top: '-140px', left: '-100px',
+                  width: '500px', height: '500px', borderRadius: '50%',
+                  background: `radial-gradient(circle, ${ACCENTS[active % ACCENTS.length]}1a 0%, transparent 68%)`,
+                  pointerEvents: 'none', zIndex: 1,
+                }}
               />
-            </motion.div>
+            </AnimatePresence>
 
-            {/* Progress dots — right edge */}
+            {/* Panel frames */}
+            {services.map((service, i) => (
+              <AnimatePresence key={service.id} mode="wait">
+                {active === i && (
+                  <motion.div
+                    key={`poster-${i}`}
+                    initial={{ clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)' }}
+                    animate={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' }}
+                    exit={{ clipPath: 'polygon(0 100%, 100% 100%, 100% 100%, 0 100%)' }}
+                    transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
+                    style={{ position: 'absolute', inset: 0, background: '#080808', zIndex: 10 }}
+                  >
+                    <PosterPanel
+                      service={service} index={i} total={services.length}
+                      isActive={true} accent={ACCENTS[i % ACCENTS.length]}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            ))}
+
+            {/* Diagonal flash between panels */}
+            <AnimatePresence>
+              {flash && (
+                <motion.div
+                  key={flash + Date.now()}
+                  initial={{ clipPath: 'polygon(0 0, 0 0, 15% 100%, 0 100%)', opacity: 1 }}
+                  animate={{ clipPath: 'polygon(0 0, 115% 0, 100% 100%, 0 100%)', opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.28, ease: [0.76, 0, 0.24, 1] }}
+                  style={{
+                    position: 'absolute', inset: 0,
+                    background: flash,
+                    zIndex: 40, pointerEvents: 'none',
+                  }}
+                />
+              )}
+            </AnimatePresence>
+
+            {/* ── Right nav ── */}
             <div style={{
-              position: 'absolute', right: 'clamp(14px, 2.5vw, 28px)', top: '50%',
-              transform: 'translateY(-50%)',
-              display: 'flex', flexDirection: 'column', gap: '10px',
+              position: 'absolute', right: 'clamp(14px, 2.5vw, 32px)',
+              top: '50%', transform: 'translateY(-50%)',
+              display: 'flex', flexDirection: 'column', gap: '8px',
+              zIndex: 30, alignItems: 'flex-end',
             }}>
-              {services.map((_, i) => (
-                <ProgressDot key={i} i={i} total={services.length} progress={scrollYProgress} />
+              {services.map((s, i) => (
+                <button
+                  key={i} onClick={() => jumpTo(i)}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', padding: '2px 0' }}
+                >
+                  <motion.span
+                    animate={{ opacity: active === i ? 1 : 0, maxWidth: active === i ? '110px' : '0px' }}
+                    transition={{ duration: 0.35 }}
+                    style={{
+                      fontFamily: '"Courier New", monospace', fontSize: '9px',
+                      color: ACCENTS[i % ACCENTS.length], letterSpacing: '0.14em',
+                      textTransform: 'uppercase', whiteSpace: 'nowrap', overflow: 'hidden',
+                    }}
+                  >
+                    {s.title.split(' ')[0]}
+                  </motion.span>
+                  <motion.div
+                    animate={{
+                      width: active === i ? '26px' : '5px',
+                      background: active === i ? ACCENTS[i % ACCENTS.length] : 'rgba(255,255,255,0.18)',
+                    }}
+                    transition={{ duration: 0.32, ease: [0.34, 1.56, 0.64, 1] }}
+                    style={{ height: '2px', borderRadius: '1px', flexShrink: 0 }}
+                  />
+                </button>
               ))}
             </div>
+
+            {/* Scroll cue */}
+            <motion.div
+              style={{
+                position: 'absolute', bottom: '28px', left: 'clamp(28px, 5vw, 72px)',
+                opacity: scrollIndicatorOpacity,
+                display: 'flex', alignItems: 'center', gap: '12px', zIndex: 20,
+              }}
+            >
+              <motion.div
+                animate={{ x: [0, 12, 0] }}
+                transition={{ repeat: Infinity, duration: 1.7, ease: 'easeInOut' }}
+                style={{ width: '28px', height: '1px', background: 'rgba(255,255,255,0.18)' }}
+              />
+              <span style={{
+                fontFamily: '"Courier New", monospace', fontSize: '9px',
+                letterSpacing: '0.2em', color: 'rgba(255,255,255,0.22)', textTransform: 'uppercase',
+              }}>scroll</span>
+            </motion.div>
+
           </div>
         )}
       </div>
 
-      {/* Tight bottom buffer — no more giant empty space */}
-      <div style={{ height: '32px', background: '#000000' }} />
+      <div style={{ height: '1px', background: 'rgba(255,255,255,0.05)' }} />
     </section>
   );
 }
