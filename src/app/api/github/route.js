@@ -1,118 +1,166 @@
 import { NextResponse } from 'next/server';
 
 const GITHUB_USERNAME = 'jamesuchechi';
-const GITHUB_API      = 'https://api.github.com';
+const GITHUB_GRAPHQL  = 'https://api.github.com/graphql';
 
 // Vercel edge cache — revalidate every hour
 export const revalidate = 3600;
 
-function authHeaders() {
-  const token = process.env.GITHUB_TOKEN;
-  return {
-    Accept: 'application/vnd.github+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-    'User-Agent': 'portfolio-app',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-}
-
-async function safeFetch(url) {
-  try {
-    const res = await fetch(url, { headers: authHeaders(), next: { revalidate: 3600 } });
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
-    return null;
+const GITHUB_QUERY = `
+  query($username: String!) {
+    user(login: $username) {
+      name
+      bio
+      avatarUrl
+      location
+      followers {
+        totalCount
+      }
+      following {
+        totalCount
+      }
+      repositories(first: 100, orderBy: {field: STARGAZERS, direction: DESC}, ownerAffiliations: OWNER, isFork: false) {
+        totalCount
+        nodes {
+          id
+          name
+          description
+          url: url
+          stargazers {
+            totalCount
+          }
+          forkCount
+          primaryLanguage {
+            name
+            color
+          }
+          updatedAt
+          repositoryTopics(first: 3) {
+            nodes {
+              topic {
+                name
+              }
+            }
+          }
+        }
+      }
+      contributionsCollection {
+        contributionCalendar {
+          totalContributions
+          weeks {
+            contributionDays {
+              contributionCount
+              date
+              color
+            }
+          }
+        }
+      }
+    }
   }
-}
+`;
 
 export async function GET() {
+  const token = process.env.GITHUB_TOKEN;
+  
+  if (!token) {
+    return NextResponse.json(
+      { error: 'GITHUB_TOKEN not found in environment' },
+      { status: 500 }
+    );
+  }
+
   try {
-    const username = GITHUB_USERNAME;
+    const response = await fetch(GITHUB_GRAPHQL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        query: GITHUB_QUERY,
+        variables: { username: GITHUB_USERNAME },
+      }),
+      next: { revalidate: 3600 },
+    });
 
-    // Fetch in parallel — fail gracefully per item
-    const [user, reposRaw, eventsRaw] = await Promise.all([
-      safeFetch(`${GITHUB_API}/users/${username}`),
-      safeFetch(`${GITHUB_API}/users/${username}/repos?sort=updated&per_page=100&type=owner`),
-      safeFetch(`${GITHUB_API}/users/${username}/events/public?per_page=100`),
-    ]);
+    if (!response.ok) {
+      throw new Error(`GitHub API responded with ${response.status}`);
+    }
 
-    // ── User stats ──────────────────────────────────────────
+    const { data, errors } = await response.json();
+
+    if (errors) {
+      console.error('GraphQL Errors:', errors);
+      throw new Error('GraphQL query failed');
+    }
+
+    const user = data.user;
+
+    // ── Pre-process stats ───────────────────────────────────
     const stats = {
-      followers:    user?.followers    ?? 0,
-      following:    user?.following    ?? 0,
-      publicRepos:  user?.public_repos ?? 0,
-      avatarUrl:    user?.avatar_url   ?? null,
-      bio:          user?.bio          ?? null,
-      location:     user?.location     ?? null,
+      followers:    user.followers.totalCount,
+      following:    user.following.totalCount,
+      publicRepos:  user.repositories.totalCount,
+      avatarUrl:    user.avatarUrl,
+      bio:          user.bio,
+      location:     user.location,
     };
 
-    // ── Repos: sort by stars, pick top 6 ───────────────────
-    const repos = Array.isArray(reposRaw) ? reposRaw : [];
-    const topRepos = repos
-      .filter(r => !r.fork)
-      .sort((a, b) => (b.stargazers_count + b.watchers_count) - (a.stargazers_count + a.watchers_count))
-      .slice(0, 6)
-      .map(r => ({
-        id:          r.id,
-        name:        r.name,
-        description: r.description ?? null,
-        url:         r.html_url,
-        stars:       r.stargazers_count,
-        forks:       r.forks_count,
-        language:    r.language ?? null,
-        updatedAt:   r.updated_at,
-        topics:      r.topics?.slice(0, 3) ?? [],
-      }));
+    // ── Repos ───────────────────────────────────────────────
+    const topRepos = user.repositories.nodes.slice(0, 6).map(r => ({
+      id:          r.id,
+      name:        r.name,
+      description: r.description,
+      url:         r.url,
+      stars:       r.stargazers.totalCount,
+      forks:       r.forkCount,
+      language:    r.primaryLanguage?.name || null,
+      updatedAt:   r.updatedAt,
+      topics:      r.repositoryTopics.nodes.map(n => n.topic.name),
+    }));
 
-    // ── Total stars ─────────────────────────────────────────
-    const totalStars = repos.reduce((sum, r) => sum + (r.stargazers_count ?? 0), 0);
+    const totalStars = user.repositories.nodes.reduce(
+      (sum, r) => sum + r.stargazers.totalCount, 
+      0
+    );
 
-    // ── Top languages ───────────────────────────────────────
+    // ── Languages ──────────────────────────────────────────
     const langCount = {};
-    repos.forEach(r => {
-      if (r.language) langCount[r.language] = (langCount[r.language] ?? 0) + 1;
+    user.repositories.nodes.forEach(r => {
+      if (r.primaryLanguage?.name) {
+        langCount[r.primaryLanguage.name] = (langCount[r.primaryLanguage.name] ?? 0) + 1;
+      }
     });
     const topLanguages = Object.entries(langCount)
       .sort(([, a], [, b]) => b - a)
       .slice(0, 5)
       .map(([lang]) => lang);
 
-    // ── Contribution activity — last 52 weeks grid ─────────
-    // We approximate from public push events (GitHub's contrib graph
-    // requires GraphQL + auth). This gives a lightweight activity map.
-    const events = Array.isArray(eventsRaw) ? eventsRaw : [];
-    const pushEvents = events.filter(e => e.type === 'PushEvent');
+    // ── Contribution Calendar ──────────────────────────────
+    const calendar = user.contributionsCollection.contributionCalendar;
+    
+    // Convert weeks/days into the grid structure the frontend expects
+    // But now with accurate color and count directly from GitHub
+    const grid = calendar.weeks.map(week => 
+      week.contributionDays.map(day => ({
+        count: day.contributionCount,
+        color: day.color,
+        date:  day.date,
+      }))
+    );
 
-    // Build a 52-week × 7-day grid (most recent week = index 0)
-    const now        = Date.now();
-    const WEEK_MS    = 7 * 24 * 60 * 60 * 1000;
-    const DAY_MS     = 24 * 60 * 60 * 1000;
-    const gridWeeks  = 26; // show 26 weeks (6 months)
-    const grid       = Array.from({ length: gridWeeks }, () => Array(7).fill(0));
-
-    pushEvents.forEach(ev => {
-      const age    = now - new Date(ev.created_at).getTime();
-      const week   = Math.floor(age / WEEK_MS);
-      const dayOfW = new Date(ev.created_at).getDay(); // 0=Sun
-      if (week >= 0 && week < gridWeeks) {
-        grid[week][dayOfW] += ev.payload?.commits?.length ?? 1;
-      }
-    });
-
-    // Recent commit count (last 30 days)
-    const recentCommits = pushEvents
-      .filter(e => Date.now() - new Date(e.created_at).getTime() < 30 * DAY_MS)
-      .reduce((sum, e) => sum + (e.payload?.commits?.length ?? 1), 0);
+    // Total for the year
+    const totalContributions = calendar.totalContributions;
 
     return NextResponse.json({
-      username,
+      username: GITHUB_USERNAME,
       stats,
       topRepos,
       totalStars,
       topLanguages,
       contributionGrid: grid,
-      recentCommits,
+      totalContributions,
     });
   } catch (error) {
     console.error('GET /api/github error:', error);

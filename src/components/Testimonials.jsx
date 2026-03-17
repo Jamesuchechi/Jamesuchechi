@@ -32,46 +32,53 @@ function TestimonialCard({ t }) {
   return (
     <div style={{
       flexShrink: 0,
-      width: 'clamp(280px, 35vw, 360px)',
+      width: 'clamp(300px, 40vw, 400px)',
       background: '#fff',
-      border: '0.5px solid rgba(0,0,0,0.08)',
-      borderRadius: '16px',
-      padding: '24px',
-      marginRight: '16px',
+      border: '1px solid rgba(0,0,0,0.05)',
+      borderRadius: '24px',
+      padding: '32px',
+      marginRight: '20px',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      boxShadow: '0 4px 20px -10px rgba(0,0,0,0.05)',
     }}>
-      <StarRating rating={t.rating} />
+      <div>
+        <StarRating rating={t.rating} />
 
-      <p style={{
-        fontSize: '14px',
-        lineHeight: 1.75,
-        color: '#1a1a1a',
-        marginBottom: '20px',
-        fontStyle: 'italic',
-      }}>
-        &ldquo;{t.quote}&rdquo;
-      </p>
+        <p style={{
+          fontSize: '15px',
+          lineHeight: 1.8,
+          color: '#1a1a1a',
+          marginBottom: '24px',
+          fontStyle: 'italic',
+          fontWeight: 400,
+        }}>
+          &ldquo;{t.quote}&rdquo;
+        </p>
+      </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
         {t.avatarUrl ? (
           <img
             src={t.avatarUrl}
             alt={t.name}
-            style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
+            style={{ width: '44px', height: '44px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
             onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex'; }}
           />
         ) : null}
         <div style={{
-          width: '40px', height: '40px', borderRadius: '50%',
+          width: '44px', height: '44px', borderRadius: '50%',
           background: '#000', color: '#fff',
           display: t.avatarUrl ? 'none' : 'flex',
           alignItems: 'center', justifyContent: 'center',
-          fontSize: '13px', fontWeight: 500, flexShrink: 0,
+          fontSize: '14px', fontWeight: 600, flexShrink: 0,
         }}>
           {initials}
         </div>
         <div>
-          <div style={{ fontWeight: 500, fontSize: '13px', color: '#000' }}>{t.name}</div>
-          <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.45)', marginTop: '1px' }}>
+          <div style={{ fontWeight: 600, fontSize: '14px', color: '#000' }}>{t.name}</div>
+          <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.4)', marginTop: '2px', fontWeight: 500 }}>
             {t.role}{t.company ? ` · ${t.company}` : ''}
           </div>
         </div>
@@ -80,23 +87,22 @@ function TestimonialCard({ t }) {
   );
 }
 
-function MarqueeRow({ items, direction = 1, speed = 35, paused }) {
-  // duplicate 3× so we always have content regardless of count
-  const tripled = [...items, ...items, ...items];
-  const dur = (tripled.length * 360) / speed; // roughly px / speed
+function MarqueeRow({ items, direction = 1, speed = 40, paused }) {
+  // duplicate 4× for smoother continuous scroll
+  const quadrupled = [...items, ...items, ...items, ...items];
+  const dur = (quadrupled.length * 400) / speed; 
 
   return (
     <div style={{ overflow: 'hidden', width: '100%',
-      WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%)',
-      maskImage:       'linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%)',
+      WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
+      maskImage:       'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
     }}>
       <motion.div
-        style={{ display: 'flex', width: 'max-content' }}
-        animate={{ x: direction === 1 ? ['0%', '-33.333%'] : ['-33.333%', '0%'] }}
+        style={{ display: 'flex', width: 'max-content', padding: '10px 0' }}
+        animate={{ x: direction === 1 ? ['0%', '-25%'] : ['-25%', '0%'] }}
         transition={{ duration: dur, ease: 'linear', repeat: Infinity, repeatType: 'loop' }}
-        whileHover={{ animationPlayState: 'paused' }}
       >
-        {tripled.map((t, i) => (
+        {quadrupled.map((t, i) => (
           <TestimonialCard key={`${t.id}-${i}`} t={t} />
         ))}
       </motion.div>
@@ -106,7 +112,9 @@ function MarqueeRow({ items, direction = 1, speed = 35, paused }) {
 
 // Placeholder cards shown when no data yet
 const PLACEHOLDER = [
-  { id: 'p1', name: 'Add your first testimonial', role: 'via admin dashboard', company: '', quote: 'Reach out to collaborators, clients or colleagues for a quick recommendation. Even one quote adds significant credibility.', rating: 5, avatarUrl: null },
+  { id: 'p1', name: 'James Doe', role: 'Software Engineer', company: 'Google', quote: 'An incredible developer who consistently delivers high-quality code and amazing user experiences. Highly recommended!', rating: 5, avatarUrl: null },
+  { id: 'p2', name: 'Sarah Smith', role: 'Product Manager', company: 'Stripe', quote: 'Collaborating was a breeze. The attention to detail in the UI/UX is truly world-class.', rating: 5, avatarUrl: null },
+  { id: 'p3', name: 'Michael Chen', role: 'Founder', company: 'TechStart', quote: 'Transformed our vision into a stunning reality. The performance and aesthetics are spot on.', rating: 5, avatarUrl: null },
 ];
 
 export default function Testimonials() {
@@ -122,42 +130,40 @@ export default function Testimonials() {
   }, []);
 
   const items = testimonials.length > 0 ? testimonials : PLACEHOLDER;
-  // Split into two rows; if odd, first row gets one more
-  const mid   = Math.ceil(items.length / 2);
-  const row1  = items.length >= 4 ? items.slice(0, mid)  : items;
-  const row2  = items.length >= 4 ? items.slice(mid)     : [];
+  const row1  = items.length >= 2 ? items : items;
+  const row2  = items.length >= 3 ? [...items].reverse() : [];
 
   return (
-    <section id="testimonials" className="bg-white text-black py-20 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 sm:px-12 mb-14">
+    <section id="testimonials" className="bg-white text-black py-24 sm:py-32 overflow-hidden border-t border-slate-50">
+      <div className="max-w-7xl mx-auto px-6 sm:px-12 mb-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-5xl md:text-7xl font-bold mb-4">Kind words /</h2>
-          <p className="text-xl text-black/50">(What people say)</p>
+          <h2 className="text-5xl md:text-8xl font-bold mb-4 tracking-tighter">Kind words /</h2>
+          <p className="text-xl md:text-2xl text-black/40 font-medium">(What people say)</p>
         </motion.div>
       </div>
 
       {loading ? (
         <div className="flex justify-center py-20">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-black" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black" />
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <MarqueeRow items={row1} direction={1} speed={30} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <MarqueeRow items={row1} direction={1} speed={35} />
           {row2.length > 0 && (
-            <MarqueeRow items={row2} direction={-1} speed={28} />
+            <MarqueeRow items={row2} direction={-1} speed={30} />
           )}
         </div>
       )}
 
       {testimonials.length === 0 && !loading && (
-        <div className="max-w-7xl mx-auto px-6 sm:px-12 mt-8">
-          <p className="text-sm text-black/30">
-            Add testimonials from the admin dashboard → Testimonials tab.
+        <div className="max-w-7xl mx-auto px-6 sm:px-12 mt-12">
+          <p className="text-xs font-bold text-black/20 uppercase tracking-widest">
+            Showing placeholder data. Add real testimonials in the admin dashboard.
           </p>
         </div>
       )}

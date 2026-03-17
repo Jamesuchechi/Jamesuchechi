@@ -197,24 +197,24 @@ export default function Hero() {
             <motion.span 
               className="block"
               animate={{ 
-                color: ['#fff', '#bae6fd', '#fef3c7', '#ddd6fe', '#fff'],
+                color: ['#FFFFFF', '#D4AF37', '#702963', '#C0C0C0', '#4169E1', '#FFFFFF'],
               }}
               transition={{ 
-                duration: 8, 
+                duration: 10, 
                 repeat: Infinity, 
-                ease: "linear" 
+                ease: "easeInOut" 
               }}
             >
               JAMES
             </motion.span>
             <motion.span 
-              className="block bg-gradient-to-r from-white via-sky-300 to-amber-200 bg-clip-text text-transparent"
+              className="block bg-gradient-to-r from-[#D4AF37] via-[#702963] to-[#4169E1] bg-clip-text text-transparent"
               style={{ backgroundSize: '200% auto' }}
               animate={{ 
                 backgroundPosition: ['0% center', '200% center'],
               }}
               transition={{ 
-                duration: 5, 
+                duration: 7, 
                 repeat: Infinity, 
                 ease: "linear" 
               }}
@@ -225,8 +225,15 @@ export default function Hero() {
 
           {/* Description */}
           <motion.p
-            variants={itemMotion}
-            className="text-base sm:text-lg md:text-xl text-white/70 max-w-2xl mb-10"
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              show: { 
+                opacity: 0.95, 
+                y: 0, 
+                transition: { duration: 0.8, delay: 0.5, ease: "easeOut" } 
+              }
+            }}
+            className="text-lg sm:text-xl md:text-2xl text-white font-medium max-w-2xl mb-10 leading-relaxed tracking-tight"
           >
             Open to job opportunities worldwide. Passionate about building polished, intuitive, 
             and thoughtful digital experiences that leave a mark.

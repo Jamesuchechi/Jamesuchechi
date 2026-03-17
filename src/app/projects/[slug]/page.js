@@ -170,7 +170,7 @@ export default function ProjectDetails({ params }) {
                 transition={{ duration: 0.6 }}
               >
                 <h2 className="text-3xl font-bold mb-4">About the Project</h2>
-                <p className="text-lg text-black/70 leading-relaxed">
+                <p className="text-lg text-black/70 leading-relaxed whitespace-pre-line">
                   {project.description}
                 </p>
               </motion.div>
