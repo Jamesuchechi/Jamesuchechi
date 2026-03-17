@@ -26,8 +26,41 @@ export default function Hero() {
     return () => window.removeEventListener('mousemove', handleMove);
   }, []);
 
+  const [about, setAbout] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/about')
+      .then(res => res.json())
+      .then(data => setAbout(data))
+      .catch(err => console.error('Error fetching about for hero:', err));
+  }, []);
+
   const monthLabel = now.toLocaleString('en-US', { month: 'short' });
   const yearLabel = String(now.getFullYear()).slice(-2);
+
+  const getAvailabilityConfig = () => {
+    const status = about?.availabilityStatus || 'available';
+    switch (status) {
+      case 'open':
+        return {
+          text: `Open to opportunities ${monthLabel}'${yearLabel}`,
+          color: 'bg-orange-500'
+        };
+      case 'busy':
+        return {
+          text: `Currently busy ${monthLabel}'${yearLabel}`,
+          color: 'bg-red-500'
+        };
+      default:
+        return {
+          text: `Available for work ${monthLabel}'${yearLabel}`,
+          color: 'bg-green-500'
+        };
+    }
+  };
+
+  const avail = getAvailabilityConfig();
+
   const noiseDataUrl =
     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E";
   const containerMotion = {
@@ -45,7 +78,6 @@ export default function Hero() {
 
   return (
     <section
-      id="home"
       className="relative min-h-screen overflow-hidden bg-[#07090c] text-white px-6 sm:px-12"
     >
       <div className="absolute inset-0">
@@ -153,8 +185,8 @@ export default function Hero() {
             variants={itemMotion}
             className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 mb-8 backdrop-blur"
           >
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-            <span className="text-sm">Available for work {monthLabel}&apos;{yearLabel}</span>
+            <span className={`w-2 h-2 ${avail.color} rounded-full animate-pulse`}></span>
+            <span className="text-sm">{avail.text}</span>
           </motion.div>
 
           {/* Main Heading */}
@@ -177,14 +209,26 @@ export default function Hero() {
             and thoughtful digital experiences that leave a mark.
           </motion.p>
 
-          {/* CTA Button */}
-          <motion.a
-            href="#contact"
-            variants={itemMotion}
-            className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/90 text-black px-8 py-4 text-base sm:text-lg font-medium shadow-[0_20px_60px_-20px_rgba(255,255,255,0.5)] hover:translate-y-0.5 hover:bg-white transition-all"
-          >
-            CONTACT <FiArrowUpRight />
-          </motion.a>
+          {/* Action Buttons */}
+          <motion.div variants={itemMotion} className="flex flex-wrap gap-4">
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/90 text-black px-8 py-4 text-base sm:text-lg font-medium shadow-[0_20px_60px_-20px_rgba(255,255,255,0.5)] hover:translate-y-0.5 hover:bg-white transition-all"
+            >
+              CONTACT <FiArrowUpRight />
+            </a>
+
+            {about?.resumeUrl && (
+              <a
+                href={about.resumeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 text-white px-8 py-4 text-base sm:text-lg font-medium backdrop-blur hover:bg-white/10 transition-all"
+              >
+                RESUME
+              </a>
+            )}
+          </motion.div>
         </motion.div>
         </div>
       </div>

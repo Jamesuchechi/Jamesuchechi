@@ -1,34 +1,40 @@
 import { NextResponse } from 'next/server';
-import { adminAuth, adminDb } from '@/lib/firebaseAdmin';
+import { prisma } from '@/lib/prisma';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { idToken } = body;
+    const { email, password } = body;
 
-    if (!idToken) {
-      return NextResponse.json({ error: 'Auth token is required' }, { status: 400 });
+    if (!email || !password) {
+      return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
     }
 
-    const decoded = await adminAuth.verifyIdToken(idToken);
-    const userRecord = await adminAuth.getUser(decoded.uid);
-    const adminRef = adminDb.collection('admins').doc(decoded.uid);
-    const adminSnap = await adminRef.get();
+    const admin = await prisma.admin.findUnique({
+      where: { email },
+    });
 
-    let adminData = adminSnap.exists ? adminSnap.data() : null;
-
-    if (!adminData) {
-      adminData = {
-        name: userRecord.displayName || 'Admin',
-        email: userRecord.email,
-        createdAt: new Date().toISOString(),
-      };
-      await adminRef.set(adminData);
+    if (!admin) {
+      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
+
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
+
+    if (!isPasswordValid) {
+      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    }
+
+    const token = jwt.sign(
+      { id: admin.id, email: admin.email },
+      process.env.JWT_SECRET || 'fallback-secret',
+      { expiresIn: '7d' }
+    );
 
     return NextResponse.json({
-      admin: { id: decoded.uid, ...adminData },
-      token: idToken,
+      admin: { id: admin.id, name: admin.name, email: admin.email },
+      token,
     });
   } catch (error) {
     console.error('Admin login error:', error);

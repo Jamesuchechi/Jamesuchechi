@@ -38,7 +38,7 @@ export default function Projects() {
   const featuredProjects = projects.slice(0, 4);
 
   return (
-    <section id="works" className="min-h-screen bg-white text-black py-20 px-6 sm:px-12">
+    <section className="min-h-screen bg-white text-black py-20 px-6 sm:px-12">
       <div className="max-w-7xl mx-auto">
         {/* Section Title */}
         <motion.div

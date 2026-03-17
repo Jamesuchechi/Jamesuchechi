@@ -176,6 +176,60 @@ export default function ProjectDetails({ params }) {
                 </p>
               </motion.div>
 
+              {/* Case Study: The Problem */}
+              {project.problem && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                  className="pt-8 border-t border-gray-100"
+                >
+                  <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
+                    <span className="w-8 h-8 rounded-full bg-red-50 text-red-600 flex items-center justify-center text-sm font-bold italic">01</span>
+                    The Problem
+                  </h3>
+                  <p className="text-lg text-black/70 leading-relaxed whitespace-pre-line">
+                    {project.problem}
+                  </p>
+                </motion.div>
+              )}
+
+              {/* Case Study: The Process */}
+              {project.process && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="pt-8 border-t border-gray-100"
+                >
+                  <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
+                    <span className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold italic">02</span>
+                    The Process
+                  </h3>
+                  <p className="text-lg text-black/70 leading-relaxed whitespace-pre-line">
+                    {project.process}
+                  </p>
+                </motion.div>
+              )}
+
+              {/* Case Study: The Outcome */}
+              {project.outcome && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  className="pt-8 border-t border-gray-100"
+                >
+                  <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
+                    <span className="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-sm font-bold italic">03</span>
+                    The Outcome
+                  </h3>
+                  <p className="text-lg text-black/70 leading-relaxed whitespace-pre-line">
+                    {project.outcome}
+                  </p>
+                </motion.div>
+              )}
+
               {/* Technologies */}
               {technologies.length > 0 && (
                 <motion.div

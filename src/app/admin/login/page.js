@@ -3,8 +3,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { FiLock, FiMail } from 'react-icons/fi';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { firebaseAuth } from '@/lib/firebaseClient';
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -21,20 +19,13 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      if (!firebaseAuth) {
-        throw new Error('Firebase is not configured for this environment.');
-      }
-      const credential = await signInWithEmailAndPassword(
-        firebaseAuth,
-        formData.email,
-        formData.password
-      );
-      const idToken = await credential.user.getIdToken();
-
       const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken })
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        })
       });
 
       const data = await res.json();

@@ -1,46 +1,35 @@
 import { NextResponse } from 'next/server';
-import { adminDb } from '@/lib/firebaseAdmin';
+import { prisma } from '@/lib/prisma';
 
-// GET about information
 export async function GET() {
   try {
-    const aboutRef = adminDb.collection('about').doc('profile');
-    const aboutSnap = await aboutRef.get();
+    let about = await prisma.about.findFirst();
 
-    if (!aboutSnap.exists) {
-      const defaultAbout = {
-        name: 'Your Name',
-        title: 'Your Title',
-        bio: 'Tell us about yourself...',
-        socialLinks: {
-          github: '',
-          linkedin: '',
-          twitter: '',
-          website: '',
-          whatsapp: '',
-          facebook: '',
-          tiktok: ''
+    if (!about) {
+      // Create default if not exists
+      about = await prisma.about.create({
+        data: {
+          name: 'James Uchechi',
+          title: 'Full Stack Developer',
+          bio: 'Passionate about building digital experiences.',
+          availabilityStatus: 'available',
         },
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      await aboutRef.set(defaultAbout);
-      return NextResponse.json({ id: 'profile', ...defaultAbout });
+      });
     }
 
-    return NextResponse.json({ id: aboutSnap.id, ...aboutSnap.data() });
+    return NextResponse.json(about);
   } catch (error) {
-    console.error('Failed to fetch about:', error);
-    return NextResponse.json({ error: 'Failed to fetch about information' }, { status: 500 });
+    console.error('About GET error:', error);
+    return NextResponse.json({ error: 'Failed to fetch about data' }, { status: 500 });
   }
 }
 
-// POST/PUT update about information
 export async function POST(request) {
   try {
     const body = await request.json();
-    const aboutRef = adminDb.collection('about').doc('profile');
-    const aboutData = {
+    let about = await prisma.about.findFirst();
+
+    const data = {
       name: body.name,
       title: body.title,
       bio: body.bio,
@@ -49,14 +38,22 @@ export async function POST(request) {
       email: body.email || '',
       phone: body.phone || '',
       location: body.location || '',
-      socialLinks: body.socialLinks || null,
-      updatedAt: new Date().toISOString(),
+      socialLinks: typeof body.socialLinks === 'string' ? body.socialLinks : JSON.stringify(body.socialLinks || {}),
+      availabilityStatus: body.availabilityStatus || 'available',
     };
 
-    await aboutRef.set(aboutData, { merge: true });
-    return NextResponse.json({ id: 'profile', ...aboutData });
+    if (about) {
+      about = await prisma.about.update({
+        where: { id: about.id },
+        data,
+      });
+    } else {
+      about = await prisma.about.create({ data });
+    }
+
+    return NextResponse.json(about);
   } catch (error) {
-    console.error('Failed to update about:', error);
-    return NextResponse.json({ error: 'Failed to update about information', details: error.message }, { status: 500 });
+    console.error('About POST error:', error);
+    return NextResponse.json({ error: 'Failed to update about data' }, { status: 500 });
   }
 }

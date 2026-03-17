@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { adminDb } from '@/lib/firebaseAdmin';
+import { prisma } from '@/lib/prisma';
 import nodemailer from 'nodemailer';
 
 export async function POST(request) {
@@ -7,14 +7,13 @@ export async function POST(request) {
     const body = await request.json();
     
     // Save to database
-    const contactData = {
-      name: body.name,
-      email: body.email,
-      message: body.message,
-      createdAt: new Date().toISOString(),
-    };
-    const docRef = await adminDb.collection('contacts').add(contactData);
-    const contact = { id: docRef.id, ...contactData };
+    const contact = await prisma.contact.create({
+      data: {
+        name: body.name,
+        email: body.email,
+        message: body.message,
+      },
+    });
 
     // Send email notifications (if configured)
     try {
@@ -27,7 +26,6 @@ export async function POST(request) {
           },
         });
 
-        // Email to admin
         const adminMailOptions = {
           from: process.env.EMAIL_USER,
           to: process.env.ADMIN_EMAIL,
@@ -39,18 +37,14 @@ export async function POST(request) {
               </div>
               <div style="background-color: #fff; padding: 30px; border-radius: 0 0 8px 8px;">
                 <p style="font-size: 16px; color: #374151; margin-bottom: 20px;">You have received a new message from your portfolio contact form:</p>
-                
                 <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
                   <p style="margin: 0 0 10px 0; color: #6b7280; font-size: 14px; font-weight: bold;">FROM:</p>
                   <p style="margin: 0 0 20px 0; color: #111827; font-size: 16px;">${body.name}</p>
-                  
                   <p style="margin: 0 0 10px 0; color: #6b7280; font-size: 14px; font-weight: bold;">EMAIL:</p>
                   <p style="margin: 0 0 20px 0; color: #111827; font-size: 16px;">${body.email}</p>
-                  
                   <p style="margin: 0 0 10px 0; color: #6b7280; font-size: 14px; font-weight: bold;">MESSAGE:</p>
                   <p style="margin: 0; color: #111827; font-size: 16px; line-height: 1.6;">${body.message}</p>
                 </div>
-                
                 <p style="font-size: 14px; color: #6b7280; margin-top: 20px;">
                   You can reply directly to <a href="mailto:${body.email}" style="color: #000; text-decoration: none; font-weight: bold;">${body.email}</a>
                 </p>
@@ -62,7 +56,6 @@ export async function POST(request) {
           `,
         };
 
-        // Auto-reply to sender
         const senderMailOptions = {
           from: process.env.EMAIL_USER,
           to: body.email,
@@ -74,20 +67,16 @@ export async function POST(request) {
               </div>
               <div style="background-color: #fff; padding: 30px; border-radius: 0 0 8px 8px;">
                 <p style="font-size: 16px; color: #374151; margin-bottom: 20px;">Hi ${body.name},</p>
-                
                 <p style="font-size: 16px; color: #374151; line-height: 1.6; margin-bottom: 20px;">
                   Thank you for reaching out! I've received your message and will get back to you as soon as possible.
                 </p>
-                
                 <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
                   <p style="margin: 0 0 10px 0; color: #6b7280; font-size: 14px; font-weight: bold;">YOUR MESSAGE:</p>
                   <p style="margin: 0; color: #111827; font-size: 14px; line-height: 1.6;">${body.message}</p>
                 </div>
-                
                 <p style="font-size: 16px; color: #374151; line-height: 1.6; margin-bottom: 20px;">
                   I typically respond within 24-48 hours. If your inquiry is urgent, feel free to reach out through other channels.
                 </p>
-                
                 <p style="font-size: 16px; color: #374151; margin-top: 30px;">
                   Best regards,<br>
                   <strong>${process.env.ADMIN_NAME || 'James Uchechi'}</strong>
@@ -100,46 +89,30 @@ export async function POST(request) {
           `,
         };
 
-        // Send both emails
         await Promise.all([
           transporter.sendMail(adminMailOptions),
           transporter.sendMail(senderMailOptions),
         ]);
-
-        console.log('✅ Emails sent successfully');
-      } else {
-        console.log('⚠️ Email configuration not set. Skipping email notifications.');
       }
     } catch (emailError) {
-      console.error('❌ Error sending emails:', emailError);
-      // Don't fail the request if email fails
+      console.error('Email error:', emailError);
     }
 
-    return NextResponse.json({ 
-      message: 'Contact form submitted successfully', 
-      contact 
-    }, { status: 201 });
+    return NextResponse.json(contact, { status: 201 });
   } catch (error) {
-    console.error('Error submitting contact form:', error);
+    console.error('Contact POST error:', error);
     return NextResponse.json({ error: 'Failed to submit contact form' }, { status: 500 });
   }
 }
 
-// GET all contact submissions (for admin)
 export async function GET() {
   try {
-    const snapshot = await adminDb.collection('contacts').get();
-    const contacts = snapshot.docs.map((docSnap) => ({
-      id: docSnap.id,
-      ...docSnap.data(),
-    }));
-    contacts.sort((a, b) => {
-      const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-      const bDate = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-      return bDate - aDate;
+    const contacts = await prisma.contact.findMany({
+      orderBy: { createdAt: 'desc' },
     });
     return NextResponse.json(contacts);
   } catch (error) {
+    console.error('Contact GET error:', error);
     return NextResponse.json({ error: 'Failed to fetch contacts' }, { status: 500 });
   }
 }

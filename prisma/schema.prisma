@@ -77,6 +77,14 @@ model About {
   phone         String?
   location      String?
   socialLinks   String?
+  availabilityStatus String @default("available")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+model Stats {
+  id        String   @id @default(cuid())
+  month     String   @unique // YYYY-MM
+  count     Int      @default(0)
+  updatedAt DateTime @updatedAt
 }

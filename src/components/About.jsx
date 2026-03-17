@@ -26,7 +26,7 @@ export default function About() {
 
   if (loading) {
     return (
-      <section id="about" className="min-h-screen bg-white text-black py-20 px-6 sm:px-12 flex items-center justify-center">
+      <section className="min-h-screen bg-white text-black py-20 px-6 sm:px-12 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
           <p className="text-black/60">Loading...</p>
@@ -37,7 +37,7 @@ export default function About() {
 
   if (!about) {
     return (
-      <section id="about" className="min-h-screen bg-white text-black py-20 px-6 sm:px-12 flex items-center justify-center">
+      <section className="min-h-screen bg-white text-black py-20 px-6 sm:px-12 flex items-center justify-center">
         <div className="text-center">
           <p className="text-xl text-black/40">No about information yet. Add it from the admin dashboard!</p>
         </div>
@@ -46,7 +46,7 @@ export default function About() {
   }
 
   return (
-    <section id="about" className="min-h-screen bg-white text-black py-20 px-6 sm:px-12">
+    <section className="min-h-screen bg-white text-black py-20 px-6 sm:px-12">
       <div className="max-w-7xl mx-auto">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Image */}
@@ -88,26 +88,39 @@ export default function About() {
               <p className="whitespace-pre-line">{about.bio}</p>
             </div>
 
-            {/* Contact Info */}
-            {(about.email || about.phone || about.location) && (
-              <div className="mt-8 space-y-2 text-sm">
-                {about.email && (
-                  <p className="text-black/60">
-                    <span className="font-medium">Email:</span> {about.email}
-                  </p>
-                )}
-                {about.phone && (
-                  <p className="text-black/60">
-                    <span className="font-medium">Phone:</span> {about.phone}
-                  </p>
-                )}
-                {about.location && (
-                  <p className="text-black/60">
-                    <span className="font-medium">Location:</span> {about.location}
-                  </p>
-                )}
-              </div>
-            )}
+            {/* Contact Info & Resume */}
+            <div className="mt-8 flex flex-wrap items-center justify-between gap-6">
+              {(about.email || about.phone || about.location) && (
+                <div className="space-y-2 text-sm">
+                  {about.email && (
+                    <p className="text-black/60">
+                      <span className="font-medium">Email:</span> {about.email}
+                    </p>
+                  )}
+                  {about.phone && (
+                    <p className="text-black/60">
+                      <span className="font-medium">Phone:</span> {about.phone}
+                    </p>
+                  )}
+                  {about.location && (
+                    <p className="text-black/60">
+                      <span className="font-medium">Location:</span> {about.location}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {about.resumeUrl && (
+                <a
+                  href={about.resumeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-black text-white px-8 py-4 rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors shadow-lg shadow-black/10"
+                >
+                  Download Resume
+                </a>
+              )}
+            </div>
           </motion.div>
         </div>
       </div>

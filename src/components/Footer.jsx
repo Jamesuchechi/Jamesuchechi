@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { FiArrowUp, FiGithub, FiLinkedin, FiInstagram, FiMessageCircle, FiFacebook, FiMusic } from 'react-icons/fi';
+import VisitorCounter from './VisitorCounter';
 
 export default function Footer() {
   const [currentTime, setCurrentTime] = useState('');
@@ -143,9 +144,12 @@ export default function Footer() {
           </button>
         </div>
 
-        {/* Copyright */}
-        <div className="mt-8 text-center text-white/40 text-sm">
-          <p>&copy; {currentYear} James Uchechi. All rights reserved.</p>
+        {/* Copyright & Stats */}
+        <div className="mt-8 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-white/5 pt-8">
+          <p className="text-white/40 text-sm">
+            &copy; {currentYear} James Uchechi. All rights reserved.
+          </p>
+          <VisitorCounter />
         </div>
       </div>
     </footer>

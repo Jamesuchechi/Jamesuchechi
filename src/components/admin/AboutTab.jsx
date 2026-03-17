@@ -23,7 +23,8 @@ export default function AboutTab() {
       whatsapp: '',
       facebook: '',
       tiktok: ''
-    }
+    },
+    availabilityStatus: 'available'
   });
 
   useEffect(() => {
@@ -68,7 +69,8 @@ export default function AboutTab() {
         email: data.email || '',
         phone: data.phone || '',
         location: data.location || '',
-        socialLinks
+        socialLinks,
+        availabilityStatus: data.availabilityStatus || 'available'
       });
     } catch (error) {
       console.error('Error fetching about:', error);
@@ -162,6 +164,19 @@ export default function AboutTab() {
               className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none bg-white text-gray-900 placeholder-gray-500 resize-none transition-all"
               placeholder="Tell us about yourself..."
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">Availability Status *</label>
+            <select
+              value={formData.availabilityStatus}
+              onChange={(e) => setFormData({ ...formData, availabilityStatus: e.target.value })}
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none bg-white text-gray-900 transition-all"
+            >
+              <option value="available">Available for work</option>
+              <option value="open">Open to opportunities</option>
+              <option value="busy">Currently busy</option>
+            </select>
           </div>
         </div>
 

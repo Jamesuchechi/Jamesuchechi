@@ -18,7 +18,10 @@ export default function ProjectsTab() {
     gallery: [],
     projectUrl: '',
     githubUrl: '',
-    technologies: []
+    technologies: [],
+    problem: '',
+    process: '',
+    outcome: ''
   });
 
   useEffect(() => {
@@ -110,7 +113,10 @@ export default function ProjectsTab() {
       gallery: gallery,
       projectUrl: project.projectUrl || '',
       githubUrl: project.githubUrl || '',
-      technologies: technologies
+      technologies: technologies,
+      problem: project.problem || '',
+      process: project.process || '',
+      outcome: project.outcome || ''
     });
   };
 
@@ -138,7 +144,10 @@ export default function ProjectsTab() {
       gallery: [],
       projectUrl: '',
       githubUrl: '',
-      technologies: []
+      technologies: [],
+      problem: '',
+      process: '',
+      outcome: ''
     });
     setEditingProject(null);
   };
@@ -269,6 +278,39 @@ export default function ProjectsTab() {
                   placeholder="https://github.com/username/repo"
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">The Problem</label>
+              <textarea
+                value={formData.problem}
+                onChange={(e) => setFormData({ ...formData, problem: e.target.value })}
+                rows={3}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none bg-white text-gray-900 placeholder-gray-500 resize-none transition-all"
+                placeholder="What challenge was this project trying to solve?"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">The Process</label>
+              <textarea
+                value={formData.process}
+                onChange={(e) => setFormData({ ...formData, process: e.target.value })}
+                rows={4}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none bg-white text-gray-900 placeholder-gray-500 resize-none transition-all"
+                placeholder="How did you go about building it?"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">The Outcome</label>
+              <textarea
+                value={formData.outcome}
+                onChange={(e) => setFormData({ ...formData, outcome: e.target.value })}
+                rows={3}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none bg-white text-gray-900 placeholder-gray-500 resize-none transition-all"
+                placeholder="What was the final result and impact?"
+              />
             </div>
 
             <div>
