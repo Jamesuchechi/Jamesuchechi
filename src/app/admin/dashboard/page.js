@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiPieChart, FiActivity, FiUsers, FiClock } from 'react-icons/fi';
+import { FiPieChart, FiActivity, FiUsers, FiClock, FiMessageSquare } from 'react-icons/fi';
 import Sidebar from '@/components/admin/Sidebar';
 import ProjectsTab from '@/components/admin/ProjectsTab';
 import SkillsTab from '@/components/admin/SkillsTab';
