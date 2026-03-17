@@ -374,6 +374,7 @@ export default function Services() {
   });
 
   const scrollIndicatorOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
+  const browseAllOpacity = useTransform(scrollYProgress, [0.8, 0.95], [0, 1]);
 
   // Switch to rail when stack phase is fully scrolled
   useEffect(() => {
@@ -511,7 +512,7 @@ export default function Services() {
                 bottom: '36px',
                 left: '50%',
                 x: '-50%',
-                opacity: useTransform(scrollYProgress, [0.8, 0.95], [0, 1]),
+                opacity: browseAllOpacity,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
