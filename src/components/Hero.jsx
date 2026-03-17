@@ -192,12 +192,35 @@ export default function Hero() {
           {/* Main Heading */}
           <motion.h1
             variants={itemMotion}
-            className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-semibold tracking-tight mb-6"
+            className="text-4xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter mb-6 leading-[0.9]"
           >
-            JAMES
-            <span className="block bg-gradient-to-r from-white via-sky-100 to-amber-100 bg-clip-text text-transparent">
+            <motion.span 
+              className="block"
+              animate={{ 
+                color: ['#fff', '#bae6fd', '#fef3c7', '#ddd6fe', '#fff'],
+              }}
+              transition={{ 
+                duration: 8, 
+                repeat: Infinity, 
+                ease: "linear" 
+              }}
+            >
+              JAMES
+            </motion.span>
+            <motion.span 
+              className="block bg-gradient-to-r from-white via-sky-300 to-amber-200 bg-clip-text text-transparent"
+              style={{ backgroundSize: '200% auto' }}
+              animate={{ 
+                backgroundPosition: ['0% center', '200% center'],
+              }}
+              transition={{ 
+                duration: 5, 
+                repeat: Infinity, 
+                ease: "linear" 
+              }}
+            >
               UCHECHI
-            </span>
+            </motion.span>
           </motion.h1>
 
           {/* Description */}

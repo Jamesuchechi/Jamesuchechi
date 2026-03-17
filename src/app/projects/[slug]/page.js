@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FiArrowLeft, FiExternalLink, FiGithub, FiCode } from 'react-icons/fi';
 import { notFound } from 'next/navigation';
-import { isNetlifyBlobUrl, normalizeImageUrl } from '@/lib/imageUtils';
+import { normalizeImageUrl } from '@/lib/imageUtils';
 
 export default function ProjectDetails({ params }) {
   const [project, setProject] = useState(null);
@@ -111,7 +111,6 @@ export default function ProjectDetails({ params }) {
               fill
               className="object-cover"
               priority
-              unoptimized={isNetlifyBlobUrl(project.imageUrl)}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
@@ -274,7 +273,6 @@ export default function ProjectDetails({ params }) {
                           alt={`${project.title} screenshot ${i + 1}`}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          unoptimized={isNetlifyBlobUrl(imageUrl)}
                         />
                       </motion.div>
                     ))}

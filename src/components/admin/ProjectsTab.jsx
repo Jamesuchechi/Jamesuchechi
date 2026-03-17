@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import ImageUpload from './ImageUpload';
-import { isNetlifyBlobUrl, normalizeImageUrl } from '@/lib/imageUtils';
+import { normalizeImageUrl } from '@/lib/imageUtils';
 
 export default function ProjectsTab() {
   const [loading, setLoading] = useState(true);
@@ -378,7 +378,6 @@ export default function ProjectsTab() {
                     width={80}
                     height={80}
                     className="rounded-lg object-cover"
-                    unoptimized={isNetlifyBlobUrl(project.imageUrl)}
                   />
                   <div className="flex-1">
                     <h4 className="font-bold">{project.title}</h4>

@@ -42,7 +42,7 @@ Here are some projects I'm proud of (check my repositories for more!):
 
 ## 📫 Get in Touch      
 - **Email**: okparajamesuchechi@gmail.com
-- **Portfolio**: https://jamesuchechi.netlify.app
+- **Portfolio**: https://jamesuchechi.com
 - **X**:Jamesuchechi6
 
 I'm always excited to collaborate on open-source projects, discuss tech innovations, or explore data-driven solutions. Feel free to reach out!

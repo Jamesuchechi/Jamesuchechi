@@ -1,17 +1,20 @@
 import { NextResponse } from 'next/server';
-import { adminDb } from '@/lib/firebaseAdmin';
+import { prisma } from '@/lib/prisma';
 
 // GET single skill
 export async function GET(request, { params }) {
   try {
     const { id } = await params;
-    const skillRef = adminDb.collection('skills').doc(id);
-    const skillSnap = await skillRef.get();
-    if (!skillSnap.exists()) {
+    const skill = await prisma.skill.findUnique({
+      where: { id },
+    });
+    
+    if (!skill) {
       return NextResponse.json({ error: 'Skill not found' }, { status: 404 });
     }
-    return NextResponse.json({ id: skillSnap.id, ...skillSnap.data() });
+    return NextResponse.json(skill);
   } catch (error) {
+    console.error('Failed to fetch skill:', error);
     return NextResponse.json({ error: 'Failed to fetch skill' }, { status: 500 });
   }
 }
@@ -21,16 +24,19 @@ export async function PUT(request, { params }) {
   try {
     const { id } = await params;
     const body = await request.json();
-    const updatedData = {
-      name: body.name,
-      category: body.category,
-      proficiency: Number(body.proficiency),
-      icon: body.icon || '',
-      order: body.order || 0,
-      updatedAt: new Date().toISOString(),
-    };
-    await adminDb.collection('skills').doc(id).update(updatedData);
-    return NextResponse.json({ id, ...updatedData });
+    
+    const updatedSkill = await prisma.skill.update({
+      where: { id },
+      data: {
+        name: body.name,
+        category: body.category,
+        proficiency: Number(body.proficiency),
+        icon: body.icon || '',
+        order: body.order || 0,
+      },
+    });
+    
+    return NextResponse.json(updatedSkill);
   } catch (error) {
     console.error('Failed to update skill:', error);
     return NextResponse.json({ error: 'Failed to update skill', details: error.message }, { status: 500 });
@@ -41,9 +47,12 @@ export async function PUT(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     const { id } = await params;
-    await adminDb.collection('skills').doc(id).delete();
+    await prisma.skill.delete({
+      where: { id },
+    });
     return NextResponse.json({ message: 'Skill deleted successfully' });
   } catch (error) {
+    console.error('Failed to delete skill:', error);
     return NextResponse.json({ error: 'Failed to delete skill' }, { status: 500 });
   }
 }

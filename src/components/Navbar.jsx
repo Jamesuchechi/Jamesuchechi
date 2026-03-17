@@ -5,41 +5,38 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiMenu, FiX } from 'react-icons/fi';
 
 const NAV_LINKS = [
-  { name: 'Home',     href: '#home'     },
-  { name: 'Services', href: '#services' },
-  { name: 'Works',    href: '#works'    },
-  { name: 'About',    href: '#about'    },
-  { name: 'Contact',  href: '#contact'  },
+  { name: 'Home',         href: '#home'         },
+  { name: 'Services',     href: '#services'     },
+  { name: 'Works',        href: '#works'        },
+  { name: 'Process',      href: '#process'      },
+  { name: 'About',        href: '#about'        },
+  { name: 'Testimonials', href: '#testimonials' },
+  { name: 'GitHub',       href: '#github'       },
+  { name: 'Contact',      href: '#contact'      },
 ];
 
-
-export default function Navbar() {
+export default function Navbar({ onEnterOS }) {
   const [isOpen,    setIsOpen]    = useState(false);
   const [scrolled,  setScrolled]  = useState(false);
   const [activeId,  setActiveId]  = useState('home');
 
-  // Map of sectionId → current intersectionRatio
   const ratioMap = useRef({});
 
-  // ── scroll shadow ──────────────────────────────────────────
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // ── body lock when mobile menu open ───────────────────────
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
-  // ── active section tracking ────────────────────────────────
   useEffect(() => {
     const ids = NAV_LINKS.map(l => l.href.slice(1));
 
     function pickActive() {
-      // Find section with highest ratio; tiebreak by closest top edge
       let best = null;
       let bestRatio = -1;
 
@@ -51,7 +48,6 @@ export default function Navbar() {
           bestRatio = ratio;
           best = id;
         } else if (ratio === bestRatio && best) {
-          // tiebreak — pick whichever top edge is closer to viewport top
           const elTop  = el.getBoundingClientRect().top;
           const bstTop = document.getElementById(best)?.getBoundingClientRect().top ?? 0;
           if (Math.abs(elTop) < Math.abs(bstTop)) best = id;
@@ -61,7 +57,6 @@ export default function Navbar() {
       if (best) setActiveId(best);
     }
 
-    // Observer 1 — general overlap
     const obs1 = new IntersectionObserver(
       entries => {
         entries.forEach(e => {
@@ -72,12 +67,10 @@ export default function Navbar() {
       { threshold: [0, 0.1, 0.2, 0.35, 0.5, 0.75, 1] }
     );
 
-    // Observer 2 — top-edge trigger for tall sections
     const obs2 = new IntersectionObserver(
       entries => {
         entries.forEach(e => {
           if (e.isIntersecting) {
-            // boost ratio so it wins over partially-visible sections
             ratioMap.current[e.target.id] = Math.max(
               ratioMap.current[e.target.id] ?? 0,
               0.5
@@ -97,14 +90,12 @@ export default function Navbar() {
     return () => { obs1.disconnect(); obs2.disconnect(); };
   }, []);
 
-  // ── smooth scroll helper ───────────────────────────────────
   const scrollTo = (href) => {
     setIsOpen(false);
     const el = document.querySelector(href);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  // ── mobile menu animation variants ────────────────────────
   const menuVariants = {
     closed: { opacity: 0, x: '100%', transition: { duration: 0.45, ease: [0.76,0,0.24,1] } },
     open:   { opacity: 1, x: 0,      transition: { duration: 0.45, ease: [0.76,0,0.24,1] } },
@@ -123,11 +114,11 @@ export default function Navbar() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
-        className={`fixed w-full z-50 transition-all duration-300 ${
-          scrolled ? 'bg-black/80 backdrop-blur-md py-4' : 'bg-transparent py-6'
+        className={`fixed w-full z-[100] transition-all duration-300 ${
+          scrolled ? 'bg-black/80 backdrop-blur-md py-4' : 'bg-transparent py-5'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 sm:px-12">
+        <div className="max-w-7xl mx-auto px-5 sm:px-12">
           <div className="flex items-center justify-between">
 
             {/* Logo */}
@@ -151,7 +142,6 @@ export default function Navbar() {
                   >
                     {link.name}
 
-                    {/* Active underline — animates in/out */}
                     <motion.span
                       className="absolute -bottom-1 left-0 h-px bg-white rounded-full"
                       initial={false}
@@ -159,7 +149,6 @@ export default function Navbar() {
                       transition={{ duration: 0.28, ease: 'easeInOut' }}
                     />
 
-                    {/* Hover underline (only when not active) */}
                     {!isActive && (
                       <span className="absolute -bottom-1 left-0 w-0 h-px bg-white/40 transition-all group-hover:w-full rounded-full" />
                     )}
@@ -168,15 +157,54 @@ export default function Navbar() {
               })}
             </div>
 
-            {/* Mobile toggle */}
-            <button
-              onClick={() => setIsOpen(v => !v)}
-              className="md:hidden text-white text-2xl relative z-[60] p-2"
-              aria-label="Toggle menu"
-              aria-expanded={isOpen}
-            >
-              {isOpen ? <FiX /> : <FiMenu />}
-            </button>
+            {/* Right side — JamesOS button + mobile toggle */}
+            <div className="flex items-center gap-3">
+
+              {/* JamesOS toggle — desktop only, only rendered when prop is passed */}
+              {onEnterOS && (
+                <button
+                  onClick={onEnterOS}
+                  className="hidden md:flex items-center gap-2 relative z-[60]"
+                  style={{
+                    padding: '6px 16px',
+                    borderRadius: '20px',
+                    border: '0.5px solid rgba(255,255,255,0.2)',
+                    background: 'rgba(255,255,255,0.06)',
+                    color: 'rgba(255,255,255,0.75)',
+                    fontSize: '12px',
+                    cursor: 'pointer',
+                    fontFamily: 'var(--font-geist-mono, monospace)',
+                    letterSpacing: '0.04em',
+                    transition: 'all 0.2s',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background    = 'rgba(255,255,255,0.12)';
+                    e.currentTarget.style.color         = '#fff';
+                    e.currentTarget.style.borderColor   = 'rgba(255,255,255,0.4)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background    = 'rgba(255,255,255,0.06)';
+                    e.currentTarget.style.color         = 'rgba(255,255,255,0.75)';
+                    e.currentTarget.style.borderColor   = 'rgba(255,255,255,0.2)';
+                  }}
+                  aria-label="Switch to JamesOS mode"
+                >
+                  <span style={{ fontSize: '11px' }}>⊞</span>
+                  JamesOS
+                </button>
+              )}
+
+              {/* Mobile toggle */}
+              <button
+                onClick={() => setIsOpen(v => !v)}
+                className="md:hidden text-white text-2xl relative z-[60] p-2"
+                aria-label="Toggle menu"
+                aria-expanded={isOpen}
+              >
+                {isOpen ? <FiX /> : <FiMenu />}
+              </button>
+
+            </div>
           </div>
         </div>
       </motion.nav>
@@ -219,6 +247,29 @@ export default function Navbar() {
                   );
                 })}
               </nav>
+
+              {/* JamesOS button — mobile menu */}
+              {onEnterOS && (
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  onClick={() => { setIsOpen(false); onEnterOS(); }}
+                  style={{
+                    marginTop: '40px',
+                    padding: '10px 28px',
+                    borderRadius: '24px',
+                    border: '0.5px solid rgba(255,255,255,0.2)',
+                    background: 'rgba(255,255,255,0.06)',
+                    color: 'rgba(255,255,255,0.7)',
+                    fontSize: '13px',
+                    fontFamily: 'var(--font-geist-mono, monospace)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  ⊞ Switch to JamesOS
+                </motion.button>
+              )}
 
               <motion.div
                 initial={{ opacity: 0 }}

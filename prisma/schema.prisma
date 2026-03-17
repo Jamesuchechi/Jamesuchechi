@@ -88,3 +88,29 @@ model Stats {
   count     Int      @default(0)
   updatedAt DateTime @updatedAt
 }
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  company   String?
+  quote     String   @db.Text
+  avatarUrl String?
+  rating    Int      @default(5)
+  featured  Boolean  @default(false)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProcessStep {
+  id           String   @id @default(cuid())
+  stepNumber   Int
+  title        String
+  description  String   @db.Text
+  icon         String?
+  durationHint String?
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

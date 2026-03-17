@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiArrowUpRight, FiCode, FiX, FiGithub, FiExternalLink } from 'react-icons/fi';
-import { isNetlifyBlobUrl, normalizeImageUrl } from '@/lib/imageUtils';
+import { normalizeImageUrl } from '@/lib/imageUtils';
 
 
 
@@ -100,7 +100,6 @@ export default function ProjectCard({ project, index, showDetailsHint = true }) 
                   alt={project.title}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  unoptimized={isNetlifyBlobUrl(project.imageUrl)}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
