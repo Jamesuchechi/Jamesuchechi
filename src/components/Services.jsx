@@ -73,6 +73,9 @@ function ServiceCard({ service, index, total, progress }) {
   const springEntryY       = useSpring(entryY,       { stiffness: 100, damping: 20 });
   const springEntryOpacity = useSpring(entryOpacity, { stiffness: 100, damping: 20 });
 
+  // Moved hook from render to top-level
+  const progressBarWidth = useTransform(cardProgress, [0, 1], ['0%', '100%']);
+
   const color = CARD_COLORS[index % CARD_COLORS.length];
 
   // Parse features safely
@@ -93,9 +96,9 @@ function ServiceCard({ service, index, total, progress }) {
         position: 'absolute',
         inset: 0,
         zIndex: index + 1,
-        scale: index === 0 ? springEntryScale : springEntryScale,
-        y: index === 0 ? springEntryY : springEntryY,
-        opacity: index === 0 ? springEntryOpacity : springEntryOpacity,
+        scale: springEntryScale,
+        y: springEntryY,
+        opacity: springEntryOpacity,
       }}
     >
       {/* Exit wrapper — only applies when this card is being scrolled past */}
@@ -211,12 +214,35 @@ function ServiceCard({ service, index, total, progress }) {
               position: 'absolute', left: 0, top: 0, height: '100%',
               borderRadius: '1px',
               background: color.accent,
-              width: useTransform(cardProgress, [0, 1], ['0%', '100%']),
+              width: progressBarWidth,
             }}/>
           </div>
         </div>
       </motion.div>
     </motion.div>
+  );
+}
+
+function ProgressDot({ i, total, progress }) {
+  const segSize  = 1 / total;
+  const segStart = i * segSize;
+  const segEnd   = segStart + segSize;
+  
+  const bg = useTransform(
+    progress,
+    [segStart, segStart + 0.01, segEnd - 0.01, segEnd],
+    ['rgba(255,255,255,0.2)', 'rgba(255,255,255,0.9)', 'rgba(255,255,255,0.9)', 'rgba(255,255,255,0.2)']
+  );
+
+  return (
+    <motion.div
+      style={{
+        width: '5px',
+        height: '5px',
+        borderRadius: '50%',
+        background: bg,
+      }}
+    />
   );
 }
 
@@ -230,6 +256,9 @@ export default function Services() {
     target: trackRef,
     offset: ['start start', 'end end'],
   });
+
+  // Moved scroll indicator opacity from render to top-level
+  const scrollIndicatorOpacity = useTransform(scrollYProgress, [0, 0.08], [1, 0]);
 
   useEffect(() => {
     fetch('/api/services')
@@ -247,6 +276,7 @@ export default function Services() {
 
   return (
     <section
+      id="services"
       style={{ background: '#000000', position: 'relative' }}
     >
       {/* Section header — scrolls normally above the stack */}
@@ -341,7 +371,7 @@ export default function Services() {
                 bottom: '28px',
                 left: '50%',
                 x: '-50%',
-                opacity: useTransform(scrollYProgress, [0, 0.08], [1, 0]),
+                opacity: scrollIndicatorOpacity,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -368,26 +398,14 @@ export default function Services() {
               flexDirection: 'column',
               gap: '10px',
             }}>
-              {services.map((_, i) => {
-                const segSize  = 1 / services.length;
-                const segStart = i * segSize;
-                const segEnd   = segStart + segSize;
-                return (
-                  <motion.div
-                    key={i}
-                    style={{
-                      width: '5px',
-                      height: '5px',
-                      borderRadius: '50%',
-                      background: useTransform(
-                        scrollYProgress,
-                        [segStart, segStart + 0.01, segEnd - 0.01, segEnd],
-                        ['rgba(255,255,255,0.2)', 'rgba(255,255,255,0.9)', 'rgba(255,255,255,0.9)', 'rgba(255,255,255,0.2)']
-                      ),
-                    }}
-                  />
-                );
-              })}
+              {services.map((_, i) => (
+                <ProgressDot
+                  key={i}
+                  i={i}
+                  total={services.length}
+                  progress={scrollYProgress}
+                />
+              ))}
             </div>
           </div>
         )}
