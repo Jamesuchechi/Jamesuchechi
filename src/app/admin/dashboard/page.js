@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiPieChart, FiActivity, FiUsers, FiClock, FiMessageSquare } from 'react-icons/fi';
+import { FiPieChart, FiActivity, FiUsers, FiClock, FiMessageSquare, FiMenu } from 'react-icons/fi';
 import Sidebar from '@/components/admin/Sidebar';
 import ProjectsTab from '@/components/admin/ProjectsTab';
 import SkillsTab from '@/components/admin/SkillsTab';
@@ -17,6 +17,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [admin, setAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [stats, setStats] = useState({
     projects: 0,
     skills: 0,
@@ -99,27 +100,41 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-[#F8FAFC]">
       <Sidebar 
         activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
+        setActiveTab={(tab) => {
+          setActiveTab(tab);
+          setIsSidebarOpen(false); // Close on mobile after selection
+        }} 
         admin={admin} 
         onLogout={handleLogout} 
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
       />
 
-      <main className="pl-72 min-h-screen">
-        <div className="max-w-7xl mx-auto px-10 py-10">
-          <header className="mb-10 flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-slate-900 tracking-tight capitalize">
-                {activeTab} Management
-              </h1>
-              <p className="text-slate-500 mt-1">
-                Configure and monitor your portfolio components
-              </p>
+      <main className="lg:pl-72 min-h-screen">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-6 lg:py-10">
+          <header className="mb-8 lg:mb-10 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => setIsSidebarOpen(true)}
+                className="p-2 -ml-2 text-slate-500 hover:text-slate-900 lg:hidden"
+              >
+                <FiMenu size={24} />
+              </button>
+              <div>
+                <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight capitalize">
+                  {activeTab} Management
+                </h1>
+                <p className="hidden xs:block text-slate-500 mt-1 text-sm lg:text-base">
+                  Configure and monitor your portfolio components
+                </p>
+              </div>
             </div>
             
             <div className="flex gap-3">
               <div className="bg-white border border-slate-200 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm text-sm font-medium">
                 <FiClock className="text-indigo-600" />
-                <span className="text-slate-600">Last updated today</span>
+                <span className="text-slate-600 hidden sm:inline">Last updated today</span>
+                <span className="text-slate-600 sm:hidden">Today</span>
               </div>
             </div>
           </header>

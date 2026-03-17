@@ -10,10 +10,12 @@ import {
   FiLogOut,
   FiActivity,
   FiMessageCircle,
-  FiCheckCircle
+  FiCheckCircle,
+  FiX
 } from 'react-icons/fi';
+import { AnimatePresence } from 'framer-motion';
 
-export default function Sidebar({ activeTab, setActiveTab, admin, onLogout }) {
+export default function Sidebar({ activeTab, setActiveTab, admin, onLogout, isOpen, onClose }) {
   const menuItems = [
     { id: 'overview', label: 'Overview', icon: FiPieChart },
     { id: 'projects', label: 'Projects', icon: FiBriefcase },
@@ -26,16 +28,42 @@ export default function Sidebar({ activeTab, setActiveTab, admin, onLogout }) {
   ];
 
   return (
-    <div className="w-72 h-screen fixed left-0 top-0 bg-white border-r border-slate-100 flex flex-col z-50">
-      <div className="p-8">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
-            <FiActivity size={24} />
+    <>
+      {/* Mobile Overlay */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] lg:hidden"
+          />
+        )}
+      </AnimatePresence>
+
+      <div className={`
+        fixed inset-y-0 left-0 w-72 bg-white border-r border-slate-100 flex flex-col z-[70] 
+        transition-transform duration-300 lg:translate-x-0
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        <div className="p-8">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+                <FiActivity size={24} />
+              </div>
+              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+                Admin
+              </span>
+            </div>
+            <button 
+              onClick={onClose}
+              className="p-2 text-slate-400 hover:text-slate-600 lg:hidden"
+            >
+              <FiX size={20} />
+            </button>
           </div>
-          <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-            Admin Panel
-          </span>
-        </div>
 
         <nav className="space-y-2">
           {menuItems.map((item) => {
@@ -86,6 +114,7 @@ export default function Sidebar({ activeTab, setActiveTab, admin, onLogout }) {
           Sign Out
         </button>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
