@@ -77,8 +77,12 @@ export default function Home() {
           <Hero />
         </SectionTransition>
 
-        {/* 2. Services → flip fold */}
-        <SectionTransition id="services" transition="flipFold" bgHex="#000000" className="min-h-screen">
+        {/* 2. Services → flip fold
+            ⚠️  NO min-h-screen here — Services controls its own height via the
+            internal scroll track ((services.length + 1) * 100vh).
+            Adding min-h-screen was clamping the wrapper to 100vh and breaking
+            the scroll-driven panel switching. */}
+        <SectionTransition id="services" transition="flipFold" bgHex="#000000">
           <Services />
         </SectionTransition>
 
@@ -87,7 +91,7 @@ export default function Home() {
           <Projects />
         </SectionTransition>
 
-        {/* 4. Process → page peel  (new) */}
+        {/* 4. Process → page peel */}
         <SectionTransition id="process" transition="pagePeel" bgHex="#ffffff" className="min-h-screen">
           <Process />
         </SectionTransition>
@@ -102,17 +106,17 @@ export default function Home() {
           <About />
         </SectionTransition>
 
-        {/* 7. Testimonials → flip fold  (new) */}
+        {/* 7. Testimonials → flip fold */}
         <SectionTransition id="testimonials" transition="flipFold" bgHex="#ffffff" className="overflow-hidden">
           <Testimonials />
         </SectionTransition>
 
-        {/* 8. GitHub — no transition needed, thin section  (new) */}
+        {/* 8. GitHub — no transition needed */}
         <section id="github">
           <GitHub />
         </section>
 
-        {/* 9. Contact + Footer — end of page */}
+        {/* 9. Contact + Footer */}
         <section id="contact">
           <Contact />
           <Footer />

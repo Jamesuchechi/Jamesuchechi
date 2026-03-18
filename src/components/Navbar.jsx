@@ -190,7 +190,7 @@ export default function Navbar({ onEnterOS }) {
                   aria-label="Switch to JamesOS mode"
                 >
                   <span style={{ fontSize: '11px' }}>⊞</span>
-                  JamesOS
+                  James Ecosystem
                 </button>
               )}
 
@@ -267,7 +267,7 @@ export default function Navbar({ onEnterOS }) {
                     cursor: 'pointer',
                   }}
                 >
-                  ⊞ Switch to JamesOS
+                  ⊞ Switch to James Ecosystem
                 </motion.button>
               )}
 
