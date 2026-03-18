@@ -22,6 +22,9 @@ model Project {
   projectUrl  String?
   githubUrl   String?
   technologies String
+  problem      String?  @db.Text
+  process      String?  @db.Text
+  outcome      String?  @db.Text
   featured    Boolean  @default(false)
   order       Int      @default(0)
   createdAt   DateTime @default(now())
