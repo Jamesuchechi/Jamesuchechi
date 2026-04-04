@@ -60,7 +60,7 @@ export default function About() {
     <section 
       id="about" 
       ref={containerRef}
-      className="bg-white text-black relative z-10 overflow-hidden"
+      className="bg-white text-black relative z-10"
     >
       {/* ── Background Folio Mark ── */}
       <div className="absolute top-10 right-10 opacity-[0.03] pointer-events-none select-none">
@@ -70,10 +70,10 @@ export default function About() {
       <div className="max-w-7xl mx-auto px-6 sm:px-12">
         <div className="grid lg:grid-cols-12 gap-16 lg:gap-32 items-start">
           
-          {/* 1. Image Section (Sticky) */}
-          <div className="lg:col-span-5 relative group lg:sticky lg:top-0 lg:h-screen lg:flex lg:items-center py-20 lg:py-0">
+          {/* 1. Image Section (Sticky Pillar) */}
+          <div className="lg:col-span-5 relative group lg:sticky lg:top-0 lg:h-screen lg:flex lg:items-center py-20 lg:py-12">
             <motion.div
-              className="relative aspect-[4/5] w-full bg-[#f3f3f3] rounded-3xl overflow-hidden shadow-[0_60px_100px_-20px_rgba(0,0,0,0.1)]"
+              className="relative w-full h-full max-h-[85vh] bg-[#f3f3f3] rounded-[48px] overflow-hidden shadow-[0_60px_100px_-20px_rgba(0,0,0,0.1)] border border-black/5"
             >
               <div 
                 className="absolute inset-0 z-10 mix-blend-overlay pointer-events-none opacity-40"
@@ -100,7 +100,7 @@ export default function About() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              className="hidden lg:block absolute -bottom-10 -right-10 bg-white p-10 border border-black/5 shadow-2xl rounded-2xl z-20 max-w-[280px]"
+              className="hidden lg:block absolute bottom-8 -right-8 bg-white p-10 border border-black/5 shadow-2xl rounded-2xl z-20 max-w-[280px]"
             >
               <p className="text-[10px] font-mono tracking-[0.4em] uppercase text-black/30 mb-4 font-bold border-b border-black/5 pb-2">Technical Status</p>
               <p className="text-[11px] font-mono leading-relaxed text-black/60 italic">
