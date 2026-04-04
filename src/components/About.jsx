@@ -74,7 +74,7 @@ export default function About() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 sm:px-12">
-        <div className="grid lg:grid-cols-12 gap-16 lg:gap-32 items-start">
+        <div className="grid lg:grid-cols-12 gap-16 lg:gap-32">
           {/* 1. Image Section (Sticky Pillar) */}
           <div className="lg:col-span-5 relative">
             <div className="lg:sticky lg:top-0 lg:h-screen lg:flex lg:items-center py-20 lg:py-12">
