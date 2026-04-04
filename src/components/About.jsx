@@ -55,14 +55,15 @@ export default function About() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="relative h-[600px] bg-gradient-to-br from-black/5 to-black/10 rounded-2xl overflow-hidden"
+            className="relative aspect-[4/5] md:h-[650px] w-full bg-gradient-to-br from-black/5 to-black/10 rounded-2xl overflow-hidden shadow-2xl"
           >
             {about.profileImage ? (
               <Image
                 src={normalizeImageUrl(about.profileImage)}
                 alt={about.name}
                 fill
-                className="object-cover"
+                className="object-cover object-top"
+                priority
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center text-black/10 text-9xl font-bold">

@@ -330,11 +330,11 @@ export default function ProjectDetails({ params }) {
 
   return (
     <main className="min-h-screen bg-white">
-      {/* ── Prominent High-End Back Button ── */}
+      {/* ── Floating Back Button ── */}
       <nav className="fixed top-8 left-8 z-50">
         <Link 
           href="/#works"
-          className="group relative flex items-center gap-3 bg-black text-white px-6 py-3 rounded-full overflow-hidden transition-all hover:pr-8 hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)]"
+          className="group relative flex items-center gap-3 bg-black/40 backdrop-blur-md text-white px-6 py-3 rounded-full overflow-hidden transition-all hover:pr-8 hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] border border-white/10 hover:bg-black"
         >
           <FiArrowLeft className="group-hover:-translate-x-1 transition-transform relative z-10" />
           <span className="font-mono text-xs uppercase tracking-[0.2em] relative z-10">All Projects</span>
@@ -345,78 +345,115 @@ export default function ProjectDetails({ params }) {
         </Link>
       </nav>
 
-      {/* ── Hero & Gallery Section ── */}
-      <section className="pt-32 pb-24 px-6 md:px-12 bg-white">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 items-start">
-          {/* Info Side */}
-          <div className="lg:w-1/3 space-y-12">
+      {/* ── Cinematic Hero Section (Full Width Background) ── */}
+      <section className="relative min-h-[85vh] flex items-end overflow-hidden pb-24">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          {project.imageUrl && (
+            <Image
+              src={normalizeImageUrl(project.imageUrl)}
+              alt={project.title}
+              fill
+              className="object-cover"
+              priority
+            />
+          )}
+          {/* Multi-layered Gradients for readability */}
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent" />
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 w-full px-6 md:px-12">
+          <div className="max-w-7xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="flex items-center gap-3 mb-6">
-                <span className="text-[10px] tracking-[0.3em] uppercase text-black/30 font-mono">
+              <div className="flex items-center gap-4 mb-8">
+                <span className="px-4 py-1.5 rounded-full text-[10px] tracking-[0.3em] uppercase bg-white/10 backdrop-blur-md text-white border border-white/10 font-mono">
                   {project.category}
                 </span>
                 <span className="w-1.5 h-1.5 rounded-full" style={{ background: accentColor }} />
-                <span className="text-[10px] tracking-[0.3em] uppercase text-black/30 font-mono">
+                <span className="text-[10px] tracking-[0.3em] uppercase text-white/50 font-mono">
                   {project.year}
                 </span>
               </div>
+              
               <h1 
-                className="text-6xl md:text-8xl font-black uppercase text-black leading-[0.85] tracking-tight mb-8"
+                className="text-7xl md:text-[9rem] font-black uppercase text-white leading-[0.8] tracking-tight mb-4 max-w-5xl"
                 style={{ fontFamily: 'Georgia, serif' }}
               >
                 {project.title}
               </h1>
-              
-              {/* Tech Stack */}
-              <div className="flex flex-wrap gap-2 pt-4">
-                {techUsed.map((tech, i) => (
-                  <span 
-                    key={i} 
-                    className="text-[9px] uppercase tracking-widest border border-black/10 px-3 py-1.5 rounded-full font-mono text-black/60"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
             </motion.div>
+          </div>
+        </div>
+      </section>
 
-            {/* Links Block */}
-            <div className="flex gap-4 pt-4">
-              {project.projectUrl && (
-                <a 
-                  href={project.projectUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-between group h-14 border border-black/10 px-6 rounded-2xl hover:bg-black hover:text-white transition-all"
-                >
-                  <span className="font-mono text-xs uppercase tracking-widest">Live Site</span>
-                  <FiExternalLink className="group-hover:rotate-45 transition-transform" />
-                </a>
-              )}
-              {project.githubUrl && (
-                <a 
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-between group h-14 border border-black/10 px-6 rounded-2xl hover:bg-black hover:text-white transition-all"
-                >
-                  <span className="font-mono text-xs uppercase tracking-widest">Code</span>
-                  <FiGithub />
-                </a>
-              )}
-            </div>
+      {/* ── Tech Stack & Links BridgeSection ── */}
+      <section className="py-12 bg-white border-b border-black/5">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-12">
+          {/* Tech Stack */}
+          <div className="flex flex-wrap gap-2 md:max-w-2xl">
+            {techUsed.map((tech, i) => (
+              <span 
+                key={i} 
+                className="text-[10px] md:text-[11px] uppercase tracking-widest border border-black/10 px-4 py-2 rounded-full font-mono text-black/60 hover:bg-black hover:text-white transition-all cursor-default"
+              >
+                {tech}
+              </span>
+            ))}
           </div>
 
-          {/* Gallery Side (Instagram-style) */}
+          {/* Action Links */}
+          <div className="flex gap-4 w-full md:w-auto">
+            {project.projectUrl && (
+              <a 
+                href={project.projectUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-1 items-center justify-between gap-4 px-8 h-14 bg-black text-white rounded-full hover:scale-105 transition-transform"
+              >
+                <span className="font-mono text-[10px] uppercase tracking-widest">Live Site</span>
+                <FiExternalLink className="group-hover:rotate-45 transition-transform" />
+              </a>
+            )}
+            {project.githubUrl && (
+              <a 
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-center w-14 h-14 border border-black/10 rounded-full hover:bg-black hover:text-white transition-all"
+              >
+                <FiGithub size={20} />
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Instagram-style Gallery Section (Standalone) ── */}
+      <section className="py-24 px-6 md:px-12 bg-gray-50/50 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-12 flex justify-between items-end">
+            <div>
+              <p className="text-[10px] uppercase font-mono tracking-widest text-black/30 mb-2">Visual Showcase</p>
+              <h2 className="text-4xl font-bold italic" style={{ fontFamily: 'Georgia, serif' }}>The Gallery</h2>
+            </div>
+            <div className="text-[10px] font-mono text-black/20 uppercase tracking-widest">
+              {allImages.length} Images / Project Showcase
+            </div>
+          </div>
+          
           <motion.div 
-            className="lg:w-2/3 w-full"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            className="w-full"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
           >
             <GalleryCarousel 
               images={allImages} 
