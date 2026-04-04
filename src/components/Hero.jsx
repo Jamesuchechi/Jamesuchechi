@@ -152,12 +152,12 @@ export default function Hero() {
           {/* Main Heading (Restored Animations) */}
           <motion.h1
             variants={itemMotion}
-            className="text-7xl sm:text-8xl md:text-[10rem] lg:text-[13rem] font-black tracking-tighter mb-8 leading-[0.75] uppercase"
+            className="text-7xl sm:text-8xl md:text-[8xl] lg:text-[13rem] font-black tracking-tighter mb-8 leading-[0.75] uppercase"
           >
             <motion.span 
               className="block overflow-hidden"
               animate={{ 
-                color: ['#FFFFFF', '#D4AF37', '#702963', '#4169E1', '#FFFFFF'],
+                color: ['#FFFFFF', '#FF3B00', '#00E5FF', '#FF0099', '#AAFF00', '#FFFFFF'],
               }}
               transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
             >
@@ -169,11 +169,12 @@ export default function Hero() {
               animate={{ 
                 backgroundPosition: ['0% center', '200% center'],
                 backgroundImage: [
-                  'linear-gradient(to right, #FFFFFF, #D4AF37, #4169E1, #FFFFFF)',
-                  'linear-gradient(to right, #4169E1, #FFFFFF, #D4AF37, #4169E1)',
+                  'linear-gradient(to right, #FFFFFF, #FF3B00, #00E5FF, #FFFFFF)',
+                  'linear-gradient(to right, #00E5FF, #FFFFFF, #FF0099, #00E5FF)',
+                  'linear-gradient(to right, #FF0099, #FFFFFF, #AAFF00, #FF0099)',
                 ]
               }}
-              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+              transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
             >
               UCHECHI
             </motion.span>

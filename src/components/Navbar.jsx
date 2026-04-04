@@ -138,14 +138,17 @@ export default function Navbar({ onEnterOS }) {
                     key={link.name}
                     href={link.href}
                     onClick={e => { e.preventDefault(); scrollTo(link.href); }}
-                    className="relative text-[10px] uppercase font-mono tracking-[0.2em] transition-colors group"
-                    style={{ color: isActive ? '#ffffff' : 'rgba(255,255,255,0.45)' }}
+                    className="relative text-[10px] uppercase font-mono tracking-[0.3em] transition-colors group font-bold"
+                    style={{ 
+                      color: isActive ? '#FFFFFF' : 'rgba(255,255,255,0.4)',
+                      fontFamily: '"Courier New", monospace' 
+                    }}
                     aria-current={isActive ? 'page' : undefined}
                   >
                     {link.name}
 
                     <motion.span
-                      className="absolute -bottom-2 left-0 h-[1.5px] bg-white rounded-full"
+                      className="absolute -bottom-2 left-0 h-[2px] bg-[#FF3B00] rounded-full"
                       initial={false}
                       animate={{ width: isActive ? '100%' : '0%', opacity: isActive ? 1 : 0 }}
                       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
@@ -166,9 +169,10 @@ export default function Navbar({ onEnterOS }) {
               {onEnterOS && (
                 <button
                   onClick={onEnterOS}
-                  className="hidden md:flex items-center gap-3 relative z-[60] px-5 py-2.5 rounded-full border border-white/10 bg-white/5 text-[11px] font-mono tracking-widest text-white/70 hover:bg-white hover:text-black transition-all group"
+                  className="hidden lg:flex items-center gap-3 relative z-[60] px-6 py-2.5 rounded-full border border-[#FF3B00]/20 bg-[#FF3B00]/5 text-[10px] font-mono font-bold tracking-[0.3em] text-[#FF3B00] hover:bg-[#FF3B00] hover:text-black transition-all group uppercase"
+                  style={{ fontFamily: '"Courier New", monospace' }}
                 >
-                  <span className="text-[12px] group-hover:rotate-[360deg] transition-transform duration-500">⊞</span>
+                  <span className="text-[14px] group-hover:rotate-[360deg] transition-transform duration-700">⊞</span>
                   Ecosystem
                 </button>
               )}
@@ -196,10 +200,15 @@ export default function Navbar({ onEnterOS }) {
             initial="closed"
             animate="open"
             exit="closed"
-            className="fixed inset-0 bg-black z-40 md:hidden"
+            className="fixed inset-0 bg-[#080808] z-40 md:hidden overflow-hidden"
           >
-            <div className="flex flex-col items-center justify-center h-full px-6">
-              <nav className="flex flex-col items-center gap-8">
+            {/* Background Text Overlay */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none select-none flex items-center justify-center">
+              <h2 className="text-[40vw] font-black uppercase tracking-tighter -rotate-12">INDEX</h2>
+            </div>
+
+            <div className="flex flex-col items-start justify-center h-full px-12 relative z-10">
+              <nav className="flex flex-col items-start gap-6">
                 {NAV_LINKS.map((link, i) => {
                   const isActive = activeId === link.href.slice(1);
                   return (
@@ -212,15 +221,21 @@ export default function Navbar({ onEnterOS }) {
                       exit="closed"
                       href={link.href}
                       onClick={e => { e.preventDefault(); scrollTo(link.href); }}
-                      className="text-4xl md:text-5xl font-bold transition-colors relative group"
-                      style={{ color: isActive ? '#ffffff' : 'rgba(255,255,255,0.45)' }}
+                      className="text-5xl sm:text-7xl font-black uppercase tracking-tighter transition-all duration-500 relative group"
+                      style={{ 
+                        color: isActive ? '#FF3B00' : '#FFFFFF',
+                        fontFamily: 'Georgia, serif',
+                        fontStyle: 'italic'
+                      }}
                     >
                       <span className="relative">
                         {link.name}
-                        <span
-                          className="absolute -bottom-2 left-0 h-1 rounded-full bg-white transition-all"
-                          style={{ width: isActive ? '100%' : '0%' }}
-                        />
+                        {isActive && (
+                          <motion.span 
+                            layoutId="mobileNavActive"
+                            className="absolute -left-8 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full bg-[#FF3B00]"
+                          />
+                        )}
                       </span>
                     </motion.a>
                   );
@@ -230,35 +245,27 @@ export default function Navbar({ onEnterOS }) {
               {/* JamesOS button — mobile menu */}
               {onEnterOS && (
                 <motion.button
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 }}
                   onClick={() => { setIsOpen(false); onEnterOS(); }}
-                  style={{
-                    marginTop: '40px',
-                    padding: '10px 28px',
-                    borderRadius: '24px',
-                    border: '0.5px solid rgba(255,255,255,0.2)',
-                    background: 'rgba(255,255,255,0.06)',
-                    color: 'rgba(255,255,255,0.7)',
-                    fontSize: '13px',
-                    fontFamily: 'var(--font-geist-mono, monospace)',
-                    cursor: 'pointer',
-                  }}
+                  className="mt-16 px-8 py-4 rounded-full border border-[#FF3B00]/30 bg-[#FF3B00]/10 text-[#FF3B00] text-[10px] font-mono font-bold tracking-[0.3em] uppercase italic"
+                  style={{ fontFamily: '"Courier New", monospace' }}
                 >
-                  ⊞ Switch to James Ecosystem
+                  ⊞ Access Ecosystem
                 </motion.button>
               )}
 
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.55 }}
-                className="absolute bottom-12 left-0 right-0 px-6 text-center"
+                transition={{ delay: 1 }}
+                className="absolute bottom-12 left-12 right-12 flex justify-between items-center"
               >
-                <p className="text-white/30 text-sm">
-                  Available for opportunities worldwide
-                </p>
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-px bg-white/20" />
+                  <p className="font-mono text-[9px] tracking-[0.3em] text-white/30 uppercase">James Uchechi // Record_2026</p>
+                </div>
               </motion.div>
             </div>
           </motion.div>
