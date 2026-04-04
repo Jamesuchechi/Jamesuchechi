@@ -25,12 +25,7 @@ export default function About() {
     }
   };
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
 
-  const imgY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
 
   if (loading) {
     return (
