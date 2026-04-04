@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -275,13 +275,7 @@ export default function ProjectDetails({ params }) {
     getSlug();
   }, [params]);
 
-  useEffect(() => {
-    if (slug) {
-      fetchProject();
-    }
-  }, [slug]);
-
-  const fetchProject = async () => {
+  const fetchProject = useCallback(async () => {
     if (!slug) return;
     try {
       const res = await fetch('/api/projects');
@@ -298,7 +292,13 @@ export default function ProjectDetails({ params }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [slug]);
+
+  useEffect(() => {
+    if (slug) {
+      fetchProject();
+    }
+  }, [slug, fetchProject]);
 
   if (loading) {
     return (
@@ -449,7 +449,7 @@ export default function ProjectDetails({ params }) {
             className="text-4xl md:text-7xl font-bold italic mb-12 uppercase" 
             style={{ fontFamily: 'Georgia, serif' }}
           >
-            Interested? <br /> <span style={{ color: accentColor }}>Let's work together.</span>
+            Interested? <br /> <span style={{ color: accentColor }}>Let&apos;s work together.</span>
           </h2>
           <Link
             href="/#contact"
