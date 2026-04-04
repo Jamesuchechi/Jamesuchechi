@@ -68,49 +68,47 @@ export default function About() {
         </h2>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-12">
-        <div className="grid lg:grid-cols-12 gap-16 lg:gap-32">
-          {/* 1. Image Section (Sticky Pillar) */}
-          <div className="lg:col-span-5 relative">
-            <div className="lg:sticky lg:top-0 lg:h-screen lg:flex lg:items-center py-20 lg:py-12">
-              <motion.div className="relative w-full h-full max-h-[85vh] bg-[#f3f3f3] rounded-[48px] overflow-hidden shadow-[0_60px_100px_-20px_rgba(0,0,0,0.1)] border border-black/5">
-                <div
-                  className="absolute inset-0 z-10 mix-blend-overlay pointer-events-none opacity-40"
-                  style={{ backgroundImage: `url("${noiseDataUrl}")` }}
+      <div className="grid grid-cols-1 lg:grid-cols-2 items-stretch min-h-screen">
+        {/* 1. Image Section (Sticky Full-Bleed Pillar) */}
+        <div className="relative h-[60vh] lg:h-auto overflow-hidden">
+          <div className="lg:sticky lg:top-0 lg:h-screen w-full">
+            <motion.div className="relative w-full h-full bg-[#f3f3f3] overflow-hidden">
+              <div
+                className="absolute inset-0 z-10 mix-blend-overlay pointer-events-none opacity-40"
+                style={{ backgroundImage: `url("${noiseDataUrl}")` }}
+              />
+              {about.profileImage ? (
+                <Image
+                  src={normalizeImageUrl(about.profileImage)}
+                  alt={about.name}
+                  fill
+                  className="object-cover object-top transition-transform duration-1000 saturate-[0.85] hover:saturate-100"
+                  priority
                 />
-                {about.profileImage ? (
-                  <Image
-                    src={normalizeImageUrl(about.profileImage)}
-                    alt={about.name}
-                    fill
-                    className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                    priority
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center text-black/5 text-9xl font-bold">
-                    {about.name
-                      ? about.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")
-                          .toUpperCase()
-                      : "JU"}
-                  </div>
-                )}
-              </motion.div>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center text-black/5 text-9xl font-bold">
+                  {about.name
+                    ? about.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()
+                    : "JU"}
+                </div>
+              )}
 
-              {/* Decorative Folio Card */}
+              {/* Decorative Folio Card (Now Floating inside the image area) */}
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.5, duration: 0.8 }}
-                className="hidden lg:block absolute bottom-8 -right-8 bg-white p-10 border border-black/5 shadow-2xl rounded-2xl z-20 max-w-[280px]"
+                transition={{ delay: 0.8, duration: 0.8 }}
+                className="hidden lg:block absolute bottom-12 right-12 bg-white/90 backdrop-blur-md p-8 border border-black/5 shadow-2xl rounded-2xl z-20 max-w-[260px]"
               >
-                <p className="text-[10px] font-mono tracking-[0.4em] uppercase text-black/30 mb-4 font-bold border-b border-black/5 pb-2">
+                <p className="text-[9px] font-mono tracking-[0.4em] uppercase text-black/40 mb-3 font-bold border-b border-black/5 pb-2">
                   Technical Status
                 </p>
-                <p className="text-[11px] font-mono leading-relaxed text-black/60 italic">
+                <p className="text-[11px] font-mono leading-relaxed text-black/70 italic">
                   Currently refining the boundaries between{" "}
                   <span className="text-black font-bold">
                     Digital Excellence
@@ -119,11 +117,13 @@ export default function About() {
                   <span className="text-black font-bold">Human Intuition</span>.
                 </p>
               </motion.div>
-            </div>
+            </motion.div>
           </div>
+        </div>
 
-          {/* 2. Content Section (Editorial Spread) */}
-          <div className="lg:col-span-7 pt-12 md:pt-32 lg:pt-64 pb-32 md:pb-64">
+        {/* 2. Content Section (Large Typography Perspective) */}
+        <div className="relative flex flex-col justify-center px-8 sm:px-16 lg:px-24 py-24 lg:py-32">
+          <div className="max-w-2xl mx-auto lg:mx-0">
             {/* Meta Label */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -221,9 +221,9 @@ export default function About() {
                 </span>
               </div>
             </motion.div>
+            </div>
           </div>
         </div>
-      </div>
     </section>
   );
 }
