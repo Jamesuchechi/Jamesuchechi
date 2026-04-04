@@ -43,55 +43,48 @@ export default function Process() {
   }, []);
 
   const displayed = steps.length > 0 ? steps : DEFAULT_STEPS;
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
 
   return (
     <section 
       id="process" 
       ref={containerRef}
-      className="bg-white text-black py-32 px-6 sm:px-12 relative overflow-hidden"
+      className="bg-white text-black relative z-10"
+      style={{ height: `${displayed.length * 150}vh` }}
     >
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-32 flex flex-col md:flex-row justify-between items-baseline gap-6 border-b border-black/5 pb-12">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-6xl md:text-9xl font-black uppercase tracking-tighter"
-          >
-            How I Build /
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-[10px] font-mono tracking-[0.2em] uppercase text-black/30"
-          >
-            (The Technical Workflow)
-          </motion.p>
+      {/* Sticky Perspective Wrapper */}
+      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden [perspective:1500px]">
+        {/* Section Title (Stationary Header) */}
+        <div className="absolute top-12 left-1/2 -translate-x-1/2 flex items-baseline gap-4 z-50 pointer-events-none opacity-20">
+          <h2 className="text-[10px] font-mono tracking-[0.4em] uppercase">How I Build // Process</h2>
+          <div className="w-12 h-px bg-black/10" />
         </div>
 
         {loading ? (
-          <div className="flex justify-center py-40">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
-              className="w-12 h-12 border-2 border-black/5 border-t-black rounded-full"
-            />
-          </div>
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+            className="w-12 h-12 border-2 border-black/5 border-t-black rounded-full z-10"
+          />
         ) : (
-          <div className="relative">
-            {/* Steps Vertical List */}
-            <div className="space-y-40 md:space-y-64 relative z-10">
-              {displayed.map((step, index) => (
-                <ProcessStep 
+          <div className="relative w-full max-w-7xl mx-auto h-full px-6 flex items-center justify-center">
+            {displayed.map((step, index) => {
+              const start = index / displayed.length;
+              const end = (index + 1) / displayed.length;
+              return (
+                <ProcessPage 
                   key={step.id} 
                   step={step} 
                   index={index} 
                   total={displayed.length}
+                  progress={scrollYProgress}
+                  range={[start, end]}
                 />
-              ))}
-            </div>
+              );
+            })}
           </div>
         )}
       </div>
@@ -99,66 +92,88 @@ export default function Process() {
   );
 }
 
-function ProcessStep({ step, index, total }) {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "center center"]
-  });
+function ProcessPage({ step, index, total, progress, range }) {
+  // Mapping rotateX from 0 to -110 as we scroll through the step's range
+  const rotateX = useTransform(progress, range, [0, -110]);
+  const translateY = useTransform(progress, range, [0, -100]);
+  const translateZ = useTransform(progress, range, [0, -100]);
+  const opacity = useTransform(progress, [range[0], range[1] - 0.05, range[1]], [1, 1, 0]);
 
-  const opacity = useSpring(useTransform(scrollYProgress, [0, 0.5], [0, 1]));
-  const y = useSpring(useTransform(scrollYProgress, [0, 0.5], [50, 0]));
+  // Back of page shadow
+  const shadow = useTransform(progress, range, [0, 0.4]);
 
   return (
     <motion.div 
-      ref={ref}
-      style={{ opacity, y }}
-      className="grid lg:grid-cols-12 gap-12 lg:gap-24 items-start"
+      style={{
+        zIndex: total - index,
+        rotateX,
+        translateY,
+        translateZ,
+        opacity,
+        transformOrigin: "top",
+        position: index === 0 ? 'relative' : 'absolute',
+      }}
+      className="w-full max-w-5xl bg-white border border-black/[0.03] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.05)] rounded-2xl p-12 md:p-24 overflow-hidden [backface-visibility:hidden]"
     >
-      {/* Step Metadata (Monospace) */}
-      <div className="lg:col-span-3 pt-4">
-        <div className="flex flex-col gap-2">
-          <span className="text-[12px] font-mono tracking-[0.3em] font-bold">
-            STEP {String(step.stepNumber || index + 1).padStart(2, '0')}
-          </span>
-          {step.durationHint && (
-            <span className="text-[10px] font-mono tracking-[0.2em] text-black/30 uppercase italic">
-              — {step.durationHint}
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Step Content (Editorial) */}
-      <div className="lg:col-span-9">
-        <h3 
-          className="text-5xl md:text-8xl font-black italic mb-10 leading-[0.9] tracking-tighter"
-          style={{ fontFamily: 'Georgia, serif' }}
-        >
-          {step.title}
-        </h3>
+      {/* ── Page Front Side ── */}
+      <div className="relative h-full flex flex-col justify-between">
         
-        <div className="flex flex-col md:flex-row gap-12 items-end">
-          <p className="text-xl md:text-2xl text-black/70 leading-relaxed max-w-2xl font-medium">
-            {step.description}
-          </p>
-          
-          <div className="hidden md:flex flex-1 flex-col items-end gap-4">
-            <div className="w-px h-24 bg-black/10 transition-all group-hover:h-32" />
-            <span className="text-[10px] font-mono tracking-[0.3em] text-black/20 uppercase vertical-lr">
-              {index + 1 === total ? 'END_OF_PATH' : 'NEXT_STATION'}
+        {/* Phase Header */}
+        <div className="flex justify-between items-start mb-20 border-b border-black/5 pb-10">
+          <div className="flex flex-col gap-2">
+            <span className="text-[12px] font-mono tracking-[0.3em] font-bold">
+              FOLDER {String(step.stepNumber || index + 1).padStart(2, '0')}
             </span>
+            <span className="text-[10px] font-mono tracking-[0.2em] text-black/30 uppercase italic">
+              (Editorial // Process)
+            </span>
+          </div>
+          <div className="text-[11px] font-mono tracking-widest text-black/40">
+            PHASE {step.durationHint || '01'}
           </div>
         </div>
 
-        {/* Dynamic Underline / Divider */}
-        <motion.div 
-          initial={{ width: 0 }}
-          whileInView={{ width: '100%' }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, delay: 0.2 }}
-          className="h-px bg-black/5 mt-20"
-        />
+        {/* Main Content (Editorial) */}
+        <div className="flex-1">
+          <h3 
+            className="text-6xl md:text-9xl font-black italic mb-12 leading-[0.9] tracking-tighter"
+            style={{ fontFamily: 'Georgia, serif' }}
+          >
+            {step.title}
+          </h3>
+          
+          <div className="flex flex-col md:flex-row gap-16 items-end">
+            <p className="text-2xl md:text-3xl text-black/80 leading-relaxed max-w-3xl font-medium tracking-tight">
+              {step.description}
+            </p>
+            
+            <div className="hidden md:flex flex-1 flex-col items-end gap-6 mb-2">
+              <div className="w-px h-32 bg-black/10" />
+              <span className="text-[10px] font-mono tracking-[0.3em] text-black/20 uppercase vertical-lr py-4 font-bold">
+                {index + 1 === total ? 'FINAL_STATION' : 'NEXT_CHAPTER'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Folio Bottom (Book Style) */}
+        <div className="mt-20 pt-10 border-t border-black/5 flex justify-between items-center font-mono text-[10px] tracking-[0.4em] text-black/20 uppercase">
+          <span>{step.title}</span>
+          <span className="font-bold text-black/40">Folio {index + 1} // {total}</span>
+        </div>
+      </div>
+
+      {/* ── Page Back Side (Simulated Paper) ── */}
+      <motion.div 
+        style={{ opacity: shadow }}
+        className="absolute inset-0 bg-[#f9f9f9] pointer-events-none mix-blend-multiply"
+      />
+      <div 
+        className="absolute inset-0 bg-white ring-1 ring-black/5 rounded-2xl -z-10 [transform:rotateX(180deg)]"
+        style={{ backfaceVisibility: 'visible' }}
+      >
+        {/* Subtle Paper Texture/Color for the "back" of the page */}
+        <div className="absolute inset-0 bg-[#f3f3f3] opacity-60" />
       </div>
     </motion.div>
   );
