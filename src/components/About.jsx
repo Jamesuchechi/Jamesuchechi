@@ -60,7 +60,7 @@ export default function About() {
     <section 
       id="about" 
       ref={containerRef}
-      className="bg-white text-black py-32 md:py-64 relative z-10 overflow-hidden"
+      className="bg-white text-black relative z-10 overflow-hidden"
     >
       {/* ── Background Folio Mark ── */}
       <div className="absolute top-10 right-10 opacity-[0.03] pointer-events-none select-none">
@@ -70,10 +70,9 @@ export default function About() {
       <div className="max-w-7xl mx-auto px-6 sm:px-12">
         <div className="grid lg:grid-cols-12 gap-16 lg:gap-32 items-start">
           
-          {/* 1. Image Section (Sticky Parallax) */}
-          <div className="lg:col-span-5 relative group lg:sticky lg:top-32">
+          {/* 1. Image Section (Sticky) */}
+          <div className="lg:col-span-5 relative group lg:sticky lg:top-0 lg:h-screen lg:flex lg:items-center py-20 lg:py-0">
             <motion.div
-              style={{ y: imgY }}
               className="relative aspect-[4/5] w-full bg-[#f3f3f3] rounded-3xl overflow-hidden shadow-[0_60px_100px_-20px_rgba(0,0,0,0.1)]"
             >
               <div 
@@ -111,7 +110,7 @@ export default function About() {
           </div>
 
           {/* 2. Content Section (Editorial Spread) */}
-          <div className="lg:col-span-7 pt-12 md:pt-0">
+          <div className="lg:col-span-7 pt-12 md:pt-32 lg:pt-64 pb-32 md:pb-64">
             {/* Meta Label */}
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
