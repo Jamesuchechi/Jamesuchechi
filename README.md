@@ -42,7 +42,10 @@ Here are some projects I'm proud of (check my repositories for more!):
 
 ## 📫 Get in Touch      
 - **Email**: okparajamesuchechi@gmail.com
-- **Portfolio**: https://jamesuchechi.com
+- **Portfolio**: https://jamesuchechi.vercel.app
+- **LinkedIn**: https://www.linkedin.com/in/jamesuchechi
+- **website**: https://jamesuchechi-website.vercel.app
+- **GitHub**: https://github.com/jamesuchechi
 - **X**:Jamesuchechi6
 
 I'm always excited to collaborate on open-source projects, discuss tech innovations, or explore data-driven solutions. Feel free to reach out!
