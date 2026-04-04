@@ -69,10 +69,15 @@ export default function About() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 items-stretch min-h-screen">
-        {/* 1. Image Section (Sticky Full-Bleed Pillar) */}
-        <div className="relative h-[60vh] lg:h-auto overflow-hidden">
-          <div className="lg:sticky lg:top-0 lg:h-screen w-full">
-            <motion.div className="relative w-full h-full bg-[#f3f3f3] overflow-hidden">
+        {/* 1. Image Section (Centered Sticky Pillar) */}
+        <div className="relative lg:h-auto">
+          <div className="lg:sticky lg:top-0 lg:h-screen flex items-center justify-center p-8 lg:p-20">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="relative w-full aspect-[4/5] max-h-[80vh] bg-[#f3f3f3] rounded-[60px] lg:rounded-[120px] overflow-hidden shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] border border-black/5"
+            >
               <div
                 className="absolute inset-0 z-10 mix-blend-overlay pointer-events-none opacity-40"
                 style={{ backgroundImage: `url("${noiseDataUrl}")` }}
@@ -103,7 +108,7 @@ export default function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.8, duration: 0.8 }}
-                className="hidden lg:block absolute bottom-12 right-12 bg-white/90 backdrop-blur-md p-8 border border-black/5 shadow-2xl rounded-2xl z-20 max-w-[260px]"
+                className="hidden lg:block absolute bottom-10 right-10 bg-white/95 backdrop-blur-md p-7 border border-black/5 shadow-xl rounded-3xl z-20 max-w-[240px]"
               >
                 <p className="text-[9px] font-mono tracking-[0.4em] uppercase text-black/40 mb-3 font-bold border-b border-black/5 pb-2">
                   Technical Status
