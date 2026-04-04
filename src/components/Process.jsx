@@ -1,67 +1,38 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-
-/**
- * Process — How I Work
- * ─────────────────────────────────────────────────────────────
- * Desktop: horizontal stepper with connecting line
- * Mobile:  vertical accordion, one step open at a time
- *
- * Seeded with sensible defaults if DB is empty so the section
- * never looks broken on first deploy.
- */
+import { useState, useEffect, useRef } from 'react';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
 const DEFAULT_STEPS = [
   {
     id: 'd1', stepNumber: 1, order: 0,
-    title: 'Discover',
-    description: 'Deep dive into your goals, constraints, and users. I ask the uncomfortable questions early so surprises don\'t surface later.',
-    icon: 'search',
-    durationHint: '1–2 days',
+    title: 'Discovery & Strategy',
+    description: 'We start by defining the "why." I dive deep into your business goals, user needs, and technical constraints to build a bulletproof roadmap.',
+    durationHint: 'Phase 01',
   },
   {
     id: 'd2', stepNumber: 2, order: 1,
-    title: 'Design',
-    description: 'Architecture decisions, data models, and interface sketches before any code. Cheap to change at this stage, expensive after.',
-    icon: 'pen',
-    durationHint: '2–3 days',
+    title: 'Architecture & Design',
+    description: 'Blueprints before bricks. I craft the information architecture and high-fidelity interface designs that prioritize both form and function.',
+    durationHint: 'Phase 02',
   },
   {
     id: 'd3', stepNumber: 3, order: 2,
-    title: 'Build',
-    description: 'Iterative delivery with working software at every checkpoint. Full-stack — API, database, UI — shipped as one coherent product.',
-    icon: 'code',
-    durationHint: '1–4 weeks',
+    title: 'Development & Iteration',
+    description: 'Translating designs into clean, scalable code. I build in iterative sprints, ensuring you have a working product at every milestone.',
+    durationHint: 'Phase 03',
   },
   {
     id: 'd4', stepNumber: 4, order: 3,
-    title: 'Deploy',
-    description: 'CI/CD pipelines, monitoring, and documentation handed off cleanly. I stick around for the first week post-launch.',
-    icon: 'rocket',
-    durationHint: '1–2 days',
+    title: 'Deployment & Growth',
+    description: 'Launching into the wild with full CI/CD pipelines and performance monitoring. I ensure your product is ready to scale from day one.',
+    durationHint: 'Phase 04',
   },
 ];
 
-function StepIcon({ name }) {
-  const icons = {
-    search: <path d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" strokeWidth="1.5" strokeLinecap="round"/>,
-    pen:    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>,
-    code:   <><polyline points="16 18 22 12 16 6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><polyline points="8 6 2 12 8 18" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></>,
-    rocket: <><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></>,
-    default:<circle cx="12" cy="12" r="10" strokeWidth="1.5"/>,
-  };
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      {icons[name] || icons.default}
-    </svg>
-  );
-}
-
 export default function Process() {
-  const [steps,       setSteps]       = useState([]);
-  const [loading,     setLoading]     = useState(true);
-  const [activeStep,  setActiveStep]  = useState(0);
+  const [steps, setSteps] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     fetch('/api/process')
@@ -74,228 +45,121 @@ export default function Process() {
   const displayed = steps.length > 0 ? steps : DEFAULT_STEPS;
 
   return (
-    <section id="process" className="bg-white text-black py-20 px-6 sm:px-12 overflow-hidden">
+    <section 
+      id="process" 
+      ref={containerRef}
+      className="bg-white text-black py-32 px-6 sm:px-12 relative overflow-hidden"
+    >
       <div className="max-w-7xl mx-auto">
-
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-16"
-        >
-          <h2 className="text-5xl md:text-7xl font-bold mb-4">How I work /</h2>
-          <p className="text-xl text-black/50">(Process)</p>
-        </motion.div>
+        <div className="mb-32 flex flex-col md:flex-row justify-between items-baseline gap-6 border-b border-black/5 pb-12">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-6xl md:text-9xl font-black uppercase tracking-tighter"
+          >
+            How I Build /
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-[10px] font-mono tracking-[0.2em] uppercase text-black/30"
+          >
+            (The Technical Workflow)
+          </motion.p>
+        </div>
 
         {loading ? (
-          <div className="flex justify-center py-20">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-black" />
+          <div className="flex justify-center py-40">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+              className="w-12 h-12 border-2 border-black/5 border-t-black rounded-full"
+            />
           </div>
         ) : (
-          <>
-            {/* ── Desktop: horizontal stepper ── */}
-            <div className="hidden md:block">
-              {/* Connector line */}
-              <div style={{ position: 'relative', marginBottom: '40px' }}>
-                <div style={{
-                  position: 'absolute',
-                  top: '24px',
-                  left: `${(0.5 / displayed.length) * 100}%`,
-                  right: `${(0.5 / displayed.length) * 100}%`,
-                  height: '1px',
-                  background: 'rgba(0,0,0,0.1)',
-                }} />
-                {/* Active fill */}
-                <motion.div
-                  style={{
-                    position: 'absolute',
-                    top: '24px',
-                    left: `${(0.5 / displayed.length) * 100}%`,
-                    height: '1px',
-                    background: '#000',
-                    transformOrigin: 'left',
-                  }}
-                  initial={{ width: '0%' }}
-                  animate={{ width: `${(activeStep / Math.max(displayed.length - 1, 1)) * (100 - (1 / displayed.length) * 200)}%` }}
-                  transition={{ duration: 0.4, ease: 'easeInOut' }}
+          <div className="relative">
+            {/* Steps Vertical List */}
+            <div className="space-y-40 md:space-y-64 relative z-10">
+              {displayed.map((step, index) => (
+                <ProcessStep 
+                  key={step.id} 
+                  step={step} 
+                  index={index} 
+                  total={displayed.length}
                 />
-
-                {/* Step nodes */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: `repeat(${displayed.length}, 1fr)`,
-                  position: 'relative',
-                }}>
-                  {displayed.map((step, i) => (
-                    <button
-                      key={step.id}
-                      onClick={() => setActiveStep(i)}
-                      style={{
-                        display: 'flex', flexDirection: 'column', alignItems: 'center',
-                        gap: '12px', background: 'none', border: 'none', cursor: 'pointer',
-                        padding: '0 8px',
-                      }}
-                    >
-                      <motion.div
-                        animate={{
-                          background: i <= activeStep ? '#000' : '#fff',
-                          borderColor: i <= activeStep ? '#000' : 'rgba(0,0,0,0.15)',
-                        }}
-                        transition={{ duration: 0.25 }}
-                        style={{
-                          width: '48px', height: '48px', borderRadius: '50%',
-                          border: '1.5px solid',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          flexShrink: 0,
-                          color: i <= activeStep ? '#fff' : 'rgba(0,0,0,0.4)',
-                        }}
-                      >
-                        <StepIcon name={step.icon || 'default'} />
-                      </motion.div>
-
-                      <span style={{
-                        fontSize: '11px', fontWeight: 500,
-                        letterSpacing: '.08em', textTransform: 'uppercase',
-                        color: i <= activeStep ? '#000' : 'rgba(0,0,0,0.35)',
-                        transition: 'color 0.25s',
-                      }}>
-                        {step.title}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Active step detail */}
-              <motion.div
-                key={activeStep}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '60px',
-                  paddingTop: '24px',
-                  borderTop: '0.5px solid rgba(0,0,0,0.08)',
-                }}
-              >
-                <div>
-                  <div style={{ fontSize: '11px', letterSpacing: '.1em', color: 'rgba(0,0,0,0.3)', marginBottom: '8px', textTransform: 'uppercase' }}>
-                    Step {displayed[activeStep]?.stepNumber ?? activeStep + 1}
-                  </div>
-                  <h3 style={{ fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 500, lineHeight: 1.1, marginBottom: '16px' }}>
-                    {displayed[activeStep]?.title}
-                  </h3>
-                  {displayed[activeStep]?.durationHint && (
-                    <span style={{
-                      display: 'inline-block',
-                      fontSize: '12px', padding: '4px 12px',
-                      borderRadius: '20px', border: '0.5px solid rgba(0,0,0,0.12)',
-                      color: 'rgba(0,0,0,0.5)',
-                    }}>
-                      {displayed[activeStep].durationHint}
-                    </span>
-                  )}
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <p style={{ fontSize: '16px', lineHeight: 1.75, color: 'rgba(0,0,0,0.65)' }}>
-                    {displayed[activeStep]?.description}
-                  </p>
-                </div>
-              </motion.div>
-
-              {/* Step navigation dots */}
-              <div style={{ display: 'flex', gap: '8px', marginTop: '32px' }}>
-                {displayed.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveStep(i)}
-                    style={{
-                      width: i === activeStep ? '24px' : '8px',
-                      height: '8px',
-                      borderRadius: '4px',
-                      background: i === activeStep ? '#000' : 'rgba(0,0,0,0.15)',
-                      border: 'none', cursor: 'pointer',
-                      transition: 'all 0.3s ease',
-                      padding: 0,
-                    }}
-                    aria-label={`Go to step ${i + 1}`}
-                  />
-                ))}
-              </div>
+              ))}
             </div>
-
-            {/* ── Mobile: vertical accordion ── */}
-            <div className="md:hidden space-y-3">
-              {displayed.map((step, i) => {
-                const isOpen = activeStep === i;
-                return (
-                  <div
-                    key={step.id}
-                    style={{
-                      border: `0.5px solid ${isOpen ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.08)'}`,
-                      borderRadius: '12px',
-                      overflow: 'hidden',
-                      transition: 'border-color 0.2s',
-                    }}
-                  >
-                    <button
-                      onClick={() => setActiveStep(isOpen ? -1 : i)}
-                      style={{
-                        width: '100%', textAlign: 'left',
-                        padding: '16px 20px',
-                        background: isOpen ? '#000' : '#fff',
-                        border: 'none', cursor: 'pointer',
-                        display: 'flex', alignItems: 'center', gap: '14px',
-                        transition: 'background 0.2s',
-                      }}
-                    >
-                      <div style={{
-                        width: '36px', height: '36px', borderRadius: '50%',
-                        background: isOpen ? '#fff' : 'rgba(0,0,0,0.06)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        flexShrink: 0,
-                        color: isOpen ? '#000' : 'rgba(0,0,0,0.5)',
-                      }}>
-                        <StepIcon name={step.icon || 'default'} />
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: '11px', color: isOpen ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.3)', letterSpacing: '.08em', marginBottom: '2px' }}>
-                          Step {step.stepNumber ?? i + 1}
-                          {step.durationHint && ` · ${step.durationHint}`}
-                        </div>
-                        <div style={{ fontWeight: 500, fontSize: '16px', color: isOpen ? '#fff' : '#000' }}>
-                          {step.title}
-                        </div>
-                      </div>
-                      <div style={{ color: isOpen ? '#fff' : 'rgba(0,0,0,0.3)', fontSize: '18px', transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
-                        ↓
-                      </div>
-                    </button>
-
-                    {isOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25 }}
-                        style={{ padding: '16px 20px 20px', background: '#fafafa' }}
-                      >
-                        <p style={{ fontSize: '15px', lineHeight: 1.7, color: 'rgba(0,0,0,0.65)' }}>
-                          {step.description}
-                        </p>
-                      </motion.div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </>
+          </div>
         )}
       </div>
     </section>
+  );
+}
+
+function ProcessStep({ step, index, total }) {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "center center"]
+  });
+
+  const opacity = useSpring(useTransform(scrollYProgress, [0, 0.5], [0, 1]));
+  const y = useSpring(useTransform(scrollYProgress, [0, 0.5], [50, 0]));
+
+  return (
+    <motion.div 
+      ref={ref}
+      style={{ opacity, y }}
+      className="grid lg:grid-cols-12 gap-12 lg:gap-24 items-start"
+    >
+      {/* Step Metadata (Monospace) */}
+      <div className="lg:col-span-3 pt-4">
+        <div className="flex flex-col gap-2">
+          <span className="text-[12px] font-mono tracking-[0.3em] font-bold">
+            STEP {String(step.stepNumber || index + 1).padStart(2, '0')}
+          </span>
+          {step.durationHint && (
+            <span className="text-[10px] font-mono tracking-[0.2em] text-black/30 uppercase italic">
+              — {step.durationHint}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Step Content (Editorial) */}
+      <div className="lg:col-span-9">
+        <h3 
+          className="text-5xl md:text-8xl font-black italic mb-10 leading-[0.9] tracking-tighter"
+          style={{ fontFamily: 'Georgia, serif' }}
+        >
+          {step.title}
+        </h3>
+        
+        <div className="flex flex-col md:flex-row gap-12 items-end">
+          <p className="text-xl md:text-2xl text-black/70 leading-relaxed max-w-2xl font-medium">
+            {step.description}
+          </p>
+          
+          <div className="hidden md:flex flex-1 flex-col items-end gap-4">
+            <div className="w-px h-24 bg-black/10 transition-all group-hover:h-32" />
+            <span className="text-[10px] font-mono tracking-[0.3em] text-black/20 uppercase vertical-lr">
+              {index + 1 === total ? 'END_OF_PATH' : 'NEXT_STATION'}
+            </span>
+          </div>
+        </div>
+
+        {/* Dynamic Underline / Divider */}
+        <motion.div 
+          initial={{ width: 0 }}
+          whileInView={{ width: '100%' }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 0.2 }}
+          className="h-px bg-black/5 mt-20"
+        />
+      </div>
+    </motion.div>
   );
 }

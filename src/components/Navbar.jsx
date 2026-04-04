@@ -113,22 +113,24 @@ export default function Navbar({ onEnterOS }) {
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={`fixed w-full z-[100] transition-all duration-300 ${
-          scrolled ? 'bg-black/80 backdrop-blur-md py-4' : 'bg-transparent py-5'
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        className={`fixed w-full z-[100] transition-all duration-500 ${
+          scrolled ? 'bg-black/40 backdrop-blur-xl py-4 border-b border-white/5' : 'bg-transparent py-6'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-5 sm:px-12">
+        <div className="max-w-7xl mx-auto px-6 sm:px-12">
           <div className="flex items-center justify-between">
 
             {/* Logo */}
-            <Link href="/" className="flex items-center text-white relative z-[60]">
+            <Link href="/" className="flex items-center text-white relative z-[60] group">
               <span className="sr-only">James Uchechi</span>
-              <img src="/next.svg" alt="JU logo" className="h-9 w-9" />
+              <div className="relative h-10 w-10 flex items-center justify-center bg-white/10 rounded-xl overflow-hidden border border-white/10 group-hover:bg-white group-hover:border-white transition-all">
+                <img src="/next.svg" alt="JU logo" className="h-6 w-6 invert group-hover:invert-0 transition-all" />
+              </div>
             </Link>
 
             {/* Desktop nav */}
-            <div className="hidden md:flex items-center gap-8">
+            <div className="hidden md:flex items-center gap-10">
               {NAV_LINKS.map(link => {
                 const isActive = activeId === link.href.slice(1);
                 return (
@@ -136,21 +138,21 @@ export default function Navbar({ onEnterOS }) {
                     key={link.name}
                     href={link.href}
                     onClick={e => { e.preventDefault(); scrollTo(link.href); }}
-                    className="relative text-sm uppercase tracking-wider transition-colors group"
-                    style={{ color: isActive ? '#ffffff' : 'rgba(255,255,255,0.55)' }}
+                    className="relative text-[10px] uppercase font-mono tracking-[0.2em] transition-colors group"
+                    style={{ color: isActive ? '#ffffff' : 'rgba(255,255,255,0.45)' }}
                     aria-current={isActive ? 'page' : undefined}
                   >
                     {link.name}
 
                     <motion.span
-                      className="absolute -bottom-1 left-0 h-px bg-white rounded-full"
+                      className="absolute -bottom-2 left-0 h-[1.5px] bg-white rounded-full"
                       initial={false}
                       animate={{ width: isActive ? '100%' : '0%', opacity: isActive ? 1 : 0 }}
-                      transition={{ duration: 0.28, ease: 'easeInOut' }}
+                      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                     />
 
                     {!isActive && (
-                      <span className="absolute -bottom-1 left-0 w-0 h-px bg-white/40 transition-all group-hover:w-full rounded-full" />
+                      <span className="absolute -bottom-2 left-0 w-0 h-[1px] bg-white/20 transition-all group-hover:w-full rounded-full" />
                     )}
                   </a>
                 );
@@ -158,46 +160,23 @@ export default function Navbar({ onEnterOS }) {
             </div>
 
             {/* Right side — JamesOS button + mobile toggle */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
 
-              {/* JamesOS toggle — desktop only, only rendered when prop is passed */}
+              {/* JamesOS toggle — desktop only */}
               {onEnterOS && (
                 <button
                   onClick={onEnterOS}
-                  className="hidden md:flex items-center gap-2 relative z-[60]"
-                  style={{
-                    padding: '6px 16px',
-                    borderRadius: '20px',
-                    border: '0.5px solid rgba(255,255,255,0.2)',
-                    background: 'rgba(255,255,255,0.06)',
-                    color: 'rgba(255,255,255,0.75)',
-                    fontSize: '12px',
-                    cursor: 'pointer',
-                    fontFamily: 'var(--font-geist-mono, monospace)',
-                    letterSpacing: '0.04em',
-                    transition: 'all 0.2s',
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.background    = 'rgba(255,255,255,0.12)';
-                    e.currentTarget.style.color         = '#fff';
-                    e.currentTarget.style.borderColor   = 'rgba(255,255,255,0.4)';
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.background    = 'rgba(255,255,255,0.06)';
-                    e.currentTarget.style.color         = 'rgba(255,255,255,0.75)';
-                    e.currentTarget.style.borderColor   = 'rgba(255,255,255,0.2)';
-                  }}
-                  aria-label="Switch to JamesOS mode"
+                  className="hidden md:flex items-center gap-3 relative z-[60] px-5 py-2.5 rounded-full border border-white/10 bg-white/5 text-[11px] font-mono tracking-widest text-white/70 hover:bg-white hover:text-black transition-all group"
                 >
-                  <span style={{ fontSize: '11px' }}>⊞</span>
-                  James Ecosystem
+                  <span className="text-[12px] group-hover:rotate-[360deg] transition-transform duration-500">⊞</span>
+                  Ecosystem
                 </button>
               )}
 
               {/* Mobile toggle */}
               <button
                 onClick={() => setIsOpen(v => !v)}
-                className="md:hidden text-white text-2xl relative z-[60] p-2"
+                className="md:hidden text-white text-3xl relative z-[60] p-2 hover:scale-110 transition-transform"
                 aria-label="Toggle menu"
                 aria-expanded={isOpen}
               >

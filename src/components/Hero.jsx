@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiArrowUpRight } from 'react-icons/fi';
 
@@ -43,8 +43,8 @@ export default function Hero() {
     switch (status) {
       case 'open':
         return {
-          text: `Open to opportunities ${monthLabel}'${yearLabel}`,
-          color: 'bg-orange-500'
+          text: `Available ${monthLabel}'${yearLabel}`,
+          color: 'bg-green-500'
         };
       case 'busy':
         return {
@@ -53,7 +53,7 @@ export default function Hero() {
         };
       default:
         return {
-          text: `Available for work ${monthLabel}'${yearLabel}`,
+          text: `Available ${monthLabel}'${yearLabel}`,
           color: 'bg-green-500'
         };
     }
@@ -73,194 +73,148 @@ export default function Hero() {
   };
   const itemMotion = {
     hidden: { opacity: 0, y: 18 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } },
+    show: { opacity: 1, y: 0, transition: { duration: 1, ease: [0.22, 1, 0.36, 1] } },
   };
 
   return (
     <section
-      className="relative min-h-screen overflow-hidden bg-[#07090c] text-white px-6 sm:px-12"
+      className="relative min-h-screen overflow-hidden bg-[#07090c] text-white px-6 sm:px-12 flex items-center justify-center pt-24"
     >
+      {/* ── Dynamic Background Layer ── */}
       <div className="absolute inset-0">
-        <div className="absolute -top-40 -left-40 h-[38rem] w-[38rem] rounded-full bg-[radial-gradient(circle,rgba(120,171,255,0.25),transparent_70%)] blur-2xl"></div>
-        <div className="absolute -bottom-52 -right-24 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(255,185,129,0.2),transparent_70%)] blur-3xl"></div>
-        <div className="absolute inset-0 opacity-60 [background-image:radial-gradient(#ffffff22_1px,transparent_1px)] [background-size:18px_18px]"></div>
-        <div className="absolute inset-0 opacity-15 mix-blend-soft-light [background-image:repeating-linear-gradient(0deg,rgba(255,255,255,0.06),rgba(255,255,255,0.06)_1px,transparent_1px,transparent_2px)]"></div>
+        <div className="absolute -top-40 -left-40 h-[38rem] w-[38rem] rounded-full bg-[radial-gradient(circle,rgba(120,171,255,0.15),transparent_70%)] blur-3xl"></div>
+        <div className="absolute -bottom-52 -right-24 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(255,185,129,0.1),transparent_70%)] blur-3xl"></div>
+        <div className="absolute inset-0 opacity-40 [background-image:radial-gradient(#ffffff11_1px,transparent_1px)] [background-size:24px_24px]"></div>
         <div
-          className="absolute inset-0 opacity-20"
+          className="absolute inset-0 opacity-20 mix-blend-overlay"
           style={{ backgroundImage: `url("${noiseDataUrl}")` }}
         ></div>
       </div>
 
-      <div className="absolute inset-0 pointer-events-none">
+      {/* ── Interactive Elements ── */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Rotating SVG Ellipses */}
         <motion.div
-          className="absolute left-1/2 top-1/2 h-[22rem] w-[22rem] -translate-x-1/2 -translate-y-1/2 opacity-60"
+          className="absolute left-1/2 top-1/2 h-[50rem] w-[50rem] -translate-x-1/2 -translate-y-1/2 opacity-30"
           style={{
-            transform: `translate(-50%, -50%) translate(${pointer.x * 8}px, ${pointer.y * 6}px)`,
+            transform: `translate(-50%, -50%) translate(${pointer.x * 12}px, ${pointer.y * 10}px)`,
           }}
           animate={{ rotate: 360 }}
-          transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+          transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
         >
           <svg viewBox="0 0 400 400" className="h-full w-full">
-            <ellipse
-              cx="200"
-              cy="200"
-              rx="160"
-              ry="95"
-              fill="none"
-              stroke="rgba(255,255,255,0.12)"
-              strokeWidth="1"
-            />
-            <ellipse
-              cx="200"
-              cy="200"
-              rx="165"
-              ry="100"
-              fill="none"
-              stroke="rgba(255,255,255,0.06)"
-              strokeWidth="1"
-            />
+            <ellipse cx="200" cy="200" rx="180" ry="110" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.5" />
+            <ellipse cx="200" cy="200" rx="185" ry="115" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5" />
           </svg>
         </motion.div>
 
+        {/* Floating Blurred Spheres (Interactive) */}
         <motion.div
-          className="absolute h-24 w-24 rounded-full border border-white/15 bg-white/5 blur-[1px]"
-          style={{
-            left: '12%',
-            top: '18%',
-            transform: `translate(${pointer.x * 18}px, ${pointer.y * 12}px)`,
-          }}
-          animate={{ y: [0, -14, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute h-44 w-44 rounded-full border border-white/10 bg-white/5 blur-[2px]"
+          style={{ left: '10%', top: '20%', x: pointer.x * 30, y: pointer.y * 20 }}
+          animate={{ y: [0, -20, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
-          className="absolute h-40 w-40 rounded-full border border-sky-200/20 bg-sky-200/5"
-          style={{
-            left: '68%',
-            top: '16%',
-            transform: `translate(${pointer.x * -22}px, ${pointer.y * 18}px)`,
-          }}
-          animate={{ y: [0, 18, 0] }}
+          className="absolute h-64 w-64 rounded-full border border-sky-400/10 bg-sky-400/5 blur-[1px]"
+          style={{ left: '70%', top: '15%', x: pointer.x * -40, y: pointer.y * 30 }}
+          animate={{ y: [0, 25, 0] }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute h-48 w-48 rounded-full border border-amber-400/10 bg-amber-400/5"
+          style={{ left: '15%', top: '70%', x: pointer.x * 20, y: pointer.y * -30 }}
+          animate={{ y: [0, 15, 0] }}
           transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
-          className="absolute h-28 w-28 rounded-full border border-amber-200/20 bg-amber-200/10"
-          style={{
-            left: '18%',
-            top: '68%',
-            transform: `translate(${pointer.x * 14}px, ${pointer.y * -16}px)`,
-          }}
-          animate={{ y: [0, 12, 0] }}
-          transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute h-32 w-32 rounded-full border border-white/5 bg-white/5"
+          style={{ left: '80%', top: '75%', x: pointer.x * -15, y: pointer.y * -15 }}
+          animate={{ y: [0, -12, 0] }}
+          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
         />
-        <motion.div
-          className="absolute h-16 w-16 rounded-full border border-white/10 bg-white/5"
-          style={{
-            left: '78%',
-            top: '70%',
-            transform: `translate(${pointer.x * -10}px, ${pointer.y * -10}px)`,
-          }}
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-        />
-
-        <div
-          className="absolute left-[8%] top-[40%] h-44 w-44 rounded-full"
-          style={{
-            background:
-              'radial-gradient(circle at 30% 30%, rgba(255,220,165,0.85), rgba(255,164,92,0.55) 45%, rgba(80,30,0,0.35) 70%, rgba(0,0,0,0) 72%)',
-            boxShadow: '0 0 120px rgba(255,173,97,0.35)',
-            transform: `translate(${pointer.x * 12}px, ${pointer.y * 8}px)`,
-          }}
-        >
-          <div className="absolute right-5 top-6 h-7 w-7 rounded-full bg-white/40 blur-[2px]"></div>
-          <div className="absolute -right-5 bottom-10 h-8 w-8 rounded-full bg-white/15"></div>
-        </div>
       </div>
 
-      <div className="relative z-10 flex min-h-screen items-center justify-center">
-        <div className="max-w-7xl w-full">
+      <div className="max-w-7xl w-full relative z-10">
         <motion.div variants={containerMotion} initial="hidden" animate="show">
           {/* Availability Badge */}
           <motion.div
             variants={itemMotion}
-            className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 mb-8 backdrop-blur"
+            className="inline-flex items-center gap-3 rounded-full border border-white/5 bg-white/5 pl-2 pr-6 py-2 mb-12 backdrop-blur-xl group cursor-default transition-all hover:bg-white/10"
           >
-            <span className={`w-2 h-2 ${avail.color} rounded-full animate-pulse`}></span>
-            <span className="text-sm">{avail.text}</span>
+            <div className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center p-2 overflow-hidden relative">
+              <span className={`absolute inset-0 ${avail.color} opacity-20 animate-ping rounded-full`}></span>
+              <span className={`h-2 w-2 ${avail.color} rounded-full relative z-10`}></span>
+            </div>
+            <span className="text-[10px] uppercase font-mono tracking-[0.2em] text-white/60">{avail.text}</span>
           </motion.div>
 
-          {/* Main Heading */}
+          {/* Main Heading (Restored Animations) */}
           <motion.h1
             variants={itemMotion}
-            className="text-4xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter mb-6 leading-[0.9]"
+            className="text-7xl sm:text-8xl md:text-[10rem] lg:text-[13rem] font-black tracking-tighter mb-8 leading-[0.75] uppercase"
           >
             <motion.span 
-              className="block"
+              className="block overflow-hidden"
               animate={{ 
-                color: ['#FFFFFF', '#D4AF37', '#702963', '#C0C0C0', '#4169E1', '#FFFFFF'],
+                color: ['#FFFFFF', '#D4AF37', '#702963', '#4169E1', '#FFFFFF'],
               }}
-              transition={{ 
-                duration: 10, 
-                repeat: Infinity, 
-                ease: "easeInOut" 
-              }}
+              transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
             >
               JAMES
             </motion.span>
             <motion.span 
-              className="block bg-gradient-to-r from-[#D4AF37] via-[#702963] to-[#4169E1] bg-clip-text text-transparent"
+              className="block bg-gradient-to-r from-white via-white/80 to-white bg-clip-text text-transparent opacity-90"
               style={{ backgroundSize: '200% auto' }}
               animate={{ 
                 backgroundPosition: ['0% center', '200% center'],
+                backgroundImage: [
+                  'linear-gradient(to right, #FFFFFF, #D4AF37, #4169E1, #FFFFFF)',
+                  'linear-gradient(to right, #4169E1, #FFFFFF, #D4AF37, #4169E1)',
+                ]
               }}
-              transition={{ 
-                duration: 7, 
-                repeat: Infinity, 
-                ease: "linear" 
-              }}
+              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
             >
               UCHECHI
             </motion.span>
           </motion.h1>
 
-          {/* Description */}
-          <motion.p
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              show: { 
-                opacity: 0.95, 
-                y: 0, 
-                transition: { duration: 0.8, delay: 0.5, ease: "easeOut" } 
-              }
-            }}
-            className="text-lg sm:text-xl md:text-2xl text-white font-medium max-w-2xl mb-10 leading-relaxed tracking-tight"
-          >
-            Open to job opportunities worldwide. Passionate about building polished, intuitive, 
-            and thoughtful digital experiences that leave a mark.
-          </motion.p>
-
-          {/* Action Buttons */}
-          <motion.div variants={itemMotion} className="flex flex-wrap gap-4">
-            <a
-              href="#contact"
-              className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/90 text-black px-8 py-4 text-base sm:text-lg font-medium shadow-[0_20px_60px_-20px_rgba(255,255,255,0.5)] hover:translate-y-0.5 hover:bg-white transition-all"
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 mt-12">
+            {/* Description / Mission */}
+            <motion.p
+              variants={{
+                hidden: { opacity: 0, x: -20 },
+                show: { 
+                  opacity: 1, 
+                  x: 0, 
+                  transition: { duration: 1, delay: 0.8, ease: "easeOut" } 
+                }
+              }}
+              className="text-2xl sm:text-3xl md:text-5xl text-white font-medium max-w-4xl leading-[1.1] italic tracking-tight"
+              style={{ fontFamily: 'Georgia, serif' }}
             >
-              CONTACT <FiArrowUpRight />
-            </a>
+              I build <span className="text-white/40">polished</span>, intuitive, and <span className="text-white">thoughtful</span> digital experiences that <span className="text-white">leave a mark</span>.
+            </motion.p>
 
-            {about?.resumeUrl && (
+            {/* Action Buttons */}
+            <motion.div variants={itemMotion} className="flex gap-4 shrink-0">
               <a
-                href={about.resumeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 text-white px-8 py-4 text-base sm:text-lg font-medium backdrop-blur hover:bg-white/10 transition-all"
+                href="#works"
+                className="group inline-flex items-center gap-4 rounded-full bg-white text-black px-10 py-5 text-xs font-mono uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-[0_20px_40px_-10px_rgba(255,255,255,0.3)]"
               >
-                RESUME
+                Portfolio
+                <FiArrowUpRight className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </a>
-            )}
-          </motion.div>
+
+              <a
+                href="#contact"
+                className="inline-flex items-center gap-4 rounded-full border border-white/10 bg-white/5 text-white px-10 py-5 text-xs font-mono uppercase tracking-[0.2em] backdrop-blur hover:bg-white/10 transition-all"
+              >
+                Let&apos;s Talk
+              </a>
+            </motion.div>
+          </div>
         </motion.div>
-        </div>
       </div>
     </section>
   );
