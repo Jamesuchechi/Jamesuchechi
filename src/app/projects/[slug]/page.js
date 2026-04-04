@@ -483,10 +483,13 @@ export default function ProjectDetails({ params }) {
       <section className="bg-[#080808] pt-12 pb-32 px-6">
         <div className="max-w-7xl mx-auto border-t border-white/5 pt-24 text-center">
           <h2 
-            className="text-4xl md:text-7xl font-bold italic mb-12 uppercase" 
+            className="text-5xl md:text-[10rem] font-black italic mb-12 uppercase text-white leading-[0.8] tracking-tighter" 
             style={{ fontFamily: 'Georgia, serif' }}
           >
-            Interested? <br /> <span style={{ color: accentColor }}>Let&apos;s work together.</span>
+            Interested? <br /> 
+            <span className="block mt-6" style={{ color: accentColor }}>
+              Let&apos;s work together.
+            </span>
           </h2>
           <Link
             href="/#contact"
