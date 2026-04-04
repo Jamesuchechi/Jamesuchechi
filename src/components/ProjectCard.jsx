@@ -105,6 +105,27 @@ export default function ProjectCard({ project, index, showDetailsHint = true }) 
                   <span>{project.year}</span>
                 </div>
               </div>
+
+              {/* Direct Link Icon (Front) */}
+              <Link 
+                href={`/projects/${slug}`}
+                onClick={e => e.stopPropagation()}
+                className="absolute top-10 right-10 z-30 h-14 w-14 bg-white rounded-full flex items-center justify-center text-black opacity-0 group-hover:opacity-100 transition-all duration-500 scale-50 group-hover:scale-100 hover:bg-[#FF3B00] hover:text-white"
+              >
+                <FiArrowUpRight size={24} />
+              </Link>
+
+              {/* Bottom "View" Label */}
+              <div className="absolute bottom-10 right-10 z-20 overflow-hidden hidden md:block">
+                <Link 
+                  href={`/projects/${slug}`}
+                  onClick={e => e.stopPropagation()}
+                  className="flex items-center gap-2 group/btn"
+                >
+                  <span className="font-mono text-[9px] tracking-[0.3em] text-white/40 uppercase font-bold translate-x-10 group-hover:translate-x-0 transition-transform duration-500">View Record //</span>
+                  <div className="h-px w-0 group-hover:w-8 bg-[#FF3B00] transition-all duration-500" />
+                </Link>
+              </div>
             </div>
           </div>
 

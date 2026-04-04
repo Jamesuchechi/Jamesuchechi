@@ -71,7 +71,7 @@ export default function About() {
         <div className="grid lg:grid-cols-12 gap-16 lg:gap-32 items-start">
           
           {/* 1. Image Section (Sticky Parallax) */}
-          <div className="lg:col-span-5 relative group">
+          <div className="lg:col-span-5 relative group lg:sticky lg:top-32">
             <motion.div
               style={{ y: imgY }}
               className="relative aspect-[4/5] w-full bg-[#f3f3f3] rounded-3xl overflow-hidden shadow-[0_60px_100px_-20px_rgba(0,0,0,0.1)]"
