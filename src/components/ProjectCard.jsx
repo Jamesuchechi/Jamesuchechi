@@ -53,7 +53,7 @@ export default function ProjectCard({ project, index, showDetailsHint = true }) 
       className="perspective-2000 group"
       style={{ perspective: '2000px' }}
     >
-      <div className="relative w-full h-96 transition-all duration-700 group-hover:scale-[0.97]" style={{ transformStyle: 'preserve-3d' }}>
+      <div className="relative w-full h-[500px] transition-all duration-700 group-hover:scale-[0.98]" style={{ transformStyle: 'preserve-3d' }}>
         <motion.div
           className="relative w-full h-full"
           style={{ transformStyle: 'preserve-3d' }}
@@ -131,10 +131,10 @@ export default function ProjectCard({ project, index, showDetailsHint = true }) 
 
           {/* ── Back Face (The Technical Folio) ── */}
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 backface-hidden"
             style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
           >
-            <div className="w-full h-full bg-white border border-black/5 rounded-3xl p-10 md:p-14 flex flex-col justify-between shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)]">
+            <div className="w-full h-full bg-white border border-black/5 rounded-3xl p-8 md:p-12 flex flex-col justify-between shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] overflow-hidden">
               
               {/* Close Button - Touch Only */}
               <button onClick={e => { e.stopPropagation(); unflip(); }} className="absolute right-6 top-6 md:hidden text-black/20 hover:text-black transition cursor-pointer z-50">

@@ -2,12 +2,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { FiLock, FiMail } from 'react-icons/fi';
+import { FiLock } from 'react-icons/fi';
 
 export default function AdminLogin() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    email: '',
     password: ''
   });
   const [error, setError] = useState('');
@@ -23,7 +22,7 @@ export default function AdminLogin() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: formData.email,
+          email: 'admin@portfolio.com', // This will be ignored or used as a placeholder by the API
           password: formData.password
         })
       });
@@ -57,7 +56,7 @@ export default function AdminLogin() {
             Admin Login
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Sign in to your admin account
+            Enter your password to access the dashboard
           </p>
         </div>
 
@@ -69,27 +68,6 @@ export default function AdminLogin() {
           )}
 
           <div className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiMail className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none bg-white text-gray-900 placeholder-gray-500 transition-all"
-                  placeholder="admin@example.com"
-                />
-              </div>
-            </div>
-
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                 Password
@@ -120,15 +98,6 @@ export default function AdminLogin() {
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
-          </div>
-
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Don&apos;t have an account?{' '}
-              <a href="/admin/register" className="font-medium text-black hover:text-gray-800">
-                Register here
-              </a>
-            </p>
           </div>
         </form>
       </motion.div>
