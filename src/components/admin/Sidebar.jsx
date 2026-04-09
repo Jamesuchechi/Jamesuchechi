@@ -23,7 +23,7 @@ import { AnimatePresence } from 'framer-motion';
 export default function Sidebar({ activeTab, setActiveTab, admin, onLogout, isOpen, onClose }) {
   const menuItems = [
     { id: 'overview',     label: 'Overview',     icon: FiPieChart },
-    { id: 'projects',     label: 'Projects',     icon: FiBriefcase },
+    { id: 'projects',     label: 'Projects & Case Studies', icon: FiBriefcase },
     { id: 'experience',   label: 'Experience',   icon: FiTerminal },
     { id: 'achievements', label: 'Achievements', icon: FiAward },
     { id: 'blog',         label: 'Blog',         icon: FiBook },

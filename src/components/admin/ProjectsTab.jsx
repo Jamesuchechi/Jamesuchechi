@@ -280,37 +280,53 @@ export default function ProjectsTab() {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2">The Problem</label>
-              <textarea
-                value={formData.problem}
-                onChange={(e) => setFormData({ ...formData, problem: e.target.value })}
-                rows={3}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none bg-white text-gray-900 placeholder-gray-500 resize-none transition-all"
-                placeholder="What challenge was this project trying to solve?"
-              />
-            </div>
+            {/* ── Cinematic Case Study Section ── */}
+            <div className="mt-12 pt-10 border-t-2 border-slate-100">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600">
+                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                </div>
+                <h4 className="text-lg font-bold text-slate-800">Project Detail / Case Study Content</h4>
+              </div>
+              <p className="text-sm text-slate-500 mb-8 max-w-md italic">
+                This data powers the high-impact "Deep Dive" section on the project detail page. 
+                Complete these to add that rich context you mentioned.
+              </p>
 
-            <div>
-              <label className="block text-sm font-medium mb-2">The Process</label>
-              <textarea
-                value={formData.process}
-                onChange={(e) => setFormData({ ...formData, process: e.target.value })}
-                rows={4}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none bg-white text-gray-900 placeholder-gray-500 resize-none transition-all"
-                placeholder="How did you go about building it?"
-              />
-            </div>
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-semibold mb-2 text-slate-700">The Problem</label>
+                  <textarea
+                    value={formData.problem}
+                    onChange={(e) => setFormData({ ...formData, problem: e.target.value })}
+                    rows={4}
+                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-slate-50 text-slate-900 placeholder-slate-400 resize-none transition-all"
+                    placeholder="Identify the pain points or challenges..."
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2">The Outcome</label>
-              <textarea
-                value={formData.outcome}
-                onChange={(e) => setFormData({ ...formData, outcome: e.target.value })}
-                rows={3}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none bg-white text-gray-900 placeholder-gray-500 resize-none transition-all"
-                placeholder="What was the final result and impact?"
-              />
+                <div>
+                  <label className="block text-sm font-semibold mb-2 text-slate-700">The Process</label>
+                  <textarea
+                    value={formData.process}
+                    onChange={(e) => setFormData({ ...formData, process: e.target.value })}
+                    rows={5}
+                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-slate-50 text-slate-900 placeholder-slate-400 resize-none transition-all"
+                    placeholder="Describe your creative and technical journey..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold mb-2 text-slate-700">The Outcome</label>
+                  <textarea
+                    value={formData.outcome}
+                    onChange={(e) => setFormData({ ...formData, outcome: e.target.value })}
+                    rows={4}
+                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-slate-50 text-slate-900 placeholder-slate-400 resize-none transition-all"
+                    placeholder="What was the measurable impact or final result?"
+                  />
+                </div>
+              </div>
             </div>
 
             <div>
@@ -380,7 +396,14 @@ export default function ProjectsTab() {
                     className="rounded-lg object-cover"
                   />
                   <div className="flex-1">
-                    <h4 className="font-bold">{project.title}</h4>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-bold">{project.title}</h4>
+                      {(project.problem || project.process || project.outcome) && (
+                        <span className="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold uppercase tracking-wider">
+                          ✓ Case Study Ready
+                        </span>
+                      )}
+                    </div>
                     <p className="text-sm text-gray-600">{project.category} • {project.year}</p>
                     <p className="text-sm text-gray-500 mt-1 line-clamp-2">{project.description}</p>
                   </div>

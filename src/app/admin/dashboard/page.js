@@ -25,6 +25,7 @@ export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [stats, setStats] = useState({
     projects: 0,
+    caseStudies: 0,
     skills: 0,
     messages: 0,
     visitorCount: 0
@@ -58,8 +59,11 @@ export default function AdminDashboard() {
         fetch('/api/contact-messages').then(res => res.json())
       ]);
 
+      const caseStudyCount = projects.filter(p => p.problem || p.process || p.outcome).length;
+      
       setStats({
         projects: projects.length || 0,
+        caseStudies: caseStudyCount,
         skills: skills.length || 0,
         messages: messages.length || 0,
         visitorCount: 0 // Fetch from visitor-count API if implemented
@@ -169,9 +173,9 @@ export default function AdminDashboard() {
 function OverviewTab({ stats, admin }) {
   const cards = [
     { label: 'Total Projects', value: stats.projects, icon: FiActivity, color: 'indigo' },
-    { label: 'Skills Added', value: stats.skills, icon: FiUsers, color: 'purple' },
+    { label: 'Case Studies', value: stats.caseStudies, icon: FiBook, color: 'emerald' },
     { label: 'New Messages', value: stats.messages, icon: FiMessageSquare, color: 'amber' },
-    { label: 'Total Views', value: stats.visitorCount, icon: FiPieChart, color: 'emerald' },
+    { label: 'Skills Added', value: stats.skills, icon: FiUsers, color: 'purple' },
   ];
 
   return (
