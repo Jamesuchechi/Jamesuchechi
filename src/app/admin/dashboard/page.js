@@ -13,6 +13,7 @@ import ServicesTab from '@/components/admin/ServicesTab';
 import AboutTab from '@/components/admin/AboutTab';
 import TestimonialsTab from '@/components/admin/TestimonialsTab';
 import ProcessTab from '@/components/admin/ProcessTab';
+import EducationTab from '@/components/admin/EducationTab';
 import FaqTab from '@/components/admin/FaqTab';
 import MessagesTab from '@/components/admin/MessagesTab';
 
@@ -26,6 +27,7 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState({
     projects: 0,
     caseStudies: 0,
+    education: 0,
     skills: 0,
     messages: 0,
     visitorCount: 0
@@ -53,10 +55,11 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const [projects, skills, messages] = await Promise.all([
+      const [projects, skills, messages, education] = await Promise.all([
         fetch('/api/projects').then(res => res.json()),
         fetch('/api/skills').then(res => res.json()),
-        fetch('/api/contact-messages').then(res => res.json())
+        fetch('/api/contact-messages').then(res => res.json()),
+        fetch('/api/education').then(res => res.json())
       ]);
 
       const caseStudyCount = projects.filter(p => p.problem || p.process || p.outcome).length;
@@ -64,6 +67,7 @@ export default function AdminDashboard() {
       setStats({
         projects: projects.length || 0,
         caseStudies: caseStudyCount,
+        education: education.length || 0,
         skills: skills.length || 0,
         messages: messages.length || 0,
         visitorCount: 0 // Fetch from visitor-count API if implemented
@@ -84,6 +88,7 @@ export default function AdminDashboard() {
     { id: 'projects',     component: ProjectsTab },
     { id: 'experience',   component: ExperienceTab },
     { id: 'achievements', component: AchievementsTab },
+    { id: 'education',    component: EducationTab },
     { id: 'blog',         component: BlogTab },
     { id: 'skills',       component: SkillsTab },
     { id: 'services',     component: ServicesTab },

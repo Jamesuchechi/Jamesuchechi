@@ -12,6 +12,7 @@ const CORE_LINKS = [
 
 const EXTENDED_LINKS = [
   { name: 'Experience',   href: '/experience'   },
+  { name: 'Education',    href: '/education'    },
   { name: 'Achievements', href: '/achievements' },
   { name: 'Blog',         href: '/blog'         },
   { name: 'FAQ',          href: '/faq'          },
@@ -89,7 +90,7 @@ export default function Navbar({ onEnterOS }) {
             </Link>
 
             {/* Desktop 2-Line Nav */}
-            <div className="hidden md:flex flex-col items-end gap-3">
+            <div className="hidden md:flex flex-col items-center gap-3">
               {/* Line 1: Core Nav */}
               <div className="flex items-center gap-8">
                 {CORE_LINKS.map(link => {

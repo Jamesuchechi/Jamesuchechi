@@ -15,7 +15,8 @@ import {
   FiAward,
   FiBook,
   FiHelpCircle,
-  FiTerminal
+  FiTerminal,
+  FiBookOpen
 } from 'react-icons/fi';
 
 import { AnimatePresence } from 'framer-motion';
@@ -25,6 +26,7 @@ export default function Sidebar({ activeTab, setActiveTab, admin, onLogout, isOp
     { id: 'overview',     label: 'Overview',     icon: FiPieChart },
     { id: 'projects',     label: 'Projects & Case Studies', icon: FiBriefcase },
     { id: 'experience',   label: 'Experience',   icon: FiTerminal },
+    { id: 'education',    label: 'Education',    icon: FiBookOpen },
     { id: 'achievements', label: 'Achievements', icon: FiAward },
     { id: 'blog',         label: 'Blog',         icon: FiBook },
     { id: 'faq',          label: 'FAQ',          icon: FiHelpCircle },
