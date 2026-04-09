@@ -29,13 +29,13 @@ export default function Projects({ limit }) {
 
 
   return (
-    <section className="min-h-screen bg-white text-black py-20 px-6 sm:px-12">
+    <div className="py-20">
       <div className="max-w-7xl mx-auto">
         {/* Section Title */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.6 }}
           className="mb-16"
         >
@@ -86,6 +86,6 @@ export default function Projects({ limit }) {
           </>
         )}
       </div>
-    </section>
+    </div>
   );
 }
