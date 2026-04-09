@@ -11,21 +11,29 @@ import {
   FiActivity,
   FiMessageCircle,
   FiCheckCircle,
-  FiX
+  FiX,
+  FiAward,
+  FiBook,
+  FiHelpCircle,
+  FiTerminal
 } from 'react-icons/fi';
+
 import { AnimatePresence } from 'framer-motion';
 
 export default function Sidebar({ activeTab, setActiveTab, admin, onLogout, isOpen, onClose }) {
   const menuItems = [
-    { id: 'overview', label: 'Overview', icon: FiPieChart },
-    { id: 'projects', label: 'Projects', icon: FiBriefcase },
-    { id: 'skills', label: 'Skills', icon: FiCpu },
-    { id: 'services', label: 'Services', icon: FiLayers },
-    { id: 'about', label: 'About', icon: FiUser },
-    { id: 'testimonials', label: 'Testimonials', icon: FiMessageCircle },
-    { id: 'process', label: 'Process', icon: FiCheckCircle },
-    { id: 'messages', label: 'Messages', icon: FiMessageSquare },
+    { id: 'overview',     label: 'Overview',     icon: FiPieChart },
+    { id: 'projects',     label: 'Projects',     icon: FiBriefcase },
+    { id: 'experience',   label: 'Experience',   icon: FiTerminal },
+    { id: 'achievements', label: 'Achievements', icon: FiAward },
+    { id: 'blog',         label: 'Blog',         icon: FiBook },
+    { id: 'faq',          label: 'FAQ',          icon: FiHelpCircle },
+    { id: 'skills',       label: 'Skills',       icon: FiCpu },
+    { id: 'services',     label: 'Services',     icon: FiLayers },
+    { id: 'process',      label: 'Process',      icon: FiCheckCircle },
+    { id: 'messages',     label: 'Messages',     icon: FiMessageSquare },
   ];
+
 
   return (
     <>

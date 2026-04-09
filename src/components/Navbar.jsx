@@ -4,16 +4,20 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMenu, FiX } from 'react-icons/fi';
 
-const NAV_LINKS = [
-  { name: 'Home',         href: '#home'         },
-  { name: 'Services',     href: '#services'     },
-  { name: 'Works',        href: '#works'        },
-  { name: 'Process',      href: '#process'      },
-  { name: 'About',        href: '#about'        },
-  { name: 'Testimonials', href: '#testimonials' },
-  { name: 'GitHub',       href: '#github'       },
-  { name: 'Contact',      href: '#contact'      },
+const CORE_LINKS = [
+  { name: 'Works',    href: '/works'     },
+  { name: 'Services', href: '/services'  },
+  { name: 'About',    href: '/about'     },
 ];
+
+const EXTENDED_LINKS = [
+  { name: 'Experience',   href: '/experience'   },
+  { name: 'Achievements', href: '/achievements' },
+  { name: 'Blog',         href: '/blog'         },
+  { name: 'FAQ',          href: '/faq'          },
+  { name: 'Contact',      href: '/contact'      },
+];
+
 
 export default function Navbar({ onEnterOS }) {
   const [isOpen,    setIsOpen]    = useState(false);
@@ -33,62 +37,15 @@ export default function Navbar({ onEnterOS }) {
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
+  const [pathname, setPathname] = useState('/');
+
   useEffect(() => {
-    const ids = NAV_LINKS.map(l => l.href.slice(1));
-
-    function pickActive() {
-      let best = null;
-      let bestRatio = -1;
-
-      ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        const ratio = ratioMap.current[id] ?? 0;
-        if (ratio > bestRatio) {
-          bestRatio = ratio;
-          best = id;
-        } else if (ratio === bestRatio && best) {
-          const elTop  = el.getBoundingClientRect().top;
-          const bstTop = document.getElementById(best)?.getBoundingClientRect().top ?? 0;
-          if (Math.abs(elTop) < Math.abs(bstTop)) best = id;
-        }
-      });
-
-      if (best) setActiveId(best);
+    if (typeof window !== 'undefined') {
+      setPathname(window.location.pathname);
     }
-
-    const obs1 = new IntersectionObserver(
-      entries => {
-        entries.forEach(e => {
-          ratioMap.current[e.target.id] = e.intersectionRatio;
-        });
-        pickActive();
-      },
-      { threshold: [0, 0.1, 0.2, 0.35, 0.5, 0.75, 1] }
-    );
-
-    const obs2 = new IntersectionObserver(
-      entries => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            ratioMap.current[e.target.id] = Math.max(
-              ratioMap.current[e.target.id] ?? 0,
-              0.5
-            );
-          }
-        });
-        pickActive();
-      },
-      { rootMargin: '-10% 0px -80% 0px', threshold: 0 }
-    );
-
-    ids.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) { obs1.observe(el); obs2.observe(el); }
-    });
-
-    return () => { obs1.disconnect(); obs2.disconnect(); };
   }, []);
+
+
 
   const scrollTo = (href) => {
     setIsOpen(false);
@@ -115,7 +72,9 @@ export default function Navbar({ onEnterOS }) {
         animate={{ y: 0 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         className={`fixed w-full z-[100] transition-all duration-500 ${
-          scrolled ? 'bg-black/40 backdrop-blur-xl py-4 border-b border-white/5' : 'bg-transparent py-6'
+          scrolled 
+            ? 'bg-[#080808]/95 backdrop-blur-2xl py-5 border-b border-white/10 shadow-2xl' 
+            : 'bg-gradient-to-b from-black/80 to-transparent py-8'
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 sm:px-12">
@@ -129,38 +88,54 @@ export default function Navbar({ onEnterOS }) {
               </div>
             </Link>
 
-            {/* Desktop nav */}
-            <div className="hidden md:flex items-center gap-10">
-              {NAV_LINKS.map(link => {
-                const isActive = activeId === link.href.slice(1);
-                return (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    onClick={e => { e.preventDefault(); scrollTo(link.href); }}
-                    className="relative text-[10px] uppercase font-mono tracking-[0.3em] transition-colors group font-bold"
-                    style={{ 
-                      color: isActive ? '#FFFFFF' : 'rgba(255,255,255,0.4)',
-                      fontFamily: '"Courier New", monospace' 
-                    }}
-                    aria-current={isActive ? 'page' : undefined}
-                  >
-                    {link.name}
+            {/* Desktop 2-Line Nav */}
+            <div className="hidden md:flex flex-col items-end gap-3">
+              {/* Line 1: Core Nav */}
+              <div className="flex items-center gap-8">
+                {CORE_LINKS.map(link => {
+                  const isActive = pathname === link.href;
+                  return (
+                    <Link
+                      key={link.name}
+                      href={link.href}
+                      className="relative text-[16px] uppercase font-mono tracking-[0.4em] transition-all group font-black"
+                      style={{ 
+                        color: isActive ? '#FFFFFF' : 'rgba(255,255,255,0.7)',
+                        fontFamily: '"Courier New", monospace' 
+                      }}
+                    >
+                      {link.name}
+                      <motion.span
+                        className="absolute -bottom-1 left-0 h-[2px] bg-[#FF3B00] rounded-full"
+                        initial={false}
+                        animate={{ width: isActive ? '100%' : '0%', opacity: isActive ? 1 : 0 }}
+                      />
+                    </Link>
+                  );
+                })}
+              </div>
 
-                    <motion.span
-                      className="absolute -bottom-2 left-0 h-[2px] bg-[#FF3B00] rounded-full"
-                      initial={false}
-                      animate={{ width: isActive ? '100%' : '0%', opacity: isActive ? 1 : 0 }}
-                      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                    />
-
-                    {!isActive && (
-                      <span className="absolute -bottom-2 left-0 w-0 h-[1px] bg-white/20 transition-all group-hover:w-full rounded-full" />
-                    )}
-                  </a>
-                );
-              })}
+              {/* Line 2: Extended Nav */}
+              <div className="flex items-center gap-6 pt-2 border-t border-white/5">
+                {EXTENDED_LINKS.map(link => {
+                  const isActive = pathname === link.href;
+                  return (
+                    <Link
+                      key={link.name}
+                      href={link.href}
+                      className="relative text-[12px] uppercase font-mono tracking-[0.2em] transition-all group font-bold"
+                      style={{ 
+                        color: isActive ? '#FF3B00' : 'rgba(255,255,255,0.5)',
+                        fontFamily: '"Courier New", monospace' 
+                      }}
+                    >
+                      {link.name}
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
+
 
             {/* Right side — JamesOS button + mobile toggle */}
             <div className="flex items-center gap-4">
@@ -169,7 +144,7 @@ export default function Navbar({ onEnterOS }) {
               {onEnterOS && (
                 <button
                   onClick={onEnterOS}
-                  className="hidden lg:flex items-center gap-3 relative z-[60] px-6 py-2.5 rounded-full border border-[#FF3B00]/20 bg-[#FF3B00]/5 text-[10px] font-mono font-bold tracking-[0.3em] text-[#FF3B00] hover:bg-[#FF3B00] hover:text-black transition-all group uppercase"
+                  className="hidden lg:flex items-center gap-3 relative z-[60] px-10 py-4 rounded-full border-2 border-[#FF3B00]/40 bg-[#FF3B00]/10 text-[14px] font-mono font-black tracking-[0.4em] text-[#FF3B00] hover:bg-[#FF3B00] hover:text-black transition-all group uppercase shadow-[0_0_30px_rgba(255,59,0,0.2)]"
                   style={{ fontFamily: '"Courier New", monospace' }}
                 >
                   <span className="text-[14px] group-hover:rotate-[360deg] transition-transform duration-700">⊞</span>
@@ -207,40 +182,46 @@ export default function Navbar({ onEnterOS }) {
               <h2 className="text-[40vw] font-black uppercase tracking-tighter -rotate-12">INDEX</h2>
             </div>
 
-            <div className="flex flex-col items-start justify-center h-full px-12 relative z-10">
-              <nav className="flex flex-col items-start gap-6">
-                {NAV_LINKS.map((link, i) => {
-                  const isActive = activeId === link.href.slice(1);
+            <div className="flex flex-col h-full relative z-10 pt-32 px-8">
+              <p className="text-[11px] font-mono tracking-[0.4em] text-white/40 uppercase mb-12 border-b border-white/10 pb-4">
+                System Registry // Navigation
+              </p>
+              
+              {/* App-Switcher style Grid */}
+              <div className="grid grid-cols-2 gap-4">
+                {[...CORE_LINKS, ...EXTENDED_LINKS].map((link, i) => {
+                  const isActive = pathname === link.href;
                   return (
-                    <motion.a
+                    <motion.div
                       key={link.name}
                       custom={i}
                       variants={linkVariants}
                       initial="closed"
                       animate="open"
                       exit="closed"
-                      href={link.href}
-                      onClick={e => { e.preventDefault(); scrollTo(link.href); }}
-                      className="text-5xl sm:text-7xl font-black uppercase tracking-tighter transition-all duration-500 relative group"
-                      style={{ 
-                        color: isActive ? '#FF3B00' : '#FFFFFF',
-                        fontFamily: 'Georgia, serif',
-                        fontStyle: 'italic'
-                      }}
                     >
-                      <span className="relative">
-                        {link.name}
-                        {isActive && (
-                          <motion.span 
-                            layoutId="mobileNavActive"
-                            className="absolute -left-8 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full bg-[#FF3B00]"
-                          />
-                        )}
-                      </span>
-                    </motion.a>
+                      <Link
+                        href={link.href}
+                        onClick={() => setIsOpen(false)}
+                        className="flex flex-col items-center justify-center aspect-square rounded-3xl border transition-all duration-300 group"
+                        style={{ 
+                          background: isActive ? 'rgba(255,59,0,0.1)' : 'rgba(255,255,255,0.03)',
+                          borderColor: isActive ? 'rgba(255,59,0,0.3)' : 'rgba(255,255,255,0.08)'
+                        }}
+                      >
+                        <div className="h-12 w-12 rounded-2xl bg-white/5 flex items-center justify-center mb-4 group-hover:bg-white/10 transition-colors">
+                          <span className="text-xl" style={{ color: isActive ? '#FF3B00' : 'rgba(255,255,255,0.6)' }}>
+                            {link.name[0]}
+                          </span>
+                        </div>
+                        <span className="text-[13px] font-mono tracking-widest uppercase text-white/60">
+                          {link.name}
+                        </span>
+                      </Link>
+                    </motion.div>
                   );
                 })}
-              </nav>
+              </div>
 
               {/* JamesOS button — mobile menu */}
               {onEnterOS && (
@@ -249,12 +230,12 @@ export default function Navbar({ onEnterOS }) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.8 }}
                   onClick={() => { setIsOpen(false); onEnterOS(); }}
-                  className="mt-16 px-8 py-4 rounded-full border border-[#FF3B00]/30 bg-[#FF3B00]/10 text-[#FF3B00] text-[10px] font-mono font-bold tracking-[0.3em] uppercase italic"
-                  style={{ fontFamily: '"Courier New", monospace' }}
+                  className="mt-12 w-full py-6 rounded-2xl border border-[#FF3B00]/40 bg-[#FF3B00]/10 text-[#FF3B00] text-[12px] font-mono font-bold tracking-[0.3em] uppercase"
                 >
                   ⊞ Access Ecosystem
                 </motion.button>
               )}
+
 
               <motion.div
                 initial={{ opacity: 0 }}

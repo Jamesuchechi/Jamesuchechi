@@ -1,5 +1,6 @@
 'use client';
 import { useState, useCallback } from 'react';
+import Link from 'next/link';
 import { AnimatePresence } from 'framer-motion';
 import Navbar          from '@/components/Navbar';
 import Hero            from '@/components/Hero';
@@ -77,50 +78,79 @@ export default function Home() {
           <Hero />
         </SectionTransition>
 
-        {/* 2. Services → flip fold
-            ⚠️  NO min-h-screen here — Services controls its own height via the
-            internal scroll track ((services.length + 1) * 100vh).
-            Adding min-h-screen was clamping the wrapper to 100vh and breaking
-            the scroll-driven panel switching. */}
-        <SectionTransition id="services" transition="flipFold" bgHex="#000000">
-          <Services />
+        {/* 2. Experience Highlight → flip fold */}
+        <SectionTransition id="experience-preview" transition="flipFold" bgHex="#000000" className="min-h-[70vh] flex items-center">
+          <div className="max-w-7xl mx-auto px-6 w-full py-24">
+            <p className="text-[10px] font-mono tracking-[0.4em] text-[#00E5FF] uppercase mb-8">Professional Trajectory</p>
+            <h2 className="text-5xl md:text-8xl font-black uppercase italic tracking-tighter mb-12" style={{ fontFamily: 'Georgia, serif' }}>
+              The Story So Far /
+            </h2>
+            <Link href="/experience" className="group inline-flex items-center gap-6 text-white/40 hover:text-white transition-all">
+              <span className="text-xl md:text-3xl font-medium italic" style={{ fontFamily: 'Georgia, serif' }}>Explore my professional pedigree</span>
+              <div className="h-12 w-12 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+                ❯
+              </div>
+            </Link>
+          </div>
         </SectionTransition>
 
-        {/* 3. Projects → split open */}
-        <SectionTransition id="works" transition="splitOpen" bgHex="#ffffff" className="min-h-screen">
-          <Projects />
+        {/* 3. Works Snippet → split open */}
+        <SectionTransition id="works-preview" transition="splitOpen" bgHex="#ffffff" className="min-h-screen py-24">
+          <div className="max-w-7xl mx-auto px-6">
+            <Projects limit={3} />
+            <div className="mt-12 text-center">
+              <Link href="/works" className="inline-flex items-center gap-6 bg-black text-white px-14 py-6 rounded-full font-mono text-sm uppercase tracking-[0.2em] font-black hover:scale-105 transition-transform shadow-xl shadow-black/10">
+                View All Case Studies
+              </Link>
+            </div>
+          </div>
         </SectionTransition>
 
-        {/* 4. Process → page peel */}
-        <SectionTransition id="process" transition="pagePeel" bgHex="#ffffff" className="min-h-screen">
-          <Process />
+        {/* 4. Insights Preview → page peel */}
+        <SectionTransition id="blog-preview" transition="pagePeel" bgHex="#080808" className="min-h-[80vh] flex items-center">
+          <div className="max-w-7xl mx-auto px-6 w-full py-24">
+             <div className="flex flex-col md:flex-row justify-between items-end gap-12">
+               <div className="max-w-2xl">
+                 <p className="text-[10px] font-mono tracking-[0.4em] text-[#FF3B00] uppercase mb-8">Case Notes & Insights</p>
+                 <h2 className="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter mb-8" style={{ fontFamily: 'Georgia, serif' }}>
+                   Latest <br /> Insights /
+                 </h2>
+                 <Link href="/blog" className="group inline-flex items-center gap-6 text-white/40 hover:text-white transition-all">
+                    <span className="text-xl md:text-3xl font-medium italic" style={{ fontFamily: 'Georgia, serif' }}>Dive into the knowledge base</span>
+                    <div className="h-12 w-12 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+                      ❯
+                    </div>
+                  </Link>
+               </div>
+               <div className="hidden lg:block w-1/3 aspect-square bg-white/5 rounded-[60px] border border-white/10 animate-pulse" />
+             </div>
+          </div>
         </SectionTransition>
 
-        {/* 5. Skills → pixel dissolve */}
-        <SectionTransition id="skills-section" transition="pixelDissolve" bgHex="#000000" className="overflow-hidden">
-          <Skills />
+        {/* 5. Quick Links Hub → pixel dissolve */}
+        <SectionTransition id="hub" transition="pixelDissolve" bgHex="#000000" className="min-h-screen flex items-center">
+          <div className="max-w-7xl mx-auto px-6 w-full py-24">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[
+                { title: 'Services', href: '/services', desc: 'How I can help your project thrive' },
+                { title: 'Achievements', href: '/achievements', desc: 'Proof of professional excellence' },
+                { title: 'FAQs', href: '/faq', desc: 'Common questions & friction removal' },
+              ].map((item, i) => (
+                <Link key={i} href={item.href} className="p-12 rounded-[40px] bg-white/5 border border-white/5 hover:border-white/20 transition-all group">
+                  <h3 className="text-3xl font-black italic uppercase mb-4 group-hover:text-[#FF3B00] transition-colors" style={{ fontFamily: 'Georgia, serif' }}>{item.title}</h3>
+                  <p className="text-white/40 italic font-medium" style={{ fontFamily: 'Georgia, serif' }}>{item.desc}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
         </SectionTransition>
 
-        {/* 6. About → window shade */}
-        <SectionTransition id="about" transition="windowShade" bgHex="#ffffff" className="min-h-screen">
-          <About />
-        </SectionTransition>
-
-        {/* 7. Testimonials → flip fold */}
-        <SectionTransition id="testimonials" transition="flipFold" bgHex="#ffffff" className="overflow-hidden">
-          <Testimonials />
-        </SectionTransition>
-
-        {/* 8. GitHub — no transition needed */}
-        <section id="github">
-          <GitHub />
-        </section>
-
-        {/* 9. Contact + Footer */}
+        {/* 6. Contact + Footer */}
         <section id="contact">
           <Contact />
           <Footer />
         </section>
+
       </main>
 
       <AnimatePresence>

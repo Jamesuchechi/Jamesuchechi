@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import ProjectCard from '@/components/ProjectCard';
 
-export default function Projects() {
+export default function Projects({ limit }) {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -12,30 +12,21 @@ export default function Projects() {
     fetchProjects();
   }, []);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (window.location.hash !== '#works') return;
-    const worksSection = document.getElementById('works');
-    if (worksSection) {
-      worksSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, []);
-
   const fetchProjects = async () => {
     try {
       const res = await fetch('/api/projects');
       const data = await res.json();
-      // Ensure data is an array
       setProjects(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching projects:', error);
-      setProjects([]); // Set empty array on error
+      setProjects([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const featuredProjects = projects.slice(0, 4);
+  const displayProjects = limit ? projects.slice(0, limit) : projects;
+
 
   return (
     <section className="min-h-screen bg-white text-black py-20 px-6 sm:px-12">
@@ -77,20 +68,21 @@ export default function Projects() {
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredProjects.map((project, index) => (
+              {displayProjects.map((project, index) => (
                 <ProjectCard key={project.id} project={project} index={index} />
               ))}
             </div>
-            {projects.length > 4 && (
+            {projects.length > (limit || 0) && limit && (
               <div className="mt-12 flex justify-center">
                 <Link
-                  href="/projects"
+                  href="/works"
                   className="inline-flex items-center gap-2 rounded-full border border-black/15 px-6 py-3 text-sm font-semibold uppercase tracking-wider hover:border-black/30 hover:text-black/80 transition"
                 >
                   View More Projects
                 </Link>
               </div>
             )}
+
           </>
         )}
       </div>

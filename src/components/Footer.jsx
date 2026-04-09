@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { FiArrowUp, FiGithub, FiLinkedin, FiInstagram, FiMessageCircle, FiFacebook, FiMusic } from 'react-icons/fi';
 import VisitorCounter from './VisitorCounter';
 
@@ -112,19 +113,29 @@ export default function Footer() {
           <div>
             <h4 className="text-[10px] font-mono tracking-[0.4em] uppercase text-white/20 mb-10">Navigation</h4>
             <ul className="space-y-5">
-              {['Home', 'Services', 'Works', 'Process', 'About', 'Contact'].map((item) => (
-                <li key={item}>
-                  <a 
-                    href={`#${item.toLowerCase()}`} 
+              {[
+                { name: 'Works', href: '/works' },
+                { name: 'Services', href: '/services' },
+                { name: 'Experience', href: '/experience' },
+                { name: 'Achievements', href: '/achievements' },
+                { name: 'Blog', href: '/blog' },
+                { name: 'FAQ', href: '/faq' },
+                { name: 'About', href: '/about' },
+                { name: 'Contact', href: '/contact' }
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link 
+                    href={item.href} 
                     className="text-sm text-white/50 hover:text-white transition-colors relative group font-mono tracking-widest uppercase text-[11px]"
                   >
-                    {item}
+                    {item.name}
                     <span className="absolute -bottom-1 left-0 w-0 h-px bg-white transition-all group-hover:w-full" />
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
+
 
           {/* Socials */}
           <div>

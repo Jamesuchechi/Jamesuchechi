@@ -201,15 +201,15 @@ export default function Hero() {
             <motion.div variants={itemMotion} className="flex gap-4 shrink-0">
               <a
                 href="#works"
-                className="group inline-flex items-center gap-4 rounded-full bg-white text-black px-10 py-5 text-xs font-mono uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-[0_20px_40px_-10px_rgba(255,255,255,0.3)]"
+                className="group inline-flex items-center gap-6 rounded-full bg-white text-black px-14 py-6 text-sm font-mono font-black uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-[0_25px_50px_-12px_rgba(255,255,255,0.4)]"
               >
                 Portfolio
-                <FiArrowUpRight className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                <FiArrowUpRight size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </a>
 
               <a
                 href="#contact"
-                className="inline-flex items-center gap-4 rounded-full border border-white/10 bg-white/5 text-white px-10 py-5 text-xs font-mono uppercase tracking-[0.2em] backdrop-blur hover:bg-white/10 transition-all"
+                className="inline-flex items-center gap-6 rounded-full border-2 border-white/20 bg-white/5 text-white px-14 py-6 text-sm font-mono font-black uppercase tracking-[0.3em] backdrop-blur-xl hover:bg-white/10 transition-all font-bold"
               >
                 Let&apos;s Talk
               </a>

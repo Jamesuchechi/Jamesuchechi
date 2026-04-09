@@ -286,8 +286,8 @@ export default function Contact() {
                 disabled={status === 'sending'}
                 whileHover={status !== 'sending' ? { scale: 1.01 } : {}}
                 whileTap={status !== 'sending' ? { scale: 0.99 } : {}}
-                className="w-full bg-white text-black px-8 py-4 rounded-lg font-medium
-                           transition-all disabled:cursor-not-allowed relative overflow-hidden"
+                className="w-full bg-white text-black px-12 py-6 rounded-2xl font-black font-mono text-sm uppercase tracking-[0.2em]
+                           transition-all disabled:cursor-not-allowed relative overflow-hidden shadow-[0_20px_40px_-10px_rgba(255,255,255,0.2)]"
                 style={{ opacity: status === 'sending' ? 0.8 : 1 }}
               >
                 <AnimatePresence mode="wait">

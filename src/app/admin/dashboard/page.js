@@ -5,12 +5,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiPieChart, FiActivity, FiUsers, FiClock, FiMessageSquare, FiMenu } from 'react-icons/fi';
 import Sidebar from '@/components/admin/Sidebar';
 import ProjectsTab from '@/components/admin/ProjectsTab';
+import ExperienceTab from '@/components/admin/ExperienceTab';
+import AchievementsTab from '@/components/admin/AchievementsTab';
+import BlogTab from '@/components/admin/BlogTab';
 import SkillsTab from '@/components/admin/SkillsTab';
 import ServicesTab from '@/components/admin/ServicesTab';
 import AboutTab from '@/components/admin/AboutTab';
 import TestimonialsTab from '@/components/admin/TestimonialsTab';
 import ProcessTab from '@/components/admin/ProcessTab';
+import FaqTab from '@/components/admin/FaqTab';
 import MessagesTab from '@/components/admin/MessagesTab';
+
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -71,15 +76,20 @@ export default function AdminDashboard() {
   };
 
   const tabs = [
-    { id: 'overview', component: OverviewTab },
-    { id: 'projects', component: ProjectsTab },
-    { id: 'skills', component: SkillsTab },
-    { id: 'services', component: ServicesTab },
-    { id: 'about', component: AboutTab },
+    { id: 'overview',     component: OverviewTab },
+    { id: 'projects',     component: ProjectsTab },
+    { id: 'experience',   component: ExperienceTab },
+    { id: 'achievements', component: AchievementsTab },
+    { id: 'blog',         component: BlogTab },
+    { id: 'skills',       component: SkillsTab },
+    { id: 'services',     component: ServicesTab },
+    { id: 'process',      component: ProcessTab },
+    { id: 'faq',          component: FaqTab },
+    { id: 'about',        component: AboutTab },
     { id: 'testimonials', component: TestimonialsTab },
-    { id: 'process', component: ProcessTab },
-    { id: 'messages', component: MessagesTab },
+    { id: 'messages',     component: MessagesTab },
   ];
+
 
   if (loading) {
     return (
