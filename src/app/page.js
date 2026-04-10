@@ -78,23 +78,17 @@ export default function Home() {
           <Hero />
         </SectionTransition>
 
-        {/* 2. Experience Highlight → flip fold */}
-        <SectionTransition id="experience-preview" transition="flipFold" bgHex="#000000" className="min-h-[70vh] flex items-center">
-          <div className="max-w-7xl mx-auto px-6 w-full py-24">
-            <p className="text-[10px] font-mono tracking-[0.4em] text-[#00E5FF] uppercase mb-8">Professional Trajectory</p>
-            <h2 className="text-5xl md:text-8xl font-black uppercase italic tracking-tighter mb-12" style={{ fontFamily: 'Georgia, serif' }}>
-              The Story So Far /
-            </h2>
-            <Link href="/experience" className="group inline-flex items-center gap-6 text-white/40 hover:text-white transition-all">
-              <span className="text-xl md:text-3xl font-medium italic" style={{ fontFamily: 'Georgia, serif' }}>Explore my professional pedigree</span>
-              <div className="h-12 w-12 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-                ❯
-              </div>
-            </Link>
-          </div>
+        {/* 2. How I Build → flip fold */}
+        <SectionTransition id="process-section" transition="flipFold" bgHex="#ffffff" className="bg-white">
+          <Process />
         </SectionTransition>
 
-        {/* 3. Works Snippet → split open */}
+        {/* 3. Open Source → split open */}
+        <SectionTransition id="github-section" transition="splitOpen" bgHex="#0a0a0f">
+          <GitHub />
+        </SectionTransition>
+
+        {/* 4. Works Preview → split open */}
         <SectionTransition id="works-preview" transition="splitOpen" bgHex="#ffffff" className="min-h-screen py-24">
           <div className="max-w-7xl mx-auto px-6">
             <Projects limit={3} />
@@ -106,7 +100,7 @@ export default function Home() {
           </div>
         </SectionTransition>
 
-        {/* 4. Insights Preview → page peel */}
+        {/* 5. Insights Preview → page peel */}
         <SectionTransition id="blog-preview" transition="pagePeel" bgHex="#080808" className="min-h-[80vh] flex items-center">
           <div className="max-w-7xl mx-auto px-6 w-full py-24">
              <div className="flex flex-col md:flex-row justify-between items-end gap-12">
@@ -127,7 +121,7 @@ export default function Home() {
           </div>
         </SectionTransition>
 
-        {/* 5. Quick Links Hub → pixel dissolve */}
+        {/* 6. Quick Links Hub → pixel dissolve */}
         <SectionTransition id="hub" transition="pixelDissolve" bgHex="#000000" className="min-h-screen flex items-center">
           <div className="max-w-7xl mx-auto px-6 w-full py-24">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -145,7 +139,7 @@ export default function Home() {
           </div>
         </SectionTransition>
 
-        {/* 6. Contact + Footer */}
+        {/* 7. Contact + Footer */}
         <section id="contact">
           <Contact />
           <Footer />

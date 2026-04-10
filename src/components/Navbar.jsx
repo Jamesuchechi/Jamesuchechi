@@ -5,15 +5,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiMenu, FiX } from 'react-icons/fi';
 
 const CORE_LINKS = [
-  { name: 'Works',    href: '/works'     },
-  { name: 'Services', href: '/services'  },
-  { name: 'About',    href: '/about'     },
+  { name: 'Works',        href: '/works'     },
+  { name: 'How I Build', href: '/process'   },
+  { name: 'Services',     href: '/services'  },
+  { name: 'About',        href: '/about'     },
 ];
 
 const EXTENDED_LINKS = [
   { name: 'Experience',   href: '/experience'   },
   { name: 'Education',    href: '/education'    },
   { name: 'Achievements', href: '/achievements' },
+  { name: 'Open Source',  href: '/github'       },
+  { name: 'Testimonials', href: '/testimonials' },
   { name: 'Blog',         href: '/blog'         },
   { name: 'FAQ',          href: '/faq'          },
   { name: 'Contact',      href: '/contact'      },

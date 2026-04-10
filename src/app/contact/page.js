@@ -7,7 +7,7 @@ export default function ContactPage() {
     <main className="bg-[#07090c]">
       <Navbar />
       <div className="pt-20">
-        <Contact />
+        <Contact autoFocus={true} />
       </div>
       <Footer />
     </main>

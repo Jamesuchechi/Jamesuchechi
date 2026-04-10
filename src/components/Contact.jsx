@@ -41,15 +41,19 @@ function Checkmark() {
   );
 }
 
-export default function Contact() {
+export default function Contact({ autoFocus = false }) {
   const [formData, setFormData] = useState(INITIAL);
   const [errors,   setErrors]   = useState({});
   const [status,   setStatus]   = useState('idle'); // idle | sending | success | error
   const [touched,  setTouched]  = useState({});
   const nameRef = useRef(null);
 
-  // Auto-focus name on mount
-  useEffect(() => { nameRef.current?.focus(); }, []);
+  // Auto-focus name on mount if prop is set
+  useEffect(() => { 
+    if (autoFocus) {
+      nameRef.current?.focus(); 
+    }
+  }, [autoFocus]);
 
   const handleChange = e => {
     const { name, value } = e.target;
