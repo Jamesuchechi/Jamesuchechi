@@ -180,3 +180,16 @@ model Education {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model LabItem {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @db.Text
+  status      String   // Learning, Building, Researching
+  progress    Int      @default(0)
+  link        String?
+  tags        String?  // JSON string
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

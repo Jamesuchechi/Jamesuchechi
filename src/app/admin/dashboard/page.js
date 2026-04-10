@@ -15,6 +15,7 @@ import TestimonialsTab from '@/components/admin/TestimonialsTab';
 import ProcessTab from '@/components/admin/ProcessTab';
 import EducationTab from '@/components/admin/EducationTab';
 import FaqTab from '@/components/admin/FaqTab';
+import LabTab from '@/components/admin/LabTab';
 import MessagesTab from '@/components/admin/MessagesTab';
 
 
@@ -96,6 +97,7 @@ export default function AdminDashboard() {
     { id: 'faq',          component: FaqTab },
     { id: 'about',        component: AboutTab },
     { id: 'testimonials', component: TestimonialsTab },
+    { id: 'lab',          component: LabTab },
     { id: 'messages',     component: MessagesTab },
   ];
 

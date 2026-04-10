@@ -11,6 +11,7 @@ import Skills          from '@/components/Skills';
 import About           from '@/components/About';
 import Testimonials    from '@/components/Testimonials';
 import GitHub          from '@/components/GitHub';
+import Lab             from '@/components/Lab';
 import Contact         from '@/components/Contact';
 import Footer          from '@/components/Footer';
 import SectionTransition from '@/components/SectionTransition';
@@ -81,6 +82,11 @@ export default function Home() {
         {/* 2. How I Build → flip fold */}
         <SectionTransition id="process-section" transition="flipFold" bgHex="#ffffff" className="bg-white">
           <Process />
+        </SectionTransition>
+
+        {/* 2.5. The Lab → split open */}
+        <SectionTransition id="lab-section" transition="splitOpen" bgHex="#000000">
+          <Lab />
         </SectionTransition>
 
         {/* 3. Open Source → split open */}

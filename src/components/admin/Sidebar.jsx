@@ -33,6 +33,7 @@ export default function Sidebar({ activeTab, setActiveTab, admin, onLogout, isOp
     { id: 'skills',       label: 'Skills',       icon: FiCpu },
     { id: 'services',     label: 'Services',     icon: FiLayers },
     { id: 'process',      label: 'Process',      icon: FiCheckCircle },
+    { id: 'lab',          label: 'The Lab',      icon: FiActivity },
     { id: 'testimonials', label: 'Testimonials', icon: FiMessageCircle },
     { id: 'messages',     label: 'Messages',     icon: FiMessageSquare },
     { id: 'about',        label: 'About',        icon: FiUser },
