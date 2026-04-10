@@ -110,9 +110,9 @@ export default function ProjectCard({ project, index, showDetailsHint = true }) 
               <Link 
                 href={`/projects/${slug}`}
                 onClick={e => e.stopPropagation()}
-                className="absolute top-10 right-10 z-30 h-14 w-14 bg-white rounded-full flex items-center justify-center text-black opacity-0 group-hover:opacity-100 transition-all duration-500 scale-50 group-hover:scale-100 hover:bg-[#FF3B00] hover:text-white"
+                className="absolute top-6 right-6 sm:top-10 sm:right-10 z-30 h-12 w-12 sm:h-14 sm:w-14 bg-white rounded-full flex items-center justify-center text-black opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-500 scale-100 md:scale-50 md:group-hover:scale-100 hover:bg-[#FF3B00] hover:text-white shadow-xl"
               >
-                <FiArrowUpRight size={24} />
+                <FiArrowUpRight size={20} className="sm:w-6 sm:h-6" />
               </Link>
 
               {/* Bottom "View" Label */}

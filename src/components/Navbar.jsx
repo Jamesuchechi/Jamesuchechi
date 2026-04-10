@@ -179,14 +179,14 @@ export default function Navbar({ onEnterOS }) {
             initial="closed"
             animate="open"
             exit="closed"
-            className="fixed inset-0 bg-[#080808] z-40 md:hidden overflow-hidden"
+            className="fixed inset-0 bg-[#080808] z-40 md:hidden overflow-y-auto"
           >
             {/* Background Text Overlay */}
             <div className="absolute inset-0 opacity-[0.03] pointer-events-none select-none flex items-center justify-center">
               <h2 className="text-[40vw] font-black uppercase tracking-tighter -rotate-12">INDEX</h2>
             </div>
 
-            <div className="flex flex-col h-full relative z-10 pt-32 px-8">
+            <div className="flex flex-col relative z-10 pt-32 px-8 pb-32">
               <p className="text-[11px] font-mono tracking-[0.4em] text-white/40 uppercase mb-12 border-b border-white/10 pb-4">
                 System Registry // Navigation
               </p>

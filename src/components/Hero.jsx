@@ -198,10 +198,10 @@ export default function Hero() {
             </motion.p>
 
             {/* Action Buttons */}
-            <motion.div variants={itemMotion} className="flex gap-4 shrink-0">
+            <motion.div variants={itemMotion} className="flex flex-col sm:flex-row gap-4 sm:gap-6 shrink-0">
               <a
                 href="#works"
-                className="group inline-flex items-center gap-6 rounded-full bg-white text-black px-14 py-6 text-sm font-mono font-black uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-[0_25px_50px_-12px_rgba(255,255,255,0.4)]"
+                className="group inline-flex items-center justify-center gap-6 rounded-full bg-white text-black px-8 py-4 sm:px-14 sm:py-6 text-sm font-mono font-black uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-[0_25px_50px_-12px_rgba(255,255,255,0.4)]"
               >
                 Portfolio
                 <FiArrowUpRight size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
@@ -209,7 +209,7 @@ export default function Hero() {
 
               <a
                 href="#contact"
-                className="inline-flex items-center gap-6 rounded-full border-2 border-white/20 bg-white/5 text-white px-14 py-6 text-sm font-mono font-black uppercase tracking-[0.3em] backdrop-blur-xl hover:bg-white/10 transition-all font-bold"
+                className="inline-flex items-center justify-center gap-6 rounded-full border-2 border-white/20 bg-white/5 text-white px-8 py-4 sm:px-14 sm:py-6 text-sm font-mono font-black uppercase tracking-[0.3em] backdrop-blur-xl hover:bg-white/10 transition-all font-bold"
               >
                 Let&apos;s Talk
               </a>
