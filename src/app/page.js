@@ -85,7 +85,7 @@ export default function Home() {
         </SectionTransition>
 
         {/* 2.5. The Lab → split open */}
-        <SectionTransition id="lab-section" transition="splitOpen" bgHex="#000000" className="bg-black">
+        <SectionTransition id="lab-section" transition="splitOpen" bgHex="#000000" className="bg-gray-500">
           <Lab />
         </SectionTransition>
 
@@ -109,7 +109,7 @@ export default function Home() {
 
 
         {/* 6. Quick Links Hub → pixel dissolve */}
-        <SectionTransition id="hub" transition="pixelDissolve" bgHex="#000000" className="min-h-screen flex items-center bg-white">
+        <SectionTransition id="hub" transition="pixelDissolve" bgHex="#000000" className="min-h-screen flex items-center bg-gray-500">
           <div className="max-w-7xl mx-auto px-6 w-full py-24">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
