@@ -75,7 +75,7 @@ export default function Home() {
         <Navbar onEnterOS={enterOS} />
 
         {/* 1. Hero → window shade */}
-        <SectionTransition id="home" transition="windowShade" bgHex="#07090c" className="min-h-screen">
+        <SectionTransition id="home" transition="windowShade" bgHex="#07090c" className="min-h-screen bg-[#07090c]">
           <Hero />
         </SectionTransition>
 
@@ -85,12 +85,12 @@ export default function Home() {
         </SectionTransition>
 
         {/* 2.5. The Lab → split open */}
-        <SectionTransition id="lab-section" transition="splitOpen" bgHex="#000000">
+        <SectionTransition id="lab-section" transition="splitOpen" bgHex="#000000" className="bg-black">
           <Lab />
         </SectionTransition>
 
         {/* 3. Open Source → split open */}
-        <SectionTransition id="github-section" transition="splitOpen" bgHex="#0a0a0f">
+        <SectionTransition id="github-section" transition="splitOpen" bgHex="#0a0a0f" className="bg-[#0a0a0f]">
           <GitHub />
         </SectionTransition>
 
@@ -100,35 +100,16 @@ export default function Home() {
             <Projects limit={3} />
             <div className="mt-12 text-center">
               <Link href="/works" className="inline-flex items-center gap-6 bg-black text-white px-14 py-6 rounded-full font-mono text-sm uppercase tracking-[0.2em] font-black hover:scale-105 transition-transform shadow-xl shadow-black/10">
-                View All Case Studies
+                View All Projects
               </Link>
             </div>
           </div>
         </SectionTransition>
 
-        {/* 5. Insights Preview → page peel */}
-        <SectionTransition id="blog-preview" transition="pagePeel" bgHex="#080808" className="min-h-[80vh] flex items-center">
-          <div className="max-w-7xl mx-auto px-6 w-full py-24">
-             <div className="flex flex-col md:flex-row justify-between items-end gap-12">
-               <div className="max-w-2xl">
-                 <p className="text-[10px] font-mono tracking-[0.4em] text-[#FF3B00] uppercase mb-8">Case Notes & Insights</p>
-                 <h2 className="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter mb-8" style={{ fontFamily: 'Georgia, serif' }}>
-                   Latest <br /> Insights /
-                 </h2>
-                 <Link href="/blog" className="group inline-flex items-center gap-6 text-white/40 hover:text-white transition-all">
-                    <span className="text-xl md:text-3xl font-medium italic" style={{ fontFamily: 'Georgia, serif' }}>Dive into the knowledge base</span>
-                    <div className="h-12 w-12 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-                      ❯
-                    </div>
-                  </Link>
-               </div>
-               <div className="hidden lg:block w-1/3 aspect-square bg-white/5 rounded-[60px] border border-white/10 animate-pulse" />
-             </div>
-          </div>
-        </SectionTransition>
+
 
         {/* 6. Quick Links Hub → pixel dissolve */}
-        <SectionTransition id="hub" transition="pixelDissolve" bgHex="#000000" className="min-h-screen flex items-center">
+        <SectionTransition id="hub" transition="pixelDissolve" bgHex="#000000" className="min-h-screen flex items-center bg-black">
           <div className="max-w-7xl mx-auto px-6 w-full py-24">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[

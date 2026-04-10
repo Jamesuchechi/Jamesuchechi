@@ -27,7 +27,7 @@ export default function Lab() {
           <h2 className="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter" style={{ fontFamily: 'Georgia, serif' }}>
             The Lab /
           </h2>
-          <p className="text-white/40 mt-6 text-lg italic" style={{ fontFamily: 'Georgia, serif' }}>
+          <p className="text-white/60 mt-6 text-lg italic" style={{ fontFamily: 'Georgia, serif' }}>
             A transparent window into my current sprints, research, and experiments.
           </p>
         </div>
@@ -51,7 +51,7 @@ export default function Lab() {
                 <span className="text-[10px] font-mono tracking-widest text-[#00E5FF] uppercase px-3 py-1 rounded-full border border-[#00E5FF]/20 bg-[#00E5FF]/5">
                   {item.status}
                 </span>
-                <span className="text-[10px] font-mono text-white/20 uppercase tracking-widest">
+                <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">
                   #{String(i + 1).padStart(2, '0')}
                 </span>
               </div>
@@ -60,7 +60,7 @@ export default function Lab() {
                 {item.title}
               </h3>
 
-              <p className="text-white/40 text-sm italic mb-8 flex-1" style={{ fontFamily: 'Georgia, serif' }}>
+              <p className="text-white/70 text-sm italic mb-8 flex-1" style={{ fontFamily: 'Georgia, serif' }}>
                 {item.description}
               </p>
 
@@ -73,9 +73,9 @@ export default function Lab() {
                     className="h-full bg-gradient-to-r from-[#00E5FF] to-white"
                   />
                 </div>
-                <div className="flex justify-between items-center text-[10px] font-mono uppercase tracking-[0.2em] text-white/20">
+                <div className="flex justify-between items-center text-[10px] font-mono uppercase tracking-[0.2em] text-white/40">
                   <span>Knowledge Depth</span>
-                  <span className="text-white/60">{item.progress}%</span>
+                  <span className="text-white/70">{item.progress}%</span>
                 </div>
               </div>
             </div>

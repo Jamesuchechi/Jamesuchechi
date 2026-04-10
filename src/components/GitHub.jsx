@@ -127,13 +127,13 @@ function RepoCard({ repo, index }) {
           <svg width="12" height="12" viewBox="0 0 24 24" fill="rgba(255,220,80,0.8)" stroke="none">
             <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
           </svg>
-          <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', fontFamily: 'monospace' }}>{repo.stars}</span>
+          <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.65)', fontFamily: 'monospace' }}>{repo.stars}</span>
         </div>
       </div>
 
       {repo.description && (
         <p style={{
-          fontSize: '12px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.6,
+          fontSize: '12px', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6,
           marginBottom: '14px', fontFamily: 'Georgia, serif',
           display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
           minHeight: '38px',
@@ -244,7 +244,7 @@ export default function GitHub() {
               <p style={{
                 fontFamily: '"Courier New", monospace', fontSize: '11px',
                 letterSpacing: '0.2em', textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.25)', marginBottom: '12px',
+                color: 'rgba(255,255,255,0.5)', marginBottom: '12px',
               }}>
                 Open Source /
               </p>
@@ -256,7 +256,7 @@ export default function GitHub() {
                 textTransform: 'uppercase', margin: 0,
               }}>
                 Code &<br />
-                <span style={{ color: 'rgba(255,255,255,0.25)' }}>Commits</span>
+                <span style={{ color: 'rgba(255,255,255,0.45)' }}>Commits</span>
               </h2>
             </div>
             <a
