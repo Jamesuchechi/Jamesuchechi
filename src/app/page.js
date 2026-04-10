@@ -109,7 +109,7 @@ export default function Home() {
 
 
         {/* 6. Quick Links Hub → pixel dissolve */}
-        <SectionTransition id="hub" transition="pixelDissolve" bgHex="#000000" className="min-h-screen flex items-center bg-black">
+        <SectionTransition id="hub" transition="pixelDissolve" bgHex="#000000" className="min-h-screen flex items-center bg-white">
           <div className="max-w-7xl mx-auto px-6 w-full py-24">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
