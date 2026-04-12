@@ -38,6 +38,8 @@ export async function POST(request) {
       email: body.email || '',
       phone: body.phone || '',
       location: body.location || '',
+      latitude: body.latitude ? parseFloat(body.latitude) : null,
+      longitude: body.longitude ? parseFloat(body.longitude) : null,
       socialLinks: typeof body.socialLinks === 'string' ? body.socialLinks : JSON.stringify(body.socialLinks || {}),
       availabilityStatus: body.availabilityStatus || 'available',
     };

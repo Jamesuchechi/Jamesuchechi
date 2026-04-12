@@ -15,6 +15,8 @@ export default function AboutTab() {
     email: '',
     phone: '',
     location: '',
+    latitude: '',
+    longitude: '',
     socialLinks: {
       github: '',
       linkedin: '',
@@ -69,6 +71,8 @@ export default function AboutTab() {
         email: data.email || '',
         phone: data.phone || '',
         location: data.location || '',
+        latitude: data.latitude || '',
+        longitude: data.longitude || '',
         socialLinks,
         availabilityStatus: data.availabilityStatus || 'available'
       });
@@ -226,6 +230,30 @@ export default function AboutTab() {
                 onChange={(e) => setFormData({ ...formData, resumeUrl: e.target.value })}
                 className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none bg-white text-gray-900 placeholder-gray-500 transition-all"
                 placeholder="https://example.com/resume.pdf"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Latitude</label>
+              <input
+                type="number"
+                step="any"
+                value={formData.latitude}
+                onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none bg-white text-gray-900 placeholder-gray-500 transition-all"
+                placeholder="9.0820"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Longitude</label>
+              <input
+                type="number"
+                step="any"
+                value={formData.longitude}
+                onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none bg-white text-gray-900 placeholder-gray-500 transition-all"
+                placeholder="7.4913"
               />
             </div>
           </div>

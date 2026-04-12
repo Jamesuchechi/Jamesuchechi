@@ -2,7 +2,13 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { normalizeImageUrl } from "@/lib/imageUtils";
+
+const MapComponent = dynamic(() => import("./MapComponent"), {
+  ssr: false,
+  loading: () => <div className="w-full h-[300px] bg-gray-100 animate-pulse rounded-[40px]" />
+});
 
 export default function About() {
   const [about, setAbout] = useState(null);
@@ -70,13 +76,14 @@ export default function About() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 items-stretch min-h-screen">
         {/* 1. Image Section (Centered Sticky Pillar) */}
-        <div className="relative lg:h-auto">
-          <div className="lg:sticky lg:top-0 lg:h-screen flex items-center justify-center p-8 lg:p-20">
+        <div className="relative h-full border-r border-black/5 flex flex-col">
+          {/* 1. Sticky Identity Pillar */}
+          <div className="sticky top-0 z-20">
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, ease: "easeOut" }}
-              className="relative w-full aspect-[4/5] max-h-[80vh] bg-[#f3f3f3] rounded-[60px] lg:rounded-[120px] overflow-hidden shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] border border-black/5"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+              className="relative w-full h-[85vh] bg-[#f3f3f3] overflow-hidden group"
             >
               <div
                 className="absolute inset-0 z-10 mix-blend-overlay pointer-events-none opacity-40"
@@ -87,43 +94,42 @@ export default function About() {
                   src={normalizeImageUrl(about.profileImage)}
                   alt={about.name}
                   fill
-                  className="object-cover object-top transition-transform duration-1000 saturate-[0.85] hover:saturate-100"
+                  className="object-cover object-[center_15%] transition-transform duration-1000 saturate-[0.85] group-hover:saturate-100 group-hover:scale-105"
                   priority
                 />
               ) : (
-                <div className="absolute inset-0 flex items-center justify-center text-black/5 text-9xl font-bold">
-                  {about.name
-                    ? about.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")
-                        .toUpperCase()
-                    : "JU"}
+                <div className="absolute inset-0 flex items-center justify-center text-black/5 text-9xl font-bold uppercase italic">
+                  {about.name?.substring(0, 2) || "JU"}
                 </div>
               )}
-
-              {/* Decorative Folio Card (Now Floating inside the image area) */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.8, duration: 0.8 }}
-                className="hidden lg:block absolute bottom-10 right-10 bg-white/95 backdrop-blur-md p-7 border border-black/5 shadow-xl rounded-3xl z-20 max-w-[240px]"
-              >
-                <p className="text-[9px] font-mono tracking-[0.4em] uppercase text-black/40 mb-3 font-bold border-b border-black/5 pb-2">
-                  Technical Status
+              <div className="absolute bottom-6 left-6 z-20">
+                <p className="text-[10px] font-mono tracking-[0.3em] uppercase text-white/60 font-bold bg-black/20 backdrop-blur-sm px-4 py-2 rounded-full border border-white/10">
+                  Profile // Identity
                 </p>
-                <p className="text-[11px] font-mono leading-relaxed text-black/70 italic">
-                  Currently refining the boundaries between{" "}
-                  <span className="text-black font-bold">
-                    Digital Excellence
-                  </span>{" "}
-                  and{" "}
-                  <span className="text-black font-bold">Human Intuition</span>.
-                </p>
-              </motion.div>
+              </div>
             </motion.div>
           </div>
+
+          {/* 2. Stretching Map Pillar */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 1 }}
+            className="relative w-full flex-1 border-t border-black/5 min-h-[15vh]"
+          >
+            <div className="sticky top-[85vh] left-6 z-20 pointer-events-none p-6">
+              <p className="text-[10px] font-mono tracking-[0.3em] uppercase text-black/40 font-bold bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-black/5 inline-block">
+                Base of Operations // {about.location || "Abuja"}
+              </p>
+            </div>
+            <div className="absolute inset-0">
+              <MapComponent 
+                latitude={about.latitude} 
+                longitude={about.longitude} 
+                address={about.location}
+              />
+            </div>
+          </motion.div>
         </div>
 
         {/* 2. Content Section (Large Typography Perspective) */}
