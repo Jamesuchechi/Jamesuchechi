@@ -17,6 +17,17 @@ import EducationTab from '@/components/admin/EducationTab';
 import FaqTab from '@/components/admin/FaqTab';
 import LabTab from '@/components/admin/LabTab';
 import MessagesTab from '@/components/admin/MessagesTab';
+import VideoTab from '@/components/admin/VideoTab';
+import { 
+  AreaChart, 
+  Area, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  Legend
+} from 'recharts';
 
 
 export default function AdminDashboard() {
@@ -99,6 +110,7 @@ export default function AdminDashboard() {
     { id: 'testimonials', component: TestimonialsTab },
     { id: 'lab',          component: LabTab },
     { id: 'messages',     component: MessagesTab },
+    { id: 'video',        component: VideoTab },
   ];
 
 
@@ -178,6 +190,22 @@ export default function AdminDashboard() {
 }
 
 function OverviewTab({ stats, admin }) {
+  const [chartData, setChartData] = useState([]);
+  const [chartLoading, setChartLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/dashboard-stats')
+      .then(res => res.json())
+      .then(data => {
+        setChartData(data);
+        setChartLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching chart data:', err);
+        setChartLoading(false);
+      });
+  }, []);
+
   const cards = [
     { label: 'Total Projects', value: stats.projects, icon: FiActivity, color: 'indigo' },
     { label: 'Case Studies', value: stats.caseStudies, icon: FiBook, color: 'emerald' },
@@ -207,6 +235,112 @@ function OverviewTab({ stats, admin }) {
             </div>
           </motion.div>
         ))}
+      </div>
+
+      {/* Analytics Chart */}
+      <div className="premium-card p-8 bg-white border border-slate-100">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <div>
+            <h3 className="text-xl font-bold text-slate-900">Portfolio Analytics</h3>
+            <p className="text-slate-500 text-sm">Tracking visitors, contacts, and activity over the last 30 days</p>
+          </div>
+          <div className="flex gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-indigo-500" />
+              <span className="text-xs font-medium text-slate-600">Visitors</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-emerald-500" />
+              <span className="text-xs font-medium text-slate-600">Contacts</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-amber-500" />
+              <span className="text-xs font-medium text-slate-600">Projects</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="h-[350px] w-full">
+          {chartLoading ? (
+            <div className="h-full w-full flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorVisitors" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.1}/>
+                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="colorContacts" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.1}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="colorProjects" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.1}/>
+                    <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis 
+                  dataKey="date" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fontSize: 12, fill: '#64748b' }}
+                  tickFormatter={(str) => {
+                    const date = new Date(str);
+                    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                  }}
+                  minTickGap={30}
+                />
+                <YAxis 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fontSize: 12, fill: '#64748b' }}
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#fff', 
+                    borderRadius: '12px', 
+                    border: '1px solid #e2e8f0',
+                    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'
+                  }}
+                  itemStyle={{ fontSize: '12px', fontWeight: 'bold' }}
+                  labelStyle={{ marginBottom: '4px', fontWeight: 'bold', color: '#1e293b' }}
+                  labelFormatter={(str) => {
+                    const date = new Date(str);
+                    return date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+                  }}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="visitors" 
+                  stroke="#6366f1" 
+                  strokeWidth={3}
+                  fillOpacity={1} 
+                  fill="url(#colorVisitors)" 
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="contacts" 
+                  stroke="#10b981" 
+                  strokeWidth={3}
+                  fillOpacity={1} 
+                  fill="url(#colorContacts)" 
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="projects" 
+                  stroke="#f59e0b" 
+                  strokeWidth={3}
+                  fillOpacity={1} 
+                  fill="url(#colorProjects)" 
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

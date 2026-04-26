@@ -16,10 +16,28 @@ import Contact         from '@/components/Contact';
 import Footer          from '@/components/Footer';
 import SectionTransition from '@/components/SectionTransition';
 import JamesOS         from '@/components/JamesOS';
+import VideoSection    from '@/components/VideoSection';
+import { useEffect }   from 'react';
 
 export default function Home() {
   const [osMode,        setOsMode]        = useState(false);
   const [transitioning, setTransitioning] = useState(false);
+
+  useEffect(() => {
+    // Track visitor
+    const trackVisitor = async () => {
+      try {
+        await fetch('/api/visitor-log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userAgent: navigator.userAgent })
+        });
+      } catch (err) {
+        console.error('Visitor tracking error:', err);
+      }
+    };
+    trackVisitor();
+  }, []);
 
   const triggerTransition = useCallback((entering) => {
     if (transitioning) return;
@@ -124,6 +142,11 @@ export default function Home() {
               ))}
             </div>
           </div>
+        </SectionTransition>
+
+        {/* 6.5 Featured Video → split open */}
+        <SectionTransition id="video-section" transition="splitOpen" bgHex="#ffffff" className="bg-white">
+          <VideoSection />
         </SectionTransition>
 
         {/* 7. Contact + Footer */}

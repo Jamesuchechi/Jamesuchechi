@@ -16,7 +16,8 @@ import {
   FiBook,
   FiHelpCircle,
   FiTerminal,
-  FiBookOpen
+  FiBookOpen,
+  FiVideo
 } from 'react-icons/fi';
 
 import { AnimatePresence } from 'framer-motion';
@@ -36,6 +37,7 @@ export default function Sidebar({ activeTab, setActiveTab, admin, onLogout, isOp
     { id: 'lab',          label: 'The Lab',      icon: FiActivity },
     { id: 'testimonials', label: 'Testimonials', icon: FiMessageCircle },
     { id: 'messages',     label: 'Messages',     icon: FiMessageSquare },
+    { id: 'video',        label: 'Portfolio Video', icon: FiVideo },
     { id: 'about',        label: 'About',        icon: FiUser },
   ];
 
