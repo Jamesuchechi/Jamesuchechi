@@ -212,3 +212,17 @@ model VisitorLog {
   ip        String?
   userAgent String?
 }
+
+model TeamMember {
+  id           String   @id @default(cuid())
+  name         String
+  slug         String   @unique
+  role         String
+  description  String   @db.Text
+  profilePic   String?
+  portfolioUrl String?
+  githubUrl    String?
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

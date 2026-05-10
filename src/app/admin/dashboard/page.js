@@ -18,6 +18,7 @@ import FaqTab from '@/components/admin/FaqTab';
 import LabTab from '@/components/admin/LabTab';
 import MessagesTab from '@/components/admin/MessagesTab';
 import VideoTab from '@/components/admin/VideoTab';
+import TeamTab from '@/components/admin/TeamTab';
 import { 
   AreaChart, 
   Area, 
@@ -42,7 +43,8 @@ export default function AdminDashboard() {
     education: 0,
     skills: 0,
     messages: 0,
-    visitorCount: 0
+    visitorCount: 0,
+    team: 0
   });
 
   useEffect(() => {
@@ -71,7 +73,8 @@ export default function AdminDashboard() {
         fetch('/api/projects').then(res => res.json()),
         fetch('/api/skills').then(res => res.json()),
         fetch('/api/contact-messages').then(res => res.json()),
-        fetch('/api/education').then(res => res.json())
+        fetch('/api/education').then(res => res.json()),
+        fetch('/api/team').then(res => res.json())
       ]);
 
       const caseStudyCount = projects.filter(p => p.problem || p.process || p.outcome).length;
@@ -82,7 +85,8 @@ export default function AdminDashboard() {
         education: education.length || 0,
         skills: skills.length || 0,
         messages: messages.length || 0,
-        visitorCount: 0 // Fetch from visitor-count API if implemented
+        visitorCount: 0, // Fetch from visitor-count API if implemented
+        team: team.length || 0
       });
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -111,6 +115,7 @@ export default function AdminDashboard() {
     { id: 'lab',          component: LabTab },
     { id: 'messages',     component: MessagesTab },
     { id: 'video',        component: VideoTab },
+    { id: 'team',         component: TeamTab },
   ];
 
 
@@ -210,6 +215,7 @@ function OverviewTab({ stats, admin }) {
     { label: 'Total Projects', value: stats.projects, icon: FiActivity, color: 'indigo' },
     { label: 'Case Studies', value: stats.caseStudies, icon: FiBook, color: 'emerald' },
     { label: 'New Messages', value: stats.messages, icon: FiMessageSquare, color: 'amber' },
+    { label: 'Team Members', value: stats.team, icon: FiUsers, color: 'blue' },
     { label: 'Skills Added', value: stats.skills, icon: FiUsers, color: 'purple' },
   ];
 

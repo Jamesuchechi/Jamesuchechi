@@ -5,6 +5,7 @@ import {
   FiCpu, 
   FiLayers, 
   FiUser, 
+  FiUsers,
   FiMessageSquare, 
   FiPieChart,
   FiLogOut,
@@ -38,6 +39,7 @@ export default function Sidebar({ activeTab, setActiveTab, admin, onLogout, isOp
     { id: 'testimonials', label: 'Testimonials', icon: FiMessageCircle },
     { id: 'messages',     label: 'Messages',     icon: FiMessageSquare },
     { id: 'video',        label: 'Portfolio Video', icon: FiVideo },
+    { id: 'team',         label: 'The Team',     icon: FiUsers },
     { id: 'about',        label: 'About',        icon: FiUser },
   ];
 

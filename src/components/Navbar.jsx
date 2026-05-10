@@ -12,6 +12,7 @@ const CORE_LINKS = [
 ];
 
 const EXTENDED_LINKS = [
+  { name: 'Team',          href: '/team'         },
   { name: 'Experience',   href: '/experience'   },
   { name: 'Education',    href: '/education'    },
   { name: 'Achievements', href: '/achievements' },
