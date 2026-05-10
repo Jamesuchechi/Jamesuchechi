@@ -69,7 +69,7 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const [projects, skills, messages, education] = await Promise.all([
+      const [projects, skills, messages, education, team] = await Promise.all([
         fetch('/api/projects').then(res => res.json()),
         fetch('/api/skills').then(res => res.json()),
         fetch('/api/contact-messages').then(res => res.json()),
