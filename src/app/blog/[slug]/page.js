@@ -1,130 +1,114 @@
-'use client';
-import { useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { FiArrowLeft, FiClock, FiTag, FiCalendar } from 'react-icons/fi';
-import Link from 'next/link';
+import { prisma } from '@/lib/prisma';
+import { cache } from 'react';
 import { notFound } from 'next/navigation';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import BlogPostClient from '@/components/BlogPostClient';
 
-export default function BlogPostDetail({ params }) {
-  const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [slug, setSlug] = useState(null);
+const DEFAULT_OG_IMAGE = 'https://vercel.app/favicon.svg';
+const DEFAULT_METADATA = {
+    title: 'Okpara James Uchechi',
+    description: 'Portfolio and writings by Okpara James Uchechi.',
+    openGraph: {
+        title: 'Okpara James Uchechi',
+        description: 'Portfolio and writings by Okpara James Uchechi.',
+        url: 'https://vercel.app',
+        siteName: 'Okpara James Uchechi',
+        images: [{ url: DEFAULT_OG_IMAGE, alt: 'Okpara James Uchechi' }],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Okpara James Uchechi',
+        description: 'Portfolio and writings by Okpara James Uchechi.',
+        creator: '@jamesuchechi6',
+        images: [DEFAULT_OG_IMAGE],
+    },
+};
 
-  useEffect(() => {
-    const getSlug = async () => {
-      const resolvedParams = await params;
-      setSlug(resolvedParams.slug);
-    };
-    getSlug();
-  }, [params]);
+// Use React cache() to dedupe blog post fetches within the same request lifecycle
+const getBlogPostBySlug = cache(async (slug) => {
+    if (!slug) return null;
 
-  const fetchPost = useCallback(async () => {
-    if (!slug) return;
-    try {
-      const res = await fetch('/api/blog');
-      const posts = await res.json();
-      const found = posts.find(p => p.slug === slug);
-      if (!found) notFound();
-      setPost(found);
-    } catch (error) {
-      console.error('Error fetching post:', error);
-    } finally {
-      setLoading(false);
+    let post = await prisma.blogPost.findUnique({ where: { slug } });
+    if (!post) {
+        const allPosts = await prisma.blogPost.findMany();
+        post = allPosts.find((item) => item.slug === slug) || null;
     }
-  }, [slug]);
 
-  useEffect(() => {
-    if (slug) fetchPost();
-  }, [slug, fetchPost]);
+    return post;
+});
 
-  if (loading) {
+function getExcerpt(text) {
+    if (!text) return '';
+    const cleaned = text.replace(/\s+/g, ' ').trim();
+    return cleaned.length > 160 ? `${cleaned.slice(0, 157)}...` : cleaned;
+}
+
+export async function generateMetadata({ params }) {
+    try {
+        const post = await getBlogPostBySlug(params.slug);
+        if (!post) return DEFAULT_METADATA;
+
+        const title = `${post.title} | Blog | Okpara James Uchechi`;
+        const description = post.summary || getExcerpt(post.content);
+        const url = `https://vercel.app/blog/${params.slug}`;
+        const imageUrl = DEFAULT_OG_IMAGE;
+
+        return {
+            title,
+            description,
+            openGraph: {
+                title,
+                description,
+                url,
+                siteName: 'Okpara James Uchechi',
+                type: 'article',
+                images: [
+                    {
+                        url: imageUrl,
+                        alt: `${post.title} preview image`,
+                    },
+                ],
+            },
+            twitter: {
+                card: 'summary_large_image',
+                title,
+                description,
+                creator: '@jamesuchechi6',
+                images: [imageUrl],
+            },
+        };
+    } catch (err) {
+        console.error('generateMetadata(blog) error:', err);
+        return DEFAULT_METADATA;
+    }
+}
+
+export default async function BlogPostPage({ params }) {
+    const post = await getBlogPostBySlug(params.slug);
+    if (!post) notFound();
+
+    const postData = JSON.parse(JSON.stringify(post));
+    const tags = postData.tags ? JSON.parse(postData.tags) : [];
+    const jsonLd = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: postData.title,
+        description: postData.summary || getExcerpt(postData.content),
+        url: `https://vercel.app/blog/${params.slug}`,
+        datePublished: postData.publishedAt ? new Date(postData.publishedAt).toISOString() : undefined,
+        author: {
+            '@type': 'Person',
+            name: 'Okpara James Uchechi',
+            url: 'https://vercel.app',
+        },
+        image: DEFAULT_OG_IMAGE,
+        keywords: Array.isArray(tags) ? tags.join(', ') : tags,
+        mainEntityOfPage: `https://vercel.app/blog/${params.slug}`,
+    });
+
     return (
-      <div className="min-h-screen bg-[#07090c] flex items-center justify-center">
-        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity }} className="w-12 h-12 border-2 border-white/10 border-t-[#FF3B00] rounded-full" />
-      </div>
+        <>
+            <BlogPostClient post={postData} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+        </>
     );
-  }
-
-  if (!post) return null;
-
-  const tags = JSON.parse(post.tags || '[]');
-
-  return (
-    <main className="min-h-screen bg-[#07090c] text-white">
-      <Navbar />
-      
-      {/* Hero Header */}
-      <header className="relative pt-44 pb-32 px-6 sm:px-12 border-b border-white/5">
-        <div className="max-w-4xl mx-auto relative z-10">
-          <Link href="/blog" className="inline-flex items-center gap-2 text-white/40 hover:text-white mb-12 transition-colors font-mono text-[10px] uppercase tracking-widest">
-            <FiArrowLeft /> Back to Insights
-          </Link>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <div className="flex flex-wrap gap-4 mb-8">
-              {tags.map((tag, i) => (
-                <span key={i} className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FF3B00]/10 text-[#FF3B00] text-[9px] font-mono tracking-widest uppercase">
-                  <FiTag /> {tag}
-                </span>
-              ))}
-            </div>
-            
-            <h1 className="text-5xl md:text-8xl font-black uppercase italic leading-[0.9] tracking-tighter mb-12" style={{ fontFamily: 'Georgia, serif' }}>
-              {post.title}
-            </h1>
-            
-            <div className="flex flex-wrap gap-8 items-center text-white/40 font-mono text-[10px] uppercase tracking-[0.2em]">
-              <div className="flex items-center gap-2">
-                <FiCalendar className="text-[#FF3B00]" />
-                {new Date(post.publishedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
-              </div>
-              <div className="flex items-center gap-2">
-                <FiClock className="text-[#FF3B00]" />
-                {Math.ceil(post.content.length / 1000)} min read
-              </div>
-            </div>
-          </motion.div>
-        </div>
-        
-        {/* Background Glow */}
-        <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-[#FF3B00] opacity-[0.03] blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
-      </header>
-
-      {/* Content */}
-      <article className="py-24 px-6 md:px-12">
-        <div className="max-w-4xl mx-auto">
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="prose prose-invert prose-lg max-w-none prose-headings:font-black prose-headings:italic prose-headings:uppercase prose-headings:tracking-tighter prose-a:text-[#FF3B00]"
-            style={{ fontFamily: 'Georgia, serif' }}
-          >
-            {/* MDX Content Rendering */}
-            <div className="whitespace-pre-line text-xl md:text-2xl text-white/70 leading-[1.7] italic">
-               {post.content}
-            </div>
-          </motion.div>
-          
-          {/* CTA Corner */}
-          <div className="mt-32 pt-16 border-t border-white/5 text-center">
-            <h2 className="text-4xl md:text-6xl font-black italic mb-12 uppercase" style={{ fontFamily: 'Georgia, serif' }}>
-              Thoughts on this? <br />
-              <span className="text-[#FF3B00]">Let&apos;s discuss.</span>
-            </h2>
-            <Link href="/contact" className="inline-flex items-center gap-4 bg-white text-black px-10 py-4 rounded-full font-mono text-xs uppercase tracking-widest hover:scale-105 transition-transform">
-              Get In Touch
-            </Link>
-          </div>
-        </div>
-      </article>
-
-      <Footer />
-    </main>
-  );
 }

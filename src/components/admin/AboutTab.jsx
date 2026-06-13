@@ -24,6 +24,7 @@ export default function AboutTab() {
       website: '',
       whatsapp: '',
       facebook: '',
+      devpost: '',
       tiktok: ''
     },
     availabilityStatus: 'available'
@@ -45,6 +46,7 @@ export default function AboutTab() {
         website: '',
         whatsapp: '',
         facebook: '',
+        devpost: '',
         tiktok: ''
       };
 
@@ -345,6 +347,20 @@ export default function AboutTab() {
                 })}
                 className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none bg-white text-gray-900 placeholder-gray-500 transition-all"
                 placeholder="https://facebook.com/username"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Devpost</label>
+              <input
+                type="url"
+                value={formData.socialLinks.devpost}
+                onChange={(e) => setFormData({ 
+                  ...formData, 
+                  socialLinks: { ...formData.socialLinks, devpost: e.target.value }
+                })}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none bg-white text-gray-900 placeholder-gray-500 transition-all"
+                placeholder="https://devpost.com/username"
               />
             </div>
 

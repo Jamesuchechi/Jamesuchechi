@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FiArrowUp, FiGithub, FiLinkedin, FiInstagram, FiMessageCircle, FiFacebook, FiMusic } from 'react-icons/fi';
+import { FiArrowUp, FiGithub, FiLinkedin, FiTwitter, FiMessageCircle, FiFacebook, FiMusic, FiGlobe } from 'react-icons/fi';
 import VisitorCounter from './VisitorCounter';
 
 export default function Footer() {
@@ -14,6 +14,7 @@ export default function Footer() {
     website: '',
     whatsapp: '',
     facebook: '',
+    devpost: '',
     tiktok: ''
   });
 
@@ -65,21 +66,23 @@ export default function Footer() {
   const socialIcons = {
     github: FiGithub,
     linkedin: FiLinkedin,
-    twitter: FiInstagram, // Using Instagram icon for Twitter/X
-    website: FiArrowUp, // Using arrow up for website
+    twitter: FiTwitter,
+    website: FiArrowUp,
     whatsapp: FiMessageCircle,
     facebook: FiFacebook,
-    tiktok: FiMusic // Using music icon for TikTok
+    devpost: FiGlobe,
+    tiktok: FiMusic,
   };
 
   const socialLabels = {
-    github: 'Github',
-    linkedin: 'LinkedIn',
-    twitter: 'X (Twitter)',
-    website: 'Website',
-    whatsapp: 'WhatsApp',
-    facebook: 'Facebook',
-    tiktok: 'TikTok'
+    github: 'Visit Okpara James Uchechi on GitHub',
+    linkedin: 'Visit Okpara James Uchechi on LinkedIn',
+    twitter: 'Visit Okpara James Uchechi on X',
+    website: 'Visit the portfolio website of Okpara James Uchechi',
+    whatsapp: 'Contact Okpara James Uchechi on WhatsApp',
+    facebook: 'Visit Okpara James Uchechi on Facebook',
+    devpost: 'Visit Okpara James Uchechi on Devpost',
+    tiktok: 'Visit Okpara James Uchechi on TikTok',
   };
 
   return (
