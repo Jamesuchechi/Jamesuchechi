@@ -10,8 +10,8 @@ I'm a **Software Engineer** and **Data Scientist/Engineer** with a passion for c
 
 ## 🔧 Tech Stack
 ### Web Development
-- **Frameworks**: Django, Flask, FastAPI (actively learning)
-- **Languages**: Python, HTML, CSS, JavaScript (for front-end integration), Next.js and React(actively learning)
+- **Frameworks**: Django, Flask, FastAPI 
+- **Languages**: Python, HTML, CSS, JavaScript (for front-end integration), Next.js and React
 - **Tools**: RESTful APIs, PostgreSQL, MySQL, Docker, Git
 
 ### Data Science & Engineering
@@ -46,7 +46,7 @@ Here are some projects I'm proud of (check my repositories for more!):
 - **LinkedIn**: https://www.linkedin.com/in/jamesuchechi
 - **website**: https://jamesuchechi-website.vercel.app
 - **GitHub**: https://github.com/jamesuchechi
-- **X**:Jamesuchechi6
+- **X**: https://x.com/Jamesuchechi6
 
 I'm always excited to collaborate on open-source projects, discuss tech innovations, or explore data-driven solutions. Feel free to reach out!
 
