@@ -35,14 +35,14 @@ export default function TeamHubPage() {
         <div className="absolute inset-0 opacity-[0.03] [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:40px_40px]" />
       </div>
 
-      <section className="relative pt-32 pb-16 px-6 sm:px-12">
+      <section className="relative pt-24 sm:pt-32 pb-16 px-4 sm:px-8 md:px-12">
         <div className="max-w-7xl mx-auto">
           {/* Back Navigation */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className="mb-12"
+            className="mb-8 sm:mb-12"
           >
             <Link
               href="/"
@@ -54,21 +54,21 @@ export default function TeamHubPage() {
           </motion.div>
 
           {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20 border-b border-white/5 pb-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8 mb-12 sm:mb-20 border-b border-white/5 pb-8 sm:pb-12">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               className="max-w-3xl"
             >
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center gap-3 mb-4 sm:mb-6">
                 <div className="h-2 w-2 bg-[#FF3B00] rounded-full animate-pulse" />
-                <span className="text-[10px] font-mono uppercase tracking-[0.5em] text-[#FF3B00]">{"System Registry // Active_Nodes"}</span>
+                <span className="text-[10px] font-mono uppercase tracking-[0.4em] sm:tracking-[0.5em] text-[#FF3B00]">{"System Registry // Active_Nodes"}</span>
               </div>
-              <h1 className="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-none mb-6 italic">
+              <h1 className="text-3xl min-[380px]:text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter leading-none mb-4 sm:mb-6 italic break-words">
                 COLLABORATORS<span className="text-[#FF3B00]">/</span>
               </h1>
-              <p className="text-xl text-white/40 font-light max-w-2xl leading-relaxed italic">
+              <p className="text-base sm:text-lg md:text-xl text-white/40 font-light max-w-2xl leading-relaxed italic">
                 A decentralized network of visionaries, developers, and designers bridging the gap between imagination and execution.
               </p>
             </motion.div>

@@ -83,7 +83,7 @@ export default function About() {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 1.2, ease: "easeOut" }}
-              className="relative w-full h-[85vh] bg-[#f3f3f3] overflow-hidden group"
+              className="relative w-full h-[60vh] sm:h-[75vh] lg:h-[85vh] bg-[#f3f3f3] overflow-hidden group"
             >
               <div
                 className="absolute inset-0 z-10 mix-blend-overlay pointer-events-none opacity-40"
@@ -115,10 +115,10 @@ export default function About() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 1 }}
-            className="relative w-full flex-1 border-t border-black/5 min-h-[15vh]"
+            className="relative w-full h-[320px] lg:h-auto lg:flex-1 border-t border-black/5 min-h-[300px] lg:min-h-[15vh]"
           >
-            <div className="sticky top-[85vh] left-6 z-20 pointer-events-none p-6">
-              <p className="text-[10px] font-mono tracking-[0.3em] uppercase text-black/40 font-bold bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-black/5 inline-block">
+            <div className="absolute top-4 left-4 lg:sticky lg:top-[85vh] lg:left-6 z-20 pointer-events-none">
+              <p className="text-[10px] font-mono tracking-[0.3em] uppercase text-black/60 font-bold bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full border border-black/10 shadow-sm inline-block">
                 Base of Operations // {about.location || "Abuja"}
               </p>
             </div>

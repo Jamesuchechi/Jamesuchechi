@@ -54,19 +54,19 @@ export default function TeamMemberDetail({ params }) {
   return (
     <main className="min-h-screen bg-[#080808] text-white selection:bg-[#FF3B00] selection:text-white">
       {/* ── Fixed UI Elements ── */}
-      <div className="fixed top-8 left-8 z-50">
+      <div className="fixed top-4 left-4 sm:top-8 sm:left-8 z-50">
         <Link
           href="/team"
-          className="group flex items-center gap-4 bg-black/40 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-full hover:bg-white hover:text-black transition-all duration-500 shadow-2xl"
+          className="group flex items-center gap-3 sm:gap-4 bg-black/60 backdrop-blur-xl border border-white/10 px-4 py-2.5 sm:px-6 sm:py-3 rounded-full hover:bg-white hover:text-black transition-all duration-500 shadow-2xl"
         >
           <FiArrowLeft className="group-hover:-translate-x-1 transition-transform" />
-          <span className="font-mono text-[10px] uppercase tracking-[0.3em]">Back to Directory</span>
+          <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.25em] sm:tracking-[0.3em]">Directory</span>
         </Link>
       </div>
 
       <div className="flex flex-col lg:flex-row min-h-screen">
         {/* ── Left Side: Visual ── */}
-        <div className="lg:w-1/2 relative min-h-[50vh] lg:h-screen lg:sticky lg:top-0 overflow-hidden bg-[#0A0A0A]">
+        <div className="lg:w-1/2 relative min-h-[45vh] sm:min-h-[50vh] lg:h-screen lg:sticky lg:top-0 overflow-hidden bg-[#0A0A0A]">
           {member.profilePic ? (
             <motion.img
               initial={{ scale: 1.1, opacity: 0 }}
@@ -91,7 +91,7 @@ export default function TeamMemberDetail({ params }) {
           <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-transparent to-transparent lg:bg-gradient-to-r" />
 
           {/* Metadata Display */}
-          <div className="absolute bottom-12 left-12 right-12 flex justify-between items-end">
+          <div className="absolute bottom-6 left-6 right-6 sm:bottom-12 sm:left-12 sm:right-12 flex justify-between items-end">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -99,7 +99,7 @@ export default function TeamMemberDetail({ params }) {
               className="font-mono"
             >
               <div className="text-[9px] uppercase tracking-[0.4em] text-[#FF3B00] mb-2">{"// Node_Info"}</div>
-              <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter italic leading-none">
+              <h1 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter italic leading-none break-words">
                 {member.name.split(' ')[0]}<br />
                 <span className="text-[#FF3B00]">{member.name.split(' ')[1] || ''}</span>
               </h1>
@@ -113,43 +113,43 @@ export default function TeamMemberDetail({ params }) {
         </div>
 
         {/* ── Right Side: Content ── */}
-        <div className="lg:w-1/2 p-12 lg:p-24 lg:pt-48 flex flex-col justify-center">
+        <div className="lg:w-1/2 p-6 sm:p-12 lg:p-24 lg:pt-48 flex flex-col justify-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
             {/* Role & Tags */}
-            <div className="flex flex-wrap items-center gap-6 mb-12">
+            <div className="flex flex-wrap items-center gap-4 sm:gap-6 mb-8 sm:mb-12">
               <div className="flex items-center gap-3">
                 <FiCpu className="text-[#FF3B00]" />
-                <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#FF3B00]">Function: {member.role}</span>
+                <span className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.25em] sm:tracking-[0.3em] text-[#FF3B00]">Function: {member.role}</span>
               </div>
-              <div className="h-px w-12 bg-white/10" />
+              <div className="h-px w-8 sm:w-12 bg-white/10" />
               <div className="flex items-center gap-3">
                 <FiClock className="text-white/20" />
-                <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-white/20">Uptime: Permanent</span>
+                <span className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.25em] sm:tracking-[0.3em] text-white/20">Uptime: Permanent</span>
               </div>
             </div>
 
             {/* Description */}
-            <div className="mb-20">
-              <h2 className="text-[10px] font-mono uppercase tracking-[0.5em] text-white/20 mb-8">{"// Core_Data_Log"}</h2>
-              <p className="text-2xl md:text-3xl font-light leading-relaxed text-white/60 italic">
+            <div className="mb-12 sm:mb-20">
+              <h2 className="text-[10px] font-mono uppercase tracking-[0.5em] text-white/20 mb-6 sm:mb-8">{"// Core_Data_Log"}</h2>
+              <p className="text-lg sm:text-2xl md:text-3xl font-light leading-relaxed text-white/70 italic">
                 &ldquo;{member.description}&rdquo;
               </p>
             </div>
 
             {/* Uplinks */}
             <div>
-              <h2 className="text-[10px] font-mono uppercase tracking-[0.5em] text-white/20 mb-8">{"// External_Uplinks"}</h2>
+              <h2 className="text-[10px] font-mono uppercase tracking-[0.5em] text-white/20 mb-6 sm:mb-8">{"// External_Uplinks"}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {member.githubUrl && (
                   <a
                     href={member.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-6 rounded-2xl bg-white/5 border border-white/5 hover:border-[#FF3B00] hover:bg-[#FF3B00]/5 transition-all group"
+                    className="flex items-center justify-between p-5 sm:p-6 rounded-2xl bg-white/5 border border-white/5 hover:border-[#FF3B00] hover:bg-[#FF3B00]/5 transition-all group"
                   >
                     <div className="flex items-center gap-4">
                       <FiGithub size={20} className="text-white/40 group-hover:text-[#FF3B00] transition-colors" />
@@ -163,7 +163,7 @@ export default function TeamMemberDetail({ params }) {
                     href={member.portfolioUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-6 rounded-2xl bg-white/5 border border-white/5 hover:border-[#FF3B00] hover:bg-[#FF3B00]/5 transition-all group"
+                    className="flex items-center justify-between p-5 sm:p-6 rounded-2xl bg-white/5 border border-white/5 hover:border-[#FF3B00] hover:bg-[#FF3B00]/5 transition-all group"
                   >
                     <div className="flex items-center gap-4">
                       <FiExternalLink size={20} className="text-white/40 group-hover:text-[#FF3B00] transition-colors" />
@@ -176,7 +176,7 @@ export default function TeamMemberDetail({ params }) {
             </div>
 
             {/* System Status */}
-            <div className="mt-32 pt-12 border-t border-white/5 flex items-center justify-between opacity-20">
+            <div className="mt-16 sm:mt-32 pt-8 sm:pt-12 border-t border-white/5 flex items-center justify-between opacity-30">
               <div className="font-mono text-[9px] uppercase tracking-[0.3em]">
                 System_Ref: {member.slug.replace(/-/g, '_')}
               </div>
