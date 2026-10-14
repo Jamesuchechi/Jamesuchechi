@@ -90,7 +90,7 @@ export default function ProjectsListPage() {
 
   return (
     <main className="min-h-screen bg-white text-black">
-      <section className="relative overflow-hidden px-6 sm:px-12 pt-24 pb-16">
+      <section className="relative overflow-hidden px-4 sm:px-8 md:px-12 pt-20 sm:pt-24 pb-12 sm:pb-16">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute -top-32 right-[-10%] h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(255,200,140,0.35),transparent_70%)] blur-2xl"></div>
           <div className="absolute -bottom-20 left-[-8%] h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(110,170,255,0.35),transparent_70%)] blur-3xl"></div>
@@ -102,11 +102,11 @@ export default function ProjectsListPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mb-10"
+            className="mb-8 sm:mb-10"
           >
             <Link
               href="/#works"
-              className="inline-flex items-center gap-2 text-black/60 hover:text-black transition-colors"
+              className="inline-flex items-center gap-2 text-black/60 hover:text-black transition-colors font-mono text-xs uppercase tracking-wider"
             >
               <FiArrowLeft />
               Back to Home
@@ -118,8 +118,8 @@ export default function ProjectsListPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <h1 className="text-5xl md:text-7xl font-bold mb-4">ALL PROJECTS /</h1>
-            <p className="text-lg md:text-xl text-black/60 max-w-3xl">
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-4 break-words">ALL PROJECTS /</h1>
+            <p className="text-base sm:text-lg md:text-xl text-black/60 max-w-3xl">
               A curated archive of shipped work, experiments, and thoughtful build-outs.
               Explore the full range and dig into the details.
             </p>
@@ -127,7 +127,7 @@ export default function ProjectsListPage() {
         </div>
       </section>
 
-      <section className="px-6 sm:px-12 pb-20">
+      <section className="px-4 sm:px-8 md:px-12 pb-20">
         <div className="max-w-7xl mx-auto">
           {loading ? (
             <div className="text-center py-20">

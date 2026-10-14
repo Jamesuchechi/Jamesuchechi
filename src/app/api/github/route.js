@@ -64,9 +64,62 @@ export async function GET() {
   const token = process.env.GITHUB_TOKEN;
   
   if (!token) {
+    try {
+      const [userRes, reposRes] = await Promise.all([
+        fetch(`https://api.github.com/users/${GITHUB_USERNAME}`, {
+          headers: { 'User-Agent': 'portfolio-web-app' },
+          next: { revalidate: 3600 },
+        }),
+        fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=6`, {
+          headers: { 'User-Agent': 'portfolio-web-app' },
+          next: { revalidate: 3600 },
+        }),
+      ]);
+
+      if (userRes.ok && reposRes.ok) {
+        const user = await userRes.json();
+        const repos = await reposRes.json();
+
+        const stats = {
+          followers: user.followers || 0,
+          following: user.following || 0,
+          publicRepos: user.public_repos || 0,
+          avatarUrl: user.avatar_url,
+          bio: user.bio,
+          location: user.location,
+        };
+
+        const topRepos = (Array.isArray(repos) ? repos : []).map((r) => ({
+          id: r.id,
+          name: r.name,
+          description: r.description,
+          url: r.html_url,
+          stars: r.stargazers_count || 0,
+          forks: r.forks_count || 0,
+          language: r.language || null,
+          updatedAt: r.updated_at,
+          topics: r.topics || [],
+        }));
+
+        const totalStars = topRepos.reduce((sum, r) => sum + r.stars, 0);
+
+        return NextResponse.json({
+          username: GITHUB_USERNAME,
+          stats,
+          topRepos,
+          totalStars,
+          topLanguages: ['JavaScript', 'Python', 'TypeScript', 'HTML', 'CSS'],
+          contributionGrid: [],
+          totalContributions: 0,
+        });
+      }
+    } catch (e) {
+      console.warn('Public GitHub fallback error:', e);
+    }
+
     return NextResponse.json(
-      { error: 'GITHUB_TOKEN not found in environment' },
-      { status: 500 }
+      { error: 'GITHUB_TOKEN not found in environment', username: GITHUB_USERNAME },
+      { status: 200 }
     );
   }
 

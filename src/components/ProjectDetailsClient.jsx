@@ -45,7 +45,7 @@ function DetailSection({ title, content, index, total, accent }) {
         clipPath,
         background: '#080808',
       }}
-      className="py-24 px-6 md:px-12"
+      className="py-16 sm:py-20 md:py-24 px-4 sm:px-8 md:px-12"
     >
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
@@ -63,10 +63,10 @@ function DetailSection({ title, content, index, total, accent }) {
           </span>
         </div>
 
-        <div className="overflow-hidden mb-10">
+        <div className="overflow-hidden mb-8 sm:mb-10">
           <motion.h3
             style={{ y: titleYSpring, fontFamily: 'Georgia, serif' }}
-            className="text-4xl md:text-7xl font-black text-white uppercase italic leading-none"
+            className="text-3xl sm:text-4xl md:text-7xl font-black text-white uppercase italic leading-tight sm:leading-none break-words"
           >
             {title}
           </motion.h3>
@@ -78,14 +78,14 @@ function DetailSection({ title, content, index, total, accent }) {
             background: `linear-gradient(90deg, ${accent}, transparent)`,
             transformOrigin: 'left',
           }}
-          className="h-[1px] mb-12"
+          className="h-[1px] mb-8 sm:mb-12"
         />
 
         <motion.div
           style={{ opacity: contentOpacity, y: contentY, fontFamily: 'Georgia, serif' }}
           className="max-w-3xl"
         >
-          <p className="text-xl md:text-2xl text-white/50 leading-relaxed whitespace-pre-line">{content}</p>
+          <p className="text-base sm:text-xl md:text-2xl text-white/60 leading-relaxed whitespace-pre-line">{content}</p>
         </motion.div>
       </div>
     </motion.div>
@@ -253,10 +253,10 @@ export default function ProjectDetailsClient({ project }) {
 
   return (
     <main className="min-h-screen bg-white">
-      <nav className="fixed top-8 left-8 z-50">
+      <nav className="fixed top-4 left-4 sm:top-8 sm:left-8 z-50">
         <Link
           href="/#works"
-          className="group relative flex items-center gap-3 bg-black/40 backdrop-blur-md text-white px-6 py-3 rounded-full overflow-hidden transition-all hover:pr-8 hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] border border-white/10 hover:bg-black"
+          className="group relative flex items-center gap-3 bg-black/60 backdrop-blur-md text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-full overflow-hidden transition-all hover:pr-8 hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] border border-white/10 hover:bg-black"
         >
           <FiArrowLeft className="group-hover:-translate-x-1 transition-transform relative z-10" />
           <span className="font-mono text-xs uppercase tracking-[0.2em] relative z-10">All Projects</span>
@@ -267,7 +267,7 @@ export default function ProjectDetailsClient({ project }) {
         </Link>
       </nav>
 
-      <section className="relative min-h-[85vh] flex items-end overflow-hidden pb-24">
+      <section className="relative min-h-[70vh] sm:min-h-[85vh] flex items-end overflow-hidden pb-16 sm:pb-24">
         <div className="absolute inset-0">
           {project.imageUrl && (
             <Image
@@ -283,17 +283,17 @@ export default function ProjectDetailsClient({ project }) {
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent" />
         </div>
 
-        <div className="relative z-10 w-full px-6 md:px-12">
+        <div className="relative z-10 w-full px-4 sm:px-8 md:px-12">
           <div className="max-w-7xl mx-auto">
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}>
-              <div className="flex items-center gap-4 mb-8">
+              <div className="flex items-center gap-4 mb-6 sm:mb-8">
                 <span className="px-4 py-1.5 rounded-full text-[10px] tracking-[0.3em] uppercase bg-white/10 backdrop-blur-md text-white border border-white/10 font-mono">
                   {project.category}
                 </span>
                 <span className="w-1.5 h-1.5 rounded-full" style={{ background: accentColor }} />
                 <span className="text-[10px] tracking-[0.3em] uppercase text-white/50 font-mono">{project.year}</span>
               </div>
-              <h1 className="text-7xl md:text-[9rem] font-black uppercase text-white leading-[0.8] tracking-tight mb-4 max-w-5xl" style={{ fontFamily: 'Georgia, serif' }}>
+              <h1 className="text-4xl min-[400px]:text-5xl sm:text-7xl md:text-[8rem] lg:text-[9rem] font-black uppercase text-white leading-[0.95] sm:leading-[0.85] tracking-tight mb-4 max-w-5xl break-words" style={{ fontFamily: 'Georgia, serif' }}>
                 {project.title}
               </h1>
             </motion.div>
@@ -301,8 +301,8 @@ export default function ProjectDetailsClient({ project }) {
         </div>
       </section>
 
-      <section className="py-12 bg-white border-b border-black/5">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-12">
+      <section className="py-8 sm:py-12 bg-white border-b border-black/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 flex flex-col md:flex-row justify-between items-center gap-8 md:gap-12">
           <div className="flex flex-wrap gap-2 md:max-w-2xl">
             {techUsed.map((tech, i) => (
               <span key={i} className="text-[10px] md:text-[11px] uppercase tracking-widest border border-black/10 px-4 py-2 rounded-full font-mono text-black/60 hover:bg-black hover:text-white transition-all cursor-default">
@@ -326,12 +326,12 @@ export default function ProjectDetailsClient({ project }) {
         </div>
       </section>
 
-      <section className="py-24 px-6 md:px-12 bg-gray-50/50 overflow-hidden">
+      <section className="py-16 sm:py-24 px-4 sm:px-8 md:px-12 bg-gray-50/50 overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-12 flex justify-between items-end">
+          <div className="mb-8 sm:mb-12 flex justify-between items-end">
             <div>
               <p className="text-[10px] uppercase font-mono tracking-widest text-black/30 mb-2">Visual Showcase</p>
-              <h2 className="text-4xl font-bold italic" style={{ fontFamily: 'Georgia, serif' }}>
+              <h2 className="text-3xl sm:text-4xl font-bold italic" style={{ fontFamily: 'Georgia, serif' }}>
                 The Gallery
               </h2>
             </div>
@@ -349,15 +349,15 @@ export default function ProjectDetailsClient({ project }) {
         ))}
       </section>
 
-      <section className="bg-[#080808] pt-12 pb-32 px-6">
-        <div className="max-w-7xl mx-auto border-t border-white/5 pt-24 text-center">
-          <h2 className="text-5xl md:text-[10rem] font-black italic mb-12 uppercase text-white leading-[0.8] tracking-tighter" style={{ fontFamily: 'Georgia, serif' }}>
+      <section className="bg-[#080808] pt-12 pb-32 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto border-t border-white/5 pt-16 sm:pt-24 text-center">
+          <h2 className="text-3xl min-[400px]:text-4xl sm:text-6xl md:text-[8rem] lg:text-[10rem] font-black italic mb-8 sm:mb-12 uppercase text-white leading-[0.9] sm:leading-[0.8] tracking-tighter" style={{ fontFamily: 'Georgia, serif' }}>
             Interested? <br />
-            <span className="block mt-6" style={{ color: accentColor }}>
+            <span className="block mt-4 sm:mt-6" style={{ color: accentColor }}>
               Let&apos;s work together.
             </span>
           </h2>
-          <Link href="/#contact" className="inline-flex items-center gap-4 bg-white text-black px-12 py-5 rounded-full font-mono text-xs uppercase tracking-[0.2em] hover:scale-105 transition-transform">
+          <Link href="/#contact" className="inline-flex items-center gap-4 bg-white text-black px-8 sm:px-12 py-4 sm:py-5 rounded-full font-mono text-xs uppercase tracking-[0.2em] hover:scale-105 transition-transform">
             Get In Touch
           </Link>
         </div>
