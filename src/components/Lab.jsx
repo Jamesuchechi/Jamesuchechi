@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import SpotlightCard from '@/components/reactbits/SpotlightCard';
 
 export default function Lab() {
   const [items, setItems] = useState([]);
@@ -41,44 +42,50 @@ export default function Lab() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
             viewport={{ once: true }}
-            className="group relative p-8 rounded-[40px] bg-white/5 border border-white/5 hover:border-white/10 transition-all overflow-hidden"
+            className="h-full"
           >
-            {/* Background Accent */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#00E5FF]/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-[#00E5FF]/10 transition-colors" />
+            <SpotlightCard
+              spotlightColor="rgba(0, 229, 255, 0.18)"
+              borderColor="rgba(0, 229, 255, 0.45)"
+              className="group relative p-8 rounded-[40px] bg-white/5 border border-white/5 hover:border-white/10 transition-all overflow-hidden h-full flex flex-col justify-between"
+            >
+              {/* Background Accent */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#00E5FF]/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-[#00E5FF]/10 transition-colors pointer-events-none" />
 
-            <div className="relative z-10 flex flex-col h-full">
-              <div className="flex items-center justify-between mb-6">
-                <span className="text-[10px] font-mono tracking-widest text-[#00E5FF] uppercase px-3 py-1 rounded-full border border-[#00E5FF]/20 bg-[#00E5FF]/5">
-                  {item.status}
-                </span>
-                <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">
-                  #{String(i + 1).padStart(2, '0')}
-                </span>
-              </div>
-
-              <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-[#00E5FF] transition-colors" style={{ fontFamily: 'Georgia, serif' }}>
-                {item.title}
-              </h3>
-
-              <p className="text-white/70 text-sm italic mb-8 flex-1" style={{ fontFamily: 'Georgia, serif' }}>
-                {item.description}
-              </p>
-
-              <div className="space-y-3">
-                <div className="h-[2px] w-full bg-white/5 rounded-full overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${item.progress}%` }}
-                    transition={{ duration: 1, delay: 0.5 }}
-                    className="h-full bg-gradient-to-r from-[#00E5FF] to-white"
-                  />
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-[10px] font-mono tracking-widest text-[#00E5FF] uppercase px-3 py-1 rounded-full border border-[#00E5FF]/20 bg-[#00E5FF]/5">
+                    {item.status}
+                  </span>
+                  <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">
+                    #{String(i + 1).padStart(2, '0')}
+                  </span>
                 </div>
-                <div className="flex justify-between items-center text-[10px] font-mono uppercase tracking-[0.2em] text-white/40">
-                  <span>Knowledge Depth</span>
-                  <span className="text-white/70">{item.progress}%</span>
+
+                <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-[#00E5FF] transition-colors" style={{ fontFamily: 'Georgia, serif' }}>
+                  {item.title}
+                </h3>
+
+                <p className="text-white/70 text-sm italic mb-8 flex-1" style={{ fontFamily: 'Georgia, serif' }}>
+                  {item.description}
+                </p>
+
+                <div className="space-y-3">
+                  <div className="h-[2px] w-full bg-white/5 rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      whileInView={{ width: `${item.progress}%` }}
+                      transition={{ duration: 1, delay: 0.5 }}
+                      className="h-full bg-gradient-to-r from-[#00E5FF] to-white"
+                    />
+                  </div>
+                  <div className="flex justify-between items-center text-[10px] font-mono uppercase tracking-[0.2em] text-white/40">
+                    <span>Knowledge Depth</span>
+                    <span className="text-white/70">{item.progress}%</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            </SpotlightCard>
           </motion.div>
         ))}
       </div>

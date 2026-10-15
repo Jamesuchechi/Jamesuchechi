@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FiArrowUpRight, FiCode, FiX, FiGithub, FiExternalLink } from 'react-icons/fi';
 import { normalizeImageUrl } from '@/lib/imageUtils';
+import SpotlightCard from '@/components/reactbits/SpotlightCard';
 
 export default function ProjectCard({ project, index, showDetailsHint = true }) {
   const [isFlipped,   setIsFlipped]   = useState(false);
@@ -68,8 +69,11 @@ export default function ProjectCard({ project, index, showDetailsHint = true }) 
             style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
             role="button" tabIndex={0} onClick={handleFrontClick} onKeyDown={handleFrontKeyDown}
           >
-            <div className="w-full h-full bg-[#f3f3f3] rounded-3xl overflow-hidden relative shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] group-hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] transition-shadow">
-              
+            <SpotlightCard
+              spotlightColor="rgba(0, 229, 255, 0.22)"
+              borderColor="rgba(0, 229, 255, 0.6)"
+              className="w-full h-full bg-[#f3f3f3] rounded-3xl overflow-hidden relative shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] group-hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] transition-shadow"
+            >
               {/* Noise Overlay */}
               <div className="absolute inset-0 z-10 mix-blend-overlay pointer-events-none opacity-20" style={{ backgroundImage: `url("${noiseDataUrl}")` }} />
 
@@ -139,7 +143,7 @@ export default function ProjectCard({ project, index, showDetailsHint = true }) 
                   <div className="h-px w-0 group-hover:w-8 bg-[#FF3B00] transition-all duration-500" />
                 </Link>
               </div>
-            </div>
+            </SpotlightCard>
           </div>
 
           {/* ── Back Face (The Technical Folio) ── */}
@@ -147,7 +151,11 @@ export default function ProjectCard({ project, index, showDetailsHint = true }) 
             className="absolute inset-0 backface-hidden"
             style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
           >
-            <div className="w-full h-full bg-white border border-black/5 rounded-3xl p-6 sm:p-8 md:p-12 flex flex-col justify-between shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] overflow-hidden">
+            <SpotlightCard
+              spotlightColor="rgba(255, 59, 0, 0.12)"
+              borderColor="rgba(255, 59, 0, 0.4)"
+              className="w-full h-full bg-white border border-black/5 rounded-3xl p-6 sm:p-8 md:p-12 flex flex-col justify-between shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] overflow-hidden"
+            >
               
               {/* Close Button - Touch Only */}
               <button 
@@ -207,7 +215,7 @@ export default function ProjectCard({ project, index, showDetailsHint = true }) 
                   )}
                 </div>
               </div>
-            </div>
+            </SpotlightCard>
           </div>
         </motion.div>
       </div>

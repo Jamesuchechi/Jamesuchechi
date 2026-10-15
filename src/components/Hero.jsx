@@ -2,6 +2,9 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiArrowUpRight } from 'react-icons/fi';
+import DecryptedText from '@/components/reactbits/DecryptedText';
+import ShinyText from '@/components/reactbits/ShinyText';
+import Squares from '@/components/reactbits/Squares';
 
 export default function Hero() {
   const [now, setNow] = useState(() => new Date());
@@ -82,11 +85,17 @@ export default function Hero() {
     >
       {/* ── Dynamic Background Layer ── */}
       <div className="absolute inset-0">
-        <div className="absolute -top-40 -left-40 h-[38rem] w-[38rem] rounded-full bg-[radial-gradient(circle,rgba(120,171,255,0.15),transparent_70%)] blur-3xl"></div>
-        <div className="absolute -bottom-52 -right-24 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(255,185,129,0.1),transparent_70%)] blur-3xl"></div>
-        <div className="absolute inset-0 opacity-40 [background-image:radial-gradient(#ffffff11_1px,transparent_1px)] [background-size:24px_24px]"></div>
+        <Squares
+          direction="diagonal"
+          speed={0.25}
+          squareSize={44}
+          borderColor="rgba(255, 255, 255, 0.04)"
+          hoverFillColor="rgba(0, 229, 255, 0.18)"
+        />
+        <div className="absolute -top-40 -left-40 h-[38rem] w-[38rem] rounded-full bg-[radial-gradient(circle,rgba(120,171,255,0.15),transparent_70%)] blur-3xl pointer-events-none"></div>
+        <div className="absolute -bottom-52 -right-24 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(255,185,129,0.1),transparent_70%)] blur-3xl pointer-events-none"></div>
         <div
-          className="absolute inset-0 opacity-20 mix-blend-overlay"
+          className="absolute inset-0 opacity-20 mix-blend-overlay pointer-events-none"
           style={{ backgroundImage: `url("${noiseDataUrl}")` }}
         ></div>
       </div>
@@ -140,13 +149,31 @@ export default function Hero() {
           {/* Availability Badge */}
           <motion.div
             variants={itemMotion}
-            className="inline-flex items-center gap-3 rounded-full border border-white/5 bg-white/5 pl-2 pr-6 py-2 mb-12 backdrop-blur-xl group cursor-default transition-all hover:bg-white/10"
+            className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 pl-2 pr-6 py-2 mb-8 backdrop-blur-xl group cursor-default transition-all hover:bg-white/10"
           >
             <div className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center p-2 overflow-hidden relative">
               <span className={`absolute inset-0 ${avail.color} opacity-20 animate-ping rounded-full`}></span>
               <span className={`h-2 w-2 ${avail.color} rounded-full relative z-10`}></span>
             </div>
-            <span className="text-[10px] uppercase font-mono tracking-[0.2em] text-white/60">{avail.text}</span>
+            <ShinyText
+              text={avail.text}
+              speed={3.5}
+              className="text-[10px] uppercase font-mono tracking-[0.2em] text-white/80"
+            />
+          </motion.div>
+
+          {/* Cyber Decrypted Role Tag */}
+          <motion.div variants={itemMotion} className="mb-6">
+            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-cyan-500/20 bg-cyan-950/20 backdrop-blur-md">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+              <DecryptedText
+                text="FULL-STACK SOFTWARE ENGINEER & CREATIVE TECHNOLOGIST"
+                speed={30}
+                animateOn="view"
+                className="text-[10px] sm:text-xs font-mono tracking-[0.2em] text-cyan-300 font-semibold uppercase"
+                encryptedClassName="text-cyan-400/40 font-mono"
+              />
+            </div>
           </motion.div>
 
           {/* Main Heading (Restored Animations) */}
