@@ -120,6 +120,17 @@ export default function HomeClient() {
         <SectionTransition id="github-section" transition="splitOpen" bgHex="#0a0a0f" className="bg-[#0a0a0f]">
           <GitHub />
         </SectionTransition>
+        <SectionTransition id="skills-section" transition="windowShade" bgHex="#06070a" className="bg-[#06070a]">
+          <Skills />
+          <div className="pb-16 text-center">
+            <Link
+              href="/skills"
+              className="inline-flex items-center gap-3 border border-cyan-500/30 text-cyan-300 px-10 py-4 rounded-full font-mono text-sm uppercase tracking-[0.18em] font-semibold hover:bg-cyan-500/10 hover:border-cyan-400/60 transition-all"
+            >
+              View Full Tech Stack →
+            </Link>
+          </div>
+        </SectionTransition>
         <SectionTransition id="works-preview" transition="splitOpen" bgHex="#ffffff" className="min-h-screen py-24">
           <div className="max-w-7xl mx-auto px-6">
             <Projects limit={3} />

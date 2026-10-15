@@ -4,9 +4,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMenu, FiX, FiChevronDown } from 'react-icons/fi';
+import ClickSpark from '@/components/reactbits/ClickSpark';
 
 const PRIMARY_LINKS = [
   { name: 'Works',    href: '/works'    },
+  { name: 'Skills',   href: '/skills'   },
   { name: 'Services', href: '/services' },
   { name: 'About',    href: '/about'    },
   { name: 'Contact',  href: '/contact'  },
@@ -223,15 +225,17 @@ export default function Navbar({ onEnterOS }) {
 
           {/* Ecosystem — demoted to a quiet ghost pill (home only, when handler is passed) */}
           {onEnterOS && (
-            <button
-              type="button"
-              onClick={onEnterOS}
-              className="hidden lg:inline-flex items-center gap-2 ml-1 rounded-full border px-3.5 py-2.5 text-[11px] font-medium uppercase tracking-[0.1em] transition-colors hover:bg-[#FF3B00] hover:text-black"
-              style={{ color: ACCENT, borderColor: 'rgba(255,59,0,0.35)' }}
-            >
-              <span aria-hidden="true">⊞</span>
-              Ecosystem
-            </button>
+            <ClickSpark sparkColor="#FF3B00" sparkCount={8} sparkRadius={24}>
+              <button
+                type="button"
+                onClick={onEnterOS}
+                className="hidden lg:inline-flex items-center gap-2 ml-1 rounded-full border px-3.5 py-2.5 text-[11px] font-medium uppercase tracking-[0.1em] transition-colors hover:bg-[#FF3B00] hover:text-black cursor-pointer"
+                style={{ color: ACCENT, borderColor: 'rgba(255,59,0,0.35)' }}
+              >
+                <span aria-hidden="true">⊞</span>
+                Ecosystem
+              </button>
+            </ClickSpark>
           )}
 
           {/* Mobile toggle */}
@@ -258,26 +262,29 @@ export default function Navbar({ onEnterOS }) {
             style={MONO}
             className="fixed inset-0 z-[90] md:hidden overflow-y-auto bg-[#080808]/95 backdrop-blur-2xl"
           >
-            <div className="px-8 pt-28 pb-16">
-              <ul className="space-y-1">
+            <div className="px-6 pt-24 pb-16 flex flex-col h-full">
+              {/* Primary links — large tap-targets */}
+              <ul className="space-y-0.5">
                 {PRIMARY_LINKS.map((link, i) => {
                   const active = isActivePath(pathname, link.href);
                   return (
                     <motion.li
                       key={link.href}
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.05 + i * 0.05, duration: 0.35, ease: EASE }}
+                      initial={{ opacity: 0, x: -16 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.04 + i * 0.045, duration: 0.35, ease: EASE }}
                     >
                       <Link
                         href={link.href}
-                        className={`block py-3 text-2xl font-semibold uppercase tracking-[0.08em] ${
-                          active ? 'text-white' : 'text-white/60'
+                        className={`flex items-center justify-between rounded-2xl px-5 py-4 transition-colors ${
+                          active
+                            ? 'bg-white/[0.07] text-white'
+                            : 'text-white/55 hover:text-white hover:bg-white/[0.04]'
                         }`}
                       >
-                        {link.name}
+                        <span className="text-xl font-bold uppercase tracking-[0.07em]">{link.name}</span>
                         {active && (
-                          <span className="ml-3 inline-block h-1.5 w-1.5 rounded-full align-middle" style={{ background: ACCENT }} />
+                          <span className="h-2 w-2 rounded-full flex-shrink-0" style={{ background: ACCENT }} />
                         )}
                       </Link>
                     </motion.li>
@@ -285,21 +292,29 @@ export default function Navbar({ onEnterOS }) {
                 })}
               </ul>
 
-              <div className="mt-10 space-y-8">
-                {MORE_GROUPS.map(group => (
-                  <div key={group.label}>
-                    <p className="mb-3 border-b border-white/10 pb-2 text-[10px] uppercase tracking-[0.2em] text-white/30">
+              {/* Secondary groups */}
+              <div className="mt-8 pt-8 border-t border-white/[0.07] space-y-7">
+                {MORE_GROUPS.map((group, gi) => (
+                  <motion.div
+                    key={group.label}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.28 + gi * 0.06, duration: 0.35, ease: EASE }}
+                  >
+                    <p className="mb-3 text-[9px] font-semibold uppercase tracking-[0.22em] text-white/25">
                       {group.label}
                     </p>
-                    <ul className="grid grid-cols-2 gap-x-4">
+                    <ul className="grid grid-cols-3 gap-2">
                       {group.links.map(link => {
                         const active = isActivePath(pathname, link.href);
                         return (
                           <li key={link.href}>
                             <Link
                               href={link.href}
-                              className={`block py-2 text-[12px] uppercase tracking-[0.1em] ${
-                                active ? 'text-white' : 'text-white/55'
+                              className={`block rounded-xl px-3 py-3 text-center text-[11px] font-medium uppercase tracking-[0.1em] transition-colors ${
+                                active
+                                  ? 'bg-white/[0.08] text-white'
+                                  : 'text-white/45 hover:text-white hover:bg-white/[0.05]'
                               }`}
                             >
                               {link.name}
@@ -308,19 +323,27 @@ export default function Navbar({ onEnterOS }) {
                         );
                       })}
                     </ul>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
 
+              {/* Ecosystem CTA */}
               {onEnterOS && (
-                <button
-                  type="button"
-                  onClick={() => { setMobileOpen(false); onEnterOS(); }}
-                  className="mt-10 w-full rounded-full border py-4 text-[12px] font-medium uppercase tracking-[0.15em]"
-                  style={{ color: ACCENT, borderColor: 'rgba(255,59,0,0.35)' }}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.55 }}
+                  className="mt-auto pt-8"
                 >
-                  ⊞ Ecosystem
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => { setMobileOpen(false); onEnterOS(); }}
+                    className="w-full rounded-2xl border py-4 text-[12px] font-semibold uppercase tracking-[0.15em] transition-colors hover:bg-[#FF3B00]/10"
+                    style={{ color: ACCENT, borderColor: 'rgba(255,59,0,0.25)' }}
+                  >
+                    ⊞ Ecosystem
+                  </button>
+                </motion.div>
               )}
             </div>
           </motion.div>
