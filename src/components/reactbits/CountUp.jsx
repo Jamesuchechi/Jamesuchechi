@@ -1,65 +1,49 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { useInView, useMotionValue, useSpring } from 'framer-motion';
+import { animate, useInView } from 'framer-motion';
 
 export default function CountUp({
-  to,
+  to = 0,
   from = 0,
-  direction = 'up',
-  delay = 0,
   duration = 2,
+  delay = 0,
   className = '',
-  startWhen = true,
   separator = ',',
   suffix = '',
   prefix = '',
 }) {
   const ref = useRef(null);
-  const motionValue = useMotionValue(direction === 'down' ? to : from);
-
-  const damping = 20 + 40 * (1 / duration);
-  const stiffness = 100 * (1 / duration);
-
-  const springValue = useSpring(motionValue, {
-    damping,
-    stiffness,
-  });
-
-  const isInView = useInView(ref, { once: true, margin: '0px' });
-  const [displayValue, setDisplayValue] = useState(from);
+  const isInView = useInView(ref, { once: true, margin: '-20px' });
+  const [value, setValue] = useState(from);
 
   useEffect(() => {
-    if (ref.current) {
-      ref.current.textContent = String(direction === 'down' ? to : from);
+    const target = Number(to);
+    if (isNaN(target)) return;
+
+    if (!isInView) {
+      setValue(from);
+      return;
     }
-  }, [from, to, direction]);
 
-  useEffect(() => {
-    if (isInView && startWhen) {
-      if (typeof to !== 'number' || isNaN(to)) return;
-
-      const timer = setTimeout(() => {
-        motionValue.set(direction === 'down' ? from : to);
-      }, delay * 1000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [isInView, startWhen, motionValue, direction, from, to, delay]);
-
-  useEffect(() => {
-    const unsubscribe = springValue.on('change', (latest) => {
-      const formatted = Math.round(latest).toLocaleString('en-US');
-      const finalStr = separator === ',' ? formatted : formatted.replace(/,/g, separator);
-      setDisplayValue(finalStr);
+    const controls = animate(from, target, {
+      duration,
+      delay,
+      ease: [0.16, 1, 0.3, 1], // fluid easeOutExpo
+      onUpdate(latest) {
+        setValue(Math.round(latest));
+      },
     });
 
-    return () => unsubscribe();
-  }, [springValue, separator]);
+    return () => controls.stop();
+  }, [isInView, to, from, duration, delay]);
+
+  const formatted = value.toLocaleString('en-US');
+  const display = separator === ',' ? formatted : formatted.replace(/,/g, separator);
 
   return (
     <span ref={ref} className={className}>
       {prefix}
-      {displayValue}
+      {display}
       {suffix}
     </span>
   );
